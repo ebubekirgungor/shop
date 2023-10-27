@@ -10,3 +10,27 @@ type User struct {
 	Password string `gorm:"not null"`
 	Name     string `json:"name"`
 }
+
+type Category struct {
+	gorm.Model
+	Title    string    `gorm:"not null" json:"title"`
+	Products []Product `json:"products"`
+}
+
+type Product struct {
+	gorm.Model
+	Title         string `gorm:"not null" json:"title"`
+	CategoryId    int    `gorm:"not null" json:"category_id"`
+	Category      Category
+	ListPrice     float32 `gorm:"not null" json:"list_price"`
+	StockQuantity int     `gorm:"not null" json:"stock_quantity"`
+	Orders        []Order
+}
+
+type Order struct {
+	gorm.Model
+	Price    float32 `gorm:"not null" json:"price"`
+	UserId   int     `gorm:"not null" json:"user_id"`
+	User     User
+	Products []Product
+}
