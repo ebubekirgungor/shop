@@ -19,3 +19,18 @@
 
 # Go workspace file
 go.work
+
+# Client
+client/.output
+client/.data
+client/.nuxt
+client/.nitro
+client/.cache
+client/dist
+client/node_modules
+
+# .env
+.env
+
+# nginx
+nginx.bat
