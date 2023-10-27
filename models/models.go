@@ -22,9 +22,9 @@ type Product struct {
 	Title         string `gorm:"not null" json:"title"`
 	CategoryId    int    `gorm:"not null" json:"category_id"`
 	Category      Category
-	ListPrice     float32 `gorm:"not null" json:"list_price"`
-	StockQuantity int     `gorm:"not null" json:"stock_quantity"`
-	Orders        []Order
+	ListPrice     float32  `gorm:"not null" json:"list_price"`
+	StockQuantity int      `gorm:"not null" json:"stock_quantity"`
+	Orders        []*Order `gorm:"many2many:order_products;"`
 }
 
 type Order struct {
@@ -32,5 +32,5 @@ type Order struct {
 	Price    float32 `gorm:"not null" json:"price"`
 	UserId   int     `gorm:"not null" json:"user_id"`
 	User     User
-	Products []Product
+	Products []*Product `gorm:"many2many:order_products;"`
 }
