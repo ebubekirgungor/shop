@@ -41,7 +41,7 @@ func validUser(id string, p string) bool {
 
 func User(c *fiber.Ctx) error {
 	user := models.User{}
-	database.DB.Db.First(&user, c.Params("email"))
+	database.DB.Db.Preload("Orders").First(&user, c.Params("email"))
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
