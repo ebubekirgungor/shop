@@ -9,6 +9,7 @@ type User struct {
 	Email    string `gorm:"uniqueIndex;not null" json:"email"`
 	Password string `gorm:"not null"`
 	Name     string `json:"name"`
+	Orders []Order `json:"orders"`
 }
 
 type Category struct {
