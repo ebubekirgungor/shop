@@ -39,26 +39,6 @@ func getUser(e string) (*models.User, error) {
 	return &user, nil
 }
 
-func CheckUser(c *fiber.Ctx) error {
-	type LoginInput struct {
-		Email string `json:"email"`
-	}
-	input := new(LoginInput)
-	user := models.User{}
-
-	if err := c.BodyParser(&input); err != nil {
-		return c.JSON("Error on login request")
-	}
-
-	database.DB.Db.Where("email = ?", input.Email).First(&user)
-
-	if user.Email == "" {
-		return c.JSON("User not found")
-	} else {
-		return c.JSON("Ok")
-	}
-}
-
 func Login(c *fiber.Ctx) error {
 	type LoginInput struct {
 		Email    string `json:"email"`

@@ -12,5 +12,10 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
-  modules: ["@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
+  googleFonts: {
+    families: {
+      Poppins: [300],
+    }
+  },
+  modules: ["@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "@nuxtjs/google-fonts"],
 });
