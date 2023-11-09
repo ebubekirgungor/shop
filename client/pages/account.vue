@@ -1,5 +1,5 @@
 <template>
-    <main class="min-h-[100dvh] bg-white dark:bg-black">
+    <main>
       <h1>account</h1>
     </main>
   </template>
