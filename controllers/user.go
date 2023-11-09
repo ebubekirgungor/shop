@@ -56,16 +56,16 @@ func AddUser(c *fiber.Ctx) error {
 
 	hash, err := hashPassword(user.Password)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Couldn't hash password"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "hash"})
 
 	}
 
 	user.Password = hash
 	if err := database.DB.Db.Create(&user).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Couldn't create user"})
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "create"})
 	}
 
-	return c.Status(200).JSON(fiber.Map{"email": user.Email})
+	return c.Status(200).JSON(fiber.Map{"status": "success", "email": user.Email})
 }
 
 func UpdateUser(c *fiber.Ctx) error {

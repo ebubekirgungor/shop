@@ -2,14 +2,14 @@
   <main class="bg-gray-50 flex flex-col items-center justify-center gap-y-4">
     <h1 class="mt-8 text-xl">Sign in to your account</h1>
     <div
-      class="flex justify-center bg-white w-[400px] h-[550px] border rounded-xl"
+      class="flex justify-center bg-white w-[400px] h-[520px] border rounded-xl"
     >
-      <div class="mt-16 flex flex-col gap-y-8 w-[300px]">
-        <div class="flex flex-col">
+      <div class="mt-8 flex flex-col gap-y-6 w-[300px]">
+        <div class="flex flex-col gap-y-1">
           <label for="email">E-mail</label>
           <input :class="input" v-model="email" name="email" type="text" />
         </div>
-        <div class="flex flex-col">
+        <div class="flex flex-col gap-y-1">
           <label for="password">Password</label>
           <input
             :class="input"
@@ -21,11 +21,11 @@
         <NuxtLink to="/reset-password" class="text-center"
           >Forgot password?</NuxtLink
         >
-        <h1 class="grow text-center text-red-500">{{ login_error }}</h1>
+        <h1 class="grow mt-5 text-center text-red-500">{{ login_error }}</h1>
         <div>
           <button
             @click="login"
-            :disabled="email == ''"
+            :disabled="email == '' || password == ''"
             class="mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
           >
             Sign In
@@ -33,7 +33,7 @@
           <h1 class="grow text-center">or</h1>
           <NuxtLink
             to="/register"
-            class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-black bg-white hover:bg-black/10"
+            class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-200"
           >
             Create Account
           </NuxtLink>

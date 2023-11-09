@@ -39,6 +39,26 @@ func getUser(e string) (*models.User, error) {
 	return &user, nil
 }
 
+func CheckUser(c *fiber.Ctx) error {
+	type LoginInput struct {
+		Email string `json:"email"`
+	}
+	input := new(LoginInput)
+	user := models.User{}
+
+	if err := c.BodyParser(&input); err != nil {
+		return c.JSON("error")
+	}
+
+	database.DB.Db.Where("email = ?", input.Email).First(&user)
+
+	if user.Email == "" {
+		return c.JSON(false)
+	} else {
+		return c.JSON(true)
+	}
+}
+
 func Login(c *fiber.Ctx) error {
 	type LoginInput struct {
 		Email    string `json:"email"`
@@ -49,7 +69,7 @@ func Login(c *fiber.Ctx) error {
 	var userData UserData
 
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "Error on login request", "data": err})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"status": "error", "message": "server", "data": err})
 	}
 
 	email := input.Email
@@ -58,8 +78,9 @@ func Login(c *fiber.Ctx) error {
 
 	userModel, err = getUser(email)
 
+	fmt.Println(userModel == nil)
 	if userModel == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "User not found", "data": err})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "login", "data": err})
 	} else {
 		userData = UserData{
 			ID:       userModel.ID,
@@ -70,7 +91,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if !CheckPasswordHash(pass, userData.Password) {
-		return c.JSON(fiber.Map{"status": "error", "message": "Invalid password", "data": nil})
+		return c.JSON(fiber.Map{"status": "error", "message": "login", "data": nil})
 	}
 
 	token := jwt.New(jwt.SigningMethodHS256)

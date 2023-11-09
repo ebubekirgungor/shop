@@ -2,11 +2,10 @@
   <div class="min-h-[100dvh] font-poppins text-sm bg-gray-50 select-none">
     <nav class="bg-white h-24 flex border-b justify-center items-center gap-x-10">
       <input
-        class="transition duration-200 ease-in-out ml-64 mr-6 w-[550px] h-10 border-none bg-gray-100 rounded-md text-sm"
+        class="bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out ml-64 w-[550px] h-10 border-none focus:ring-0 focus:scale-[1.01] focus:shadow-xl focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
         type="text"
         placeholder="Search products"
       />
-      <div class="-ml-24 w-6 h-6 bg-[url(/icons/search.svg)]"></div>
       <NuxtLink to="/login" :class="button">
         <div class="w-6 h-6 bg-[url(/icons/account.svg)]"></div>
         <span class="mt-0.5">Account</span>
