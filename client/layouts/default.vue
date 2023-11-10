@@ -6,9 +6,9 @@
         type="text"
         placeholder="Search products"
       />
-      <NuxtLink to="/login" :class="button">
+      <NuxtLink :to="user.token ? '/account' : '/login'" :class="button">
         <div class="w-6 h-6 bg-[url(/icons/account.svg)]"></div>
-        <span class="mt-0.5">Account</span>
+        <span class="mt-0.5">{{ user.token ? "Account" : "Login" }}</span>
       </NuxtLink>
       <button :class="button">
         <div class="w-6 h-6 bg-[url(/icons/favorite.svg)]"></div>
@@ -24,5 +24,8 @@
   </div>
 </template>
 <script setup lang="ts">
+import { useUser } from "~/store/user";
+const userstate = useUser();
+const { user } = storeToRefs(userstate)
 const button = ref("transition duration-200 ease-in-out flex gap-x-2 hover:-translate-y-0.5");
 </script>

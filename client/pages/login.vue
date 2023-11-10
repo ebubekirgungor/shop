@@ -43,6 +43,9 @@
   </main>
 </template>
 <script setup lang="ts">
+definePageMeta({
+  middleware: "auth",
+});
 import { useUser } from "@/store/user";
 const input = ref(
   "transition duration-200 ease-in-out h-11 border-gray-300 bg-gray-50 rounded-md text-sm"
