@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"shop/config"
@@ -29,7 +28,6 @@ func CheckPasswordHash(password, hash string) bool {
 
 func getUser(e string) (*models.User, error) {
 	var user models.User
-	fmt.Println(e)
 	if err := database.DB.Db.Where(&models.User{Email: e}).Find(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
@@ -78,7 +76,6 @@ func Login(c *fiber.Ctx) error {
 
 	userModel, err = getUser(email)
 
-	fmt.Println(userModel == nil)
 	if userModel == nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "login", "data": err})
 	} else {
