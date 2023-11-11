@@ -8,10 +8,12 @@
         type="text"
         placeholder="Search products"
       />
-      <div class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4 sm:mr-0">
+      <div
+        class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4 sm:mr-0"
+      >
         <div class="flex items-center group h-16">
           <NuxtLink
-            :to="user.token ? '/account' : '/login'"
+            :to="user.token ? '/account/orders' : '/login'"
             :class="button + (user.token ? '' : ' sm:hover:-translate-y-0.5')"
           >
             <div class="w-6 h-6 bg-[url(/icons/account.svg)]"></div>
@@ -48,9 +50,8 @@
 import { useUser } from "~/store/user";
 const userstate = useUser();
 const { user } = storeToRefs(userstate);
-const button = ref(
-  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent"
-);
+const button =
+  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent";
 </script>
 <style>
 * {

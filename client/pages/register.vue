@@ -54,9 +54,8 @@
 definePageMeta({
   middleware: "auth",
 });
-const input = ref(
-  "transition duration-200 ease-in-out h-11 border-gray-300 bg-gray-50 rounded-md text-sm"
-);
+const input =
+  "transition duration-200 ease-in-out h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
 const email = ref("");
 const password = ref("");
 const confirm_password = ref("");
