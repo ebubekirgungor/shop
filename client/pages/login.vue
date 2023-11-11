@@ -1,10 +1,10 @@
 <template>
-  <main class="bg-gray-50 flex flex-col items-center justify-center gap-y-4">
+  <main class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4">
     <h1 class="mt-8 text-xl">Sign in to your account</h1>
     <div
-      class="flex justify-center bg-white w-[400px] h-[520px] border rounded-xl"
+      class="flex justify-center bg-white sm:w-[400px] sm:h-[520px] sm:border sm:rounded-xl"
     >
-      <div class="mt-8 flex flex-col gap-y-6 w-[300px]">
+      <div class="sm:mt-8 flex flex-col gap-y-6 w-[300px]">
         <div class="flex flex-col gap-y-1">
           <label for="email">E-mail</label>
           <input :class="input" v-model="email" name="email" type="text" />
@@ -26,11 +26,11 @@
           <button
             @click="login"
             :disabled="email == '' || password == ''"
-            class="mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
+            class="sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
           >
             Sign In
           </button>
-          <h1 class="grow text-center">or</h1>
+          <h1 class="grow text-center hidden sm:block">or</h1>
           <NuxtLink
             to="/register"
             class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-200"
