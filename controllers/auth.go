@@ -15,10 +15,10 @@ import (
 )
 
 type UserData struct {
-	ID       uint   `json:"id"`
-	Email    string `json:"email"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
+	ID        uint   `json:"id"`
+	Email     string `json:"email"`
+	FirstName string `json:"first_name"`
+	Password  string `json:"password"`
 }
 
 func CheckPasswordHash(password, hash string) bool {
@@ -80,10 +80,10 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "login", "data": err})
 	} else {
 		userData = UserData{
-			ID:       userModel.ID,
-			Email:    userModel.Email,
-			Name:     userModel.Name,
-			Password: userModel.Password,
+			ID:        userModel.ID,
+			Email:     userModel.Email,
+			FirstName: userModel.FirstName,
+			Password:  userModel.Password,
 		}
 	}
 
@@ -104,9 +104,9 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": fiber.Map{
-		"id":    userData.ID,
-		"email": userData.Email,
-		"name":  userData.Name,
-		"token": t,
+		"id":         userData.ID,
+		"email":      userData.Email,
+		"first_name": userData.FirstName,
+		"token":      t,
 	}})
 }

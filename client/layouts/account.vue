@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="default">
     <main class="flex justify-center mt-4 gap-x-4">
-      <nav class="flex flex-col justify-center bg-white rounded-xl shadow-md w-64 h-auto gap-y-4 p-4">
+      <nav class="flex flex-col bg-white rounded-xl shadow-md w-64 h-auto gap-y-4 p-4">
         <NuxtLink :class="$route.path.endsWith('orders') ? link + active : link" to="/account/orders">
           <div class="w-6 h-6 bg-[url(/icons/order.svg)]"></div>
           <span>Orders</span>
@@ -17,6 +17,10 @@
         <NuxtLink :class="$route.path.endsWith('addresses') ? link + active : link" to="/account/addresses">
           <div class="w-6 h-6 bg-[url(/icons/address.svg)]"></div>
           <span>Addresses</span>
+        </NuxtLink>
+        <NuxtLink :class="$route.path.endsWith('change-password') ? link + active : link" to="/account/change-password">
+          <div class="w-6 h-6 bg-[url(/icons/password.svg)]"></div>
+          <span>Change Password</span>
         </NuxtLink>
       </nav>
       <slot />

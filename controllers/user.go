@@ -4,6 +4,7 @@ import (
 	"shop/database"
 	"shop/models"
 	"strconv"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -41,11 +42,17 @@ func validUser(id string, p string) bool {
 
 func User(c *fiber.Ctx) error {
 	user := models.User{}
-	database.DB.Db.Preload("Orders").First(&user, c.Params("email"))
+	database.DB.Db.Preload("Orders").First(&user, "email = ?", c.Query("email"))
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
-	return c.Status(200).JSON(user)
+	return c.Status(200).JSON(fiber.Map{
+		"first_name": user.FirstName,
+		"last_name":  user.LastName,
+		"phone":      user.Phone,
+		"birthdate":  user.BirthDate,
+		"gender":     user.Gender,
+	})
 }
 
 func AddUser(c *fiber.Ctx) error {
@@ -70,7 +77,11 @@ func AddUser(c *fiber.Ctx) error {
 
 func UpdateUser(c *fiber.Ctx) error {
 	type UpdateUserInput struct {
-		Name string `json:"name"`
+		FirstName string    `json:"first_name"`
+		LastName  string    `json:"last_name"`
+		Phone     int       `json:"phone"`
+		BirthDate time.Time `json:"birthdate"`
+		Gender    string    `json:"gender"`
 	}
 	var uui UpdateUserInput
 	if err := c.BodyParser(&uui); err != nil {
@@ -86,7 +97,11 @@ func UpdateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 
 	database.DB.Db.First(&user, id)
-	user.Name = uui.Name
+	user.FirstName = uui.FirstName
+	user.LastName = uui.LastName
+	user.Phone = uui.Phone
+	user.BirthDate = uui.BirthDate
+	user.Gender = uui.Gender
 	database.DB.Db.Save(&user)
 
 	return c.JSON(user)
