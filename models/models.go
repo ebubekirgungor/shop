@@ -1,21 +1,19 @@
 package models
 
 import (
-	"time"
-
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Email     string    `gorm:"uniqueIndex;not null" json:"email"`
-	Password  string    `gorm:"not null"`
-	FirstName string    `gorm:"not null" json:"first_name"`
-	LastName  string    `gorm:"not null" json:"last_name"`
-	Phone     int       `json:"phone"`
-	BirthDate time.Time `json:"birthdate"`
-	Gender    string    `gorm:"type:char(1)" json:"gender"`
-	Orders    []Order   `json:"orders"`
+	Email     string  `gorm:"uniqueIndex;not null" json:"email"`
+	Password  string  `gorm:"not null"`
+	FirstName string  `gorm:"not null" json:"first_name"`
+	LastName  string  `gorm:"not null" json:"last_name"`
+	Phone     string  `json:"phone"`
+	BirthDate string  `gorm:"type:date;default:null" json:"birthdate"`
+	Gender    string  `gorm:"type:char(1)" json:"gender"`
+	Orders    []Order `json:"orders"`
 }
 
 type Category struct {

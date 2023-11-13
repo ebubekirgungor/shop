@@ -4,16 +4,25 @@
     <div
       class="flex justify-center bg-white sm:w-[400px] sm:h-[520px] sm:border sm:rounded-xl"
     >
-      <div class="sm:mt-8 flex flex-col gap-y-6 w-[300px]">
+      <form
+        @submit.prevent="login"
+        class="sm:mt-8 flex flex-col gap-y-6 w-[300px]"
+      >
         <div class="flex flex-col gap-y-1">
           <label for="email">E-mail</label>
-          <input :class="input" v-model="email" name="email" type="text" />
+          <input
+            :class="input"
+            v-model="form.email"
+            name="email"
+            type="email"
+            required
+          />
         </div>
         <div class="flex flex-col gap-y-1">
           <label for="password">Password</label>
           <input
             :class="input"
-            v-model="password"
+            v-model="form.password"
             name="password"
             type="password"
           />
@@ -24,8 +33,8 @@
         <h1 class="grow mt-5 text-center text-red-500">{{ login_error }}</h1>
         <div>
           <button
-            @click="login"
-            :disabled="email == '' || password == ''"
+            type="submit"
+            :disabled="form.email == '' || form.password == ''"
             class="sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
           >
             Sign In
@@ -38,7 +47,7 @@
             Create Account
           </NuxtLink>
         </div>
-      </div>
+      </form>
     </div>
   </main>
 </template>
@@ -49,15 +58,17 @@ definePageMeta({
 import { useUser } from "@/store/user";
 const input =
   "transition duration-200 ease-in-out h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
-const email = ref("");
-const password = ref("");
+const form = ref({
+  email: "",
+  password: "",
+});
 const login_error = ref("");
 const login = async () => {
   const { data: response } = await useFetch("/api/auth/login", {
     method: "post",
     body: {
-      email: email.value,
-      password: password.value,
+      email: form.value.email,
+      password: form.value.password,
     },
   });
   if ((response.value as any).status == "success") {

@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"shop/database"
 	"shop/models"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -77,26 +77,28 @@ func AddUser(c *fiber.Ctx) error {
 
 func UpdateUser(c *fiber.Ctx) error {
 	type UpdateUserInput struct {
-		FirstName string    `json:"first_name"`
-		LastName  string    `json:"last_name"`
-		Phone     int       `json:"phone"`
-		BirthDate time.Time `json:"birthdate"`
-		Gender    string    `json:"gender"`
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		Phone     string `json:"phone"`
+		BirthDate string `json:"birthdate"`
+		Gender    string `json:"gender"`
 	}
 	var uui UpdateUserInput
 	if err := c.BodyParser(&uui); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
-	id := c.Params("id")
+
+	user := new(models.User)
+	database.DB.Db.First(&user, "email = ?", c.Query("email"))
+
+	id := strconv.Itoa(int(user.ID))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
+	fmt.Println(uui.BirthDate)
 
-	user := new(models.User)
-
-	database.DB.Db.First(&user, id)
 	user.FirstName = uui.FirstName
 	user.LastName = uui.LastName
 	user.Phone = uui.Phone
