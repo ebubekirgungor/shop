@@ -20,12 +20,15 @@
         </div>
         <div class="flex flex-col gap-y-1">
           <label for="password">Password</label>
-          <input
-            :class="input"
-            v-model="form.password"
-            name="password"
-            type="password"
-          />
+          <div class="flex items-center">
+            <input
+              :class="input"
+              v-model="form.password"
+              name="password"
+              :type="eye ? 'text' : 'password'"
+            />
+            <button @click="eye = !eye" type="button" :class="eye ? showpassword + 'bg-[url(/icons/eye.svg)]' : showpassword + 'bg-[url(/icons/eye_off.svg)]'"></button>
+          </div>
         </div>
         <NuxtLink to="/reset-password" class="text-center"
           >Forgot password?</NuxtLink
@@ -56,8 +59,10 @@ definePageMeta({
   middleware: "auth",
 });
 import { useUser } from "@/store/user";
+const showpassword = "w-6 h-6 absolute ml-[265px] ";
+const eye = ref(false);
 const input =
-  "transition duration-200 ease-in-out h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
+  "transition duration-200 ease-in-out w-full h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
 const form = ref({
   email: "",
   password: "",

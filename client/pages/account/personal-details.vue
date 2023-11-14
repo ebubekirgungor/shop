@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main v-if="fetch_complete" class="flex flex-col gap-y-4">
     <div
       class="flex items-center p-6 text-xl w-[50vw] h-auto bg-white rounded-xl shadow-md"
     >
@@ -35,11 +35,11 @@
         <div class="flex gap-x-8">
           <select :class="input + ' w-full'" v-model="form.birthdate.day">
             <option value="0">Day</option>
-            <option v-for="i in 31" :value="i">{{ i }}</option>
+            <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + ' w-full'" v-model="form.birthdate.month">
             <option value="0">Month</option>
-            <option v-for="i in 12" :value="i">{{ i }}</option>
+            <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + ' w-full'" v-model="form.birthdate.year">
             <option value="0">Year</option>
@@ -48,7 +48,7 @@
                 { length: new Date().getFullYear() - 1919 },
                 (_, index) => index + 1920
               ).reverse()"
-              :value="i"
+              :value="i.toString()"
             >
               {{ i }}
             </option>
@@ -100,6 +100,7 @@ definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+const fetch_complete = ref(false);
 const form = ref({
   first_name: "",
   last_name: "",
@@ -144,13 +145,14 @@ onMounted(() => {
       year:
         birthdate == "" ? "0" : new Date(birthdate).getFullYear().toString(),
     };
-    form_old.value = { ...data.value };
+    form_old.value = { ...form.value };
     form_old.value.birthdate = { ...form.value.birthdate };
+    fetch_complete.value = true;
   });
 });
 const update = async () => {
-  console.log(form.value);
-  /*console.log(form_old.value);*/
+  /*console.log(form.value);
+  console.log(form_old.value);*/
   await useFetch("/api/users", {
     method: "patch",
     headers: {
