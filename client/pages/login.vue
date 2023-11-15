@@ -27,7 +27,15 @@
               name="password"
               :type="eye ? 'text' : 'password'"
             />
-            <button @click="eye = !eye" type="button" :class="eye ? showpassword + 'bg-[url(/icons/eye.svg)]' : showpassword + 'bg-[url(/icons/eye_off.svg)]'"></button>
+            <button
+              @click="eye = !eye"
+              type="button"
+              :class="
+                eye
+                  ? showpassword + 'bg-[url(/icons/eye.svg)]'
+                  : showpassword + 'bg-[url(/icons/eye_off.svg)]'
+              "
+            ></button>
           </div>
         </div>
         <NuxtLink to="/reset-password" class="text-center"

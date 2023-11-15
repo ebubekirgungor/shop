@@ -1,14 +1,11 @@
 <template>
-  <main v-if="fetch_complete" class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4">
     <div
-      class="flex items-center p-6 text-xl w-[50vw] h-auto bg-white rounded-xl shadow-md"
+      class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
     >
       Personal Details
     </div>
-    <form
-      @submit.prevent="update"
-      class="grid grid-cols-2 gap-x-16 gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md"
-    >
+    <form v-if="fetch_complete" @submit.prevent="update" :class="form_div">
       <label :class="label"
         >First Name<input :class="input" type="text" v-model="form.first_name"
       /></label>
@@ -90,6 +87,46 @@
         Update
       </button>
     </form>
+    <div v-else :class="form_div + ' animate-pulse'">
+      <div :class="label">
+        <div :class="skeleton_title"></div>
+        <div :class="skeleton_input"></div>
+      </div>
+      <div :class="label">
+        <div :class="skeleton_title"></div>
+        <div :class="skeleton_input"></div>
+      </div>
+      <div :class="label">
+        <div :class="skeleton_title"></div>
+        <div :class="skeleton_input"></div>
+      </div>
+      <div :class="label">
+        <div :class="skeleton_title"></div>
+        <div :class="skeleton_input"></div>
+      </div>
+      <div :class="label">
+        <div :class="skeleton_title"></div>
+        <div class="flex gap-x-8">
+          <div :class="skeleton_input"></div>
+          <div :class="skeleton_input"></div>
+          <div :class="skeleton_input"></div>
+        </div>
+      </div>
+      <div :class="label">
+        <div :class="skeleton_title + ' !w-16'"></div>
+        <div class="flex gap-x-8">
+          <div class="flex gap-x-4">
+            <div :class="skeleton_title + ' !w-5'"></div>
+            <div :class="skeleton_title + ' !w-12'"></div>
+          </div>
+          <div class="flex gap-x-4">
+            <div :class="skeleton_title + ' !w-5'"></div>
+            <div :class="skeleton_title + ' !w-12'"></div>
+          </div>
+        </div>
+      </div>
+      <div class="w-full h-12 bg-gray-200 col-span-2 rounded-full"></div>
+    </div>
   </main>
 </template>
 <script setup lang="ts">
@@ -124,10 +161,14 @@ const form_old = ref({
   gender: "",
 });
 
+const form_div =
+  "grid grid-cols-2 gap-x-16 gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
 const input =
   "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const label = "flex flex-col gap-y-2";
 const radio = "transition duration-200 ease-in-out cursor-pointer focus:ring-0";
+const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
+const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 onMounted(() => {
   nextTick(async () => {
     const { data } = await useFetch<any>("/api/users", {
