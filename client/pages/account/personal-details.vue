@@ -192,8 +192,6 @@ onMounted(() => {
   });
 });
 const update = async () => {
-  /*console.log(form.value);
-  console.log(form_old.value);*/
   await useFetch("/api/users", {
     method: "patch",
     headers: {

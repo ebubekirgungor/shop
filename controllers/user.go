@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"shop/database"
 	"shop/models"
 	"strconv"
@@ -46,6 +45,14 @@ func User(c *fiber.Ctx) error {
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
+
+	id := strconv.Itoa(int(user.ID))
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, id) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	return c.Status(200).JSON(fiber.Map{
 		"first_name": user.FirstName,
 		"last_name":  user.LastName,
@@ -97,7 +104,6 @@ func UpdateUser(c *fiber.Ctx) error {
 	if !validToken(token, id) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
-	fmt.Println(uui.BirthDate)
 
 	user.FirstName = uui.FirstName
 	user.LastName = uui.LastName
