@@ -18,7 +18,7 @@
           type="tel"
           minlength="10"
           maxlength="10"
-          v-model="form!.phone"
+          v-model="form.phone"
       /></label>
       <label :class="label"
         >E-mail<input
@@ -29,7 +29,7 @@
       /></label>
       <label :class="label">
         Birthdate
-        <div class="flex gap-x-8">
+        <div class="flex gap-x-[7%]">
           <select :class="input + ' w-full'" v-model="form.birthdate.day">
             <option value="0">Day</option>
             <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
@@ -54,7 +54,7 @@
       </label>
       <div :class="label">
         Gender
-        <div class="flex gap-x-8">
+        <div class="flex gap-x-[7%]">
           <label class="flex items-center gap-x-3 cursor-pointer">
             <input
               :class="radio"
