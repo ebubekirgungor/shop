@@ -15,19 +15,15 @@ func hashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func validToken(t *jwt.Token, id string) bool {
-	n, err := strconv.Atoi(id)
-	if err != nil {
-		return false
-	}
-
+func validToken(t *jwt.Token, id int) bool {
+	n := id
 	claims := t.Claims.(jwt.MapClaims)
 	uid := int(claims["user_id"].(float64))
 
 	return uid == n
 }
 
-func validUser(id string, p string) bool {
+func validUser(id int, p string) bool {
 	user := models.User{}
 	database.DB.Db.First(&user, id)
 	if user.Email == "" {
@@ -46,7 +42,7 @@ func User(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
 
-	id := strconv.Itoa(int(user.ID))
+	id := int(user.ID)
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -98,7 +94,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	user := new(models.User)
 	database.DB.Db.First(&user, "email = ?", c.Query("email"))
 
-	id := strconv.Itoa(int(user.ID))
+	id := int(user.ID)
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -125,7 +121,11 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
 
-	id := c.Params("id")
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {

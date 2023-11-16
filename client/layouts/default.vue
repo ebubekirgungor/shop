@@ -56,5 +56,7 @@ const button =
 <style>
 * {
   -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 </style>

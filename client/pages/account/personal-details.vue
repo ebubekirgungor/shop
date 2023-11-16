@@ -16,9 +16,10 @@
         >Phone<input
           :class="input"
           type="tel"
-          minlength="10"
-          maxlength="10"
+          minlength="14"
+          maxlength="14"
           v-model="form.phone"
+          @input="phone_format"
       /></label>
       <label :class="label"
         >E-mail<input
@@ -162,7 +163,7 @@ const form_old = ref({
 });
 
 const form_div =
-  "grid grid-cols-2 gap-x-16 gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
+  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
 const input =
   "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const label = "flex flex-col gap-y-2";
@@ -186,6 +187,7 @@ onMounted(() => {
       year:
         birthdate == "" ? "0" : new Date(birthdate).getFullYear().toString(),
     };
+    phone_format();
     form_old.value = { ...form.value };
     form_old.value.birthdate = { ...form.value.birthdate };
     fetch_complete.value = true;
@@ -201,10 +203,18 @@ const update = async () => {
     body: {
       first_name: form.value.first_name,
       last_name: form.value.last_name,
-      phone: form.value.phone,
+      phone: form.value.phone.replace(/\D/g, ""),
       birthdate: `${form.value.birthdate.year}-${form.value.birthdate.month}-${form.value.birthdate.day}`,
       gender: form.value.gender,
     },
   });
+};
+const phone_format = () => {
+  let x: any = form.value.phone
+    .replace(/\D/g, "")
+    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+  form.value.phone = !x[2]
+    ? x[1]
+    : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
 </script>
