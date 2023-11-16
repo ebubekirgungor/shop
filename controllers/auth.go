@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"shop/config"
@@ -15,10 +16,27 @@ import (
 )
 
 type UserData struct {
-	ID        uint   `json:"id"`
-	Email     string `json:"email"`
-	FirstName string `json:"first_name"`
-	Password  string `json:"password"`
+	ID       uint   `json:"id"`
+	Password string `json:"password"`
+	Role     int    `json:"role"`
+}
+
+func validToken(t *jwt.Token, id string) bool {
+	n, err := strconv.Atoi(id)
+	if err != nil {
+		return false
+	}
+
+	claims := t.Claims.(jwt.MapClaims)
+	uid := int(claims["user_id"].(float64))
+
+	return uid == n
+}
+
+func isAdmin(id string) bool {
+	user := models.User{}
+	database.DB.Db.First(&user, id)
+	return user.Role != 0
 }
 
 func CheckPasswordHash(password, hash string) bool {
@@ -80,10 +98,9 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "login", "data": err})
 	} else {
 		userData = UserData{
-			ID:        userModel.ID,
-			Email:     userModel.Email,
-			FirstName: userModel.FirstName,
-			Password:  userModel.Password,
+			ID:       userModel.ID,
+			Role:     userModel.Role,
+			Password: userModel.Password,
 		}
 	}
 
@@ -94,7 +111,6 @@ func Login(c *fiber.Ctx) error {
 	token := jwt.New(jwt.SigningMethodHS256)
 
 	claims := token.Claims.(jwt.MapClaims)
-	claims["email"] = userData.Email
 	claims["user_id"] = userData.ID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 
@@ -104,9 +120,8 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": fiber.Map{
-		"id":         userData.ID,
-		"email":      userData.Email,
-		"first_name": userData.FirstName,
-		"token":      t,
+		"id":    userData.ID,
+		"token": t,
+		"role":  userData.Role,
 	}})
 }

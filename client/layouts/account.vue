@@ -22,12 +22,18 @@
           <div class="w-6 h-6 bg-[url(/icons/password.svg)]"></div>
           <span>Change Password</span>
         </NuxtLink>
+        <NuxtLink v-if="user.role != 0" :class="$route.path.endsWith('products') ? link + active : link" to="/admin/products">
+          <div class="w-6 h-6 bg-[url(/icons/product.svg)]"></div>
+          <span>Products</span>
+        </NuxtLink>
       </nav>
       <slot />
     </main>
   </NuxtLayout>
 </template>
 <script setup lang="ts">
+import { useUser } from "@/store/user";
+const { user } = useUser();
 const link = "transition duration-300 ease-in-out flex items-center gap-x-4 p-4 h-12 hover:bg-black/5 rounded-full ";
 const active = "bg-black/10 pointer-events-none font-medium";
 </script>

@@ -13,6 +13,7 @@ type User struct {
 	Phone     string  `json:"phone"`
 	BirthDate string  `gorm:"type:date;default:null" json:"birthdate"`
 	Gender    string  `gorm:"type:char(1)" json:"gender"`
+	Role      int     `gorm:"size:1;default:0" json:"role"`
 	Orders    []Order `json:"orders"`
 }
 

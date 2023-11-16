@@ -25,22 +25,22 @@
         >E-mail<input
           disabled
           :class="input + ' bg-gray-500/40 cursor-not-allowed'"
-          :placeholder="(user.email as any)"
+          v-model="form.email"
           type="text"
       /></label>
       <label :class="label">
         Birthdate
         <div class="flex gap-x-[7%]">
           <select :class="input + ' w-full'" v-model="form.birthdate.day">
-            <option value="0">Day</option>
+            <option value="">Day</option>
             <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + ' w-full'" v-model="form.birthdate.month">
-            <option value="0">Month</option>
+            <option value="">Month</option>
             <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + ' w-full'" v-model="form.birthdate.year">
-            <option value="0">Year</option>
+            <option value="">Year</option>
             <option
               v-for="i in Array.from(
                 { length: new Date().getFullYear() - 1919 },
@@ -140,13 +140,14 @@ definePageMeta({
 });
 const fetch_complete = ref(false);
 const form = ref({
+  email: "",
   first_name: "",
   last_name: "",
   phone: "",
   birthdate: {
-    day: "0",
-    month: "0",
-    year: "0",
+    day: "",
+    month: "",
+    year: "",
   },
   gender: "",
 });
@@ -172,11 +173,10 @@ const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
 const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 onMounted(() => {
   nextTick(async () => {
-    const { data } = await useFetch<any>("/api/users", {
+    const { data } = await useFetch<any>(`/api/users/${user.id}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
-      query: { email: user.email },
     });
     form.value = { ...data.value };
     const birthdate = data!.value!.birthdate.slice(0, 10);
@@ -194,12 +194,11 @@ onMounted(() => {
   });
 });
 const update = async () => {
-  await useFetch("/api/users", {
+  await useFetch(`/api/users/${user.id}`, {
     method: "patch",
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
-    query: { email: user.email },
     body: {
       first_name: form.value.first_name,
       last_name: form.value.last_name,

@@ -28,6 +28,7 @@
               :type="eye ? 'text' : 'password'"
             />
             <button
+              v-if="form.password != ''"
               @click="eye = !eye"
               type="button"
               :class="

@@ -3,9 +3,8 @@ export const useUser = defineStore("user", {
   state: () => ({
     user: {
       id: null,
-      email: null,
-      name: null,
       token: null,
+      role: null,
     },
   }),
   persist: true,

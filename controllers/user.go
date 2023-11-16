@@ -3,7 +3,6 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -15,15 +14,7 @@ func hashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func validToken(t *jwt.Token, id int) bool {
-	n := id
-	claims := t.Claims.(jwt.MapClaims)
-	uid := int(claims["user_id"].(float64))
-
-	return uid == n
-}
-
-func validUser(id int, p string) bool {
+func validUser(id string, p string) bool {
 	user := models.User{}
 	database.DB.Db.First(&user, id)
 	if user.Email == "" {
@@ -37,12 +28,12 @@ func validUser(id int, p string) bool {
 
 func User(c *fiber.Ctx) error {
 	user := models.User{}
-	database.DB.Db.Preload("Orders").First(&user, "email = ?", c.Query("email"))
+	database.DB.Db.Preload("Orders").First(&user, c.Params("id"))
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
 
-	id := int(user.ID)
+	id := c.Params("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -92,9 +83,9 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	user := new(models.User)
-	database.DB.Db.First(&user, "email = ?", c.Query("email"))
+	database.DB.Db.First(&user, c.Params("id"))
 
-	id := int(user.ID)
+	id := c.Params("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -121,11 +112,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
 
-	id, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
-	}
-
+	id := c.Params("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
