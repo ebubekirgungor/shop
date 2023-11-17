@@ -62,9 +62,10 @@
             :class="input"
             v-model="form.phone"
             name="phone"
-            minlength="10"
-            maxlength="10"
+            minlength="14"
+            maxlength="14"
             type="tel"
+            @input="phone_format"
             required
           />
         </div>
@@ -221,7 +222,7 @@ const register = async () => {
       email: form.value.email,
       first_name: form.value.first_name,
       last_name: form.value.last_name,
-      phone: form.value.phone,
+      phone: form.value.phone.replace(/\D/g, ""),
       birthdate: `${form.value.birthdate.year}-${form.value.birthdate.month}-${form.value.birthdate.day}`,
       gender: form.value.gender,
       password: form.value.password,
@@ -230,5 +231,13 @@ const register = async () => {
   if ((response.value as any).status == "success") {
     navigateTo("/login");
   } else register_error.value = (response.value as any).message as string;
+};
+const phone_format = () => {
+  let x: any = form.value.phone
+    .replace(/\D/g, "")
+    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+  form.value.phone = !x[2]
+    ? x[1]
+    : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
 </script>

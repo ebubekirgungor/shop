@@ -11,7 +11,7 @@
       <div
         class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
       >
-        <div class="flex items-center group h-16">
+        <div :class="'flex flex-col group items-center h-16 ' + (user.token ? 'mt-10' : 'mt-6')">
           <NuxtLink
             :to="user.token ? '/account/orders' : '/login'"
             :class="button + (user.token ? '' : ' sm:hover:-translate-y-0.5')"
@@ -23,13 +23,20 @@
           </NuxtLink>
           <div
             v-if="user.token"
-            @click="
-              userstate.$reset();
-              navigateTo('/');
-            "
-            class="cursor-pointer flex justify-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 absolute w-[100px] h-12 invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl mt-20 group-hover:mt-24 -ml-8 sm:ml-0 p-3"
+            class="flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl  group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
           >
-            Logout
+            <NuxtLink v-if="user.role != 0" to="/admin" :class="menu_item"
+              >Admin</NuxtLink
+            >
+            <button
+              @click="
+                userstate.$reset();
+                navigateTo('/');
+              "
+              :class="menu_item"
+            >
+              Logout
+            </button>
           </div>
         </div>
         <button :class="button + ' sm:hover:-translate-y-0.5'">
@@ -52,6 +59,7 @@ const userstate = useUser();
 const { user } = storeToRefs(userstate);
 const button =
   "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent";
+const menu_item = "flex justify-center items-center w-full h-8";
 </script>
 <style>
 * {
