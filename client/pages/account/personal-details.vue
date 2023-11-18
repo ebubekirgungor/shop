@@ -25,7 +25,7 @@
         >E-mail<input
           disabled
           :class="input + ' bg-gray-500/40 cursor-not-allowed'"
-          v-model="form.email"
+          :placeholder="form.email"
           type="text"
       /></label>
       <label :class="label">

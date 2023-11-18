@@ -41,6 +41,7 @@ func User(c *fiber.Ctx) error {
 	}
 
 	return c.Status(200).JSON(fiber.Map{
+		"email":      user.Email,
 		"first_name": user.FirstName,
 		"last_name":  user.LastName,
 		"phone":      user.Phone,

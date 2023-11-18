@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   else if (user.token && (to.path === "/login" || to.path === "/register")) {
     return navigateTo("/");
   }
-  else if (to.path.startsWith("/admin") && user.role == 0) {
+  /*else if (to.path.startsWith("/admin") && user.role == 0) {
     return navigateTo("/");
-  }
+  }*/
 });
