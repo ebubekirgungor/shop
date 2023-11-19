@@ -1,5 +1,17 @@
 <template>
   <main class="flex flex-col gap-y-4">
+    <transition name="background" mode="out-in">
+      <div
+        v-if="category_dialog"
+        class="flex justify-center items-center bg-black/40 inset-x-0 inset-y-0 w-full h-full fixed"
+      >
+        <transition name="modal" mode="out-in" appear>
+          <div class="bg-white -mt-48 w-[25vw] h-[25vh] rounded-xl">
+            <h1>test</h1>
+          </div>
+        </transition>
+      </div>
+    </transition>
     <div
       class="flex items-center gap-x-4 p-6 text-xl h-20 bg-white rounded-xl shadow-md"
     >
@@ -16,19 +28,23 @@
             <option value="">Select category</option>
             <option v-for="c in categories" :value="c.id">{{ c.title }}</option>
           </select>
-          <button :class="button">Add New</button>
+          <button @click="category_dialog = true" :class="button">
+            Add New
+          </button>
         </div>
       </label>
       <label :class="label"
         >List Price<input
           :class="input"
           type="number"
+          min="1"
           v-model="form.list_price"
       /></label>
       <label :class="label"
         >Stock Quantity<input
           :class="input"
           type="number"
+          min="0"
           v-model="form.stock_quantity"
       /></label>
       <button
@@ -50,11 +66,12 @@ definePageMeta({
   layout: "admin",
 });
 const categories = ref<any>([]);
+const category_dialog = ref(false);
 const form = ref({
   title: "",
   category_id: "",
-  list_price: 0,
-  stock_quantity: 0,
+  list_price: null,
+  stock_quantity: null,
 });
 const form_div =
   "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
@@ -75,7 +92,7 @@ const create = async () => {
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
-    query: { id: 1 },
+    query: { id: user.id },
     body: {
       title: form.value.title,
       category_id: form.value.category_id,

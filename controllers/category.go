@@ -9,27 +9,14 @@ import (
 
 func AllCategories(c *fiber.Ctx) error {
 	categories := []models.Category{}
-	database.DB.Db.Preload("Products").Find(&categories)
-
-	var all_categories []fiber.Map
-	for _, category := range categories {
-		all_categories = append(all_categories, fiber.Map{
-			"id":       category.ID,
-			"title":    category.Title,
-			"products": category.Products,
-		})
-	}
-	return c.Status(200).JSON(all_categories)
+	database.DB.Db.Find(&categories)
+	return c.Status(200).JSON(categories)
 }
 
 func Category(c *fiber.Ctx) error {
 	category := models.Category{}
-	database.DB.Db.Preload("Products").First(&category, c.Params("id"))
-	return c.Status(200).JSON(fiber.Map{
-		"id":       category.ID,
-		"title":    category.Title,
-		"products": category.Products,
-	})
+	database.DB.Db.First(&category, c.Params("id"))
+	return c.Status(200).JSON(category)
 }
 
 func AddCategory(c *fiber.Ctx) error {
