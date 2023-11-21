@@ -153,8 +153,6 @@ const create_category = async () => {
       title: category_new.value,
     },
   });
-  console.log((data as any).value);
-  console.log(categories.value);
   if ((data as any).value.title) {
     category_dialog.value = false;
     categories.value.push((data as any).value);
