@@ -1,12 +1,12 @@
 <template>
   <main class="flex flex-col gap-y-4">
     <div
-      class="flex items-center gap-x-4 p-6 text-xl h-20 bg-white rounded-xl shadow-md"
+      class="flex items-center gap-x-4 p-6 text-xl bg-white rounded-xl shadow-md"
     >
       Products
       <NuxtLink
         to="/admin/products/add"
-        class="flex justify-center items-center transition duration-300 ease-in-out w-16 h-8 border border-black rounded-full hover:bg-black/10 text-sm"
+        class="flex justify-center items-center transition duration-300 ease-in-out w-16 h-7 border border-black rounded-full hover:bg-black/10 text-sm"
       >
         Add
       </NuxtLink>

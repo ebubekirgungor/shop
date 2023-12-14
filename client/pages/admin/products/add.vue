@@ -26,7 +26,7 @@
             <input
               :class="input"
               type="text"
-              placeholder="Category title"
+              placeholder="Title"
               v-model="category_new"
               required
             />
@@ -42,7 +42,7 @@
       </div>
     </transition>
     <div
-      class="flex items-center gap-x-4 p-6 text-xl h-20 bg-white rounded-xl shadow-md"
+      class="flex items-center gap-x-4 p-6 text-xl bg-white rounded-xl shadow-md"
     >
       Products
     </div>
@@ -80,6 +80,32 @@
           min="0"
           v-model="form.stock_quantity"
       /></label>
+      <div :class="label + ' col-span-2'">
+        <label>Images</label>
+        <div class="grid grid-cols-auto gap-4">
+          <div v-for="file in files" class="transition duration-200 ease-in-out w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover hover:brightness-75" :style="'background-image: url(' + file + ');'">
+          </div>
+          <label class="w-52">
+            <div
+              class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 w-52 h-32 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
+            >
+              <input
+                @change="upload"
+                class="hidden"
+                type="file"
+                accept=".jpg,.jpeg,.png"
+                multiple
+              />
+              <div
+                class="w-12 h-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
+              ></div>
+              <h1>
+                Click to upload
+              </h1>
+            </div>
+          </label>
+        </div>
+      </div>
       <button
         :disabled="
           form.title == '' ||
@@ -112,6 +138,12 @@ const form = ref({
   list_price: null,
   stock_quantity: null,
 });
+const files = ref<any>([]);
+const upload = (event: any) => {
+  Array.prototype.slice.call(event.target.files).forEach((file: any) => {
+    files.value.push(URL.createObjectURL(file));
+  });
+};
 const form_div =
   "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
 const input =

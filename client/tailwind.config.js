@@ -12,6 +12,9 @@ export default {
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
       },
+      gridTemplateColumns: {
+        auto: "repeat(auto-fill, minmax(200px, 1fr))",
+      },
     },
   },
   plugins: [require("@tailwindcss/forms")],

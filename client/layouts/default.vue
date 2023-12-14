@@ -11,7 +11,7 @@
       <div
         class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
       >
-        <div :class="'flex flex-col group items-center h-16 ' + (user.token ? 'mt-10' : 'mt-6')">
+        <div :class="'flex flex-col group items-center w-10 sm:w-20 h-16 ' + (user.token ? 'mt-10' : 'mt-6')">
           <NuxtLink
             :to="user.token ? '/account/orders' : '/login'"
             :class="button + (user.token ? '' : ' sm:hover:-translate-y-0.5')"
