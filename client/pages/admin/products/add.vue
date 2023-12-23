@@ -83,8 +83,11 @@
       <div :class="label + ' col-span-2'">
         <label>Images</label>
         <div class="grid grid-cols-auto gap-4">
-          <div v-for="file in files" class="transition duration-200 ease-in-out w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover hover:brightness-75" :style="'background-image: url(' + file + ');'">
-          </div>
+          <div
+            v-for="image in images"
+            class="transition duration-200 ease-in-out w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover hover:brightness-75"
+            :style="'background-image: url(' + image + ');'"
+          ></div>
           <label class="w-52">
             <div
               class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 w-52 h-32 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
@@ -99,9 +102,7 @@
               <div
                 class="w-12 h-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
               ></div>
-              <h1>
-                Click to upload
-              </h1>
+              <h1>Click to upload</h1>
             </div>
           </label>
         </div>
@@ -138,10 +139,17 @@ const form = ref({
   list_price: null,
   stock_quantity: null,
 });
-const files = ref<any>([]);
+const form_data = new FormData();
+const images = ref<any>([]);
+const image_filenames = ref<any>([]);
 const upload = (event: any) => {
   Array.prototype.slice.call(event.target.files).forEach((file: any) => {
-    files.value.push(URL.createObjectURL(file));
+    images.value.push(URL.createObjectURL(file));
+    form_data.append("file", file);
+    image_filenames.value.push({
+      order: image_filenames.value.length + 1,
+      name: file.name,
+    });
   });
 };
 const form_div =
@@ -160,18 +168,23 @@ onMounted(() => {
   });
 });
 const create = async () => {
+  const form_values = <any>{
+    title: form.value.title,
+    category_id: form.value.category_id,
+    list_price: form.value.list_price,
+    stock_quantity: form.value.stock_quantity,
+    images: JSON.stringify(image_filenames.value),
+  };
+  for (const item in form_values) {
+    form_data.append(item, form_values[item]);
+  }
   await useFetch("/api/products", {
     method: "post",
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
     query: { id: user.id },
-    body: {
-      title: form.value.title,
-      category_id: form.value.category_id,
-      list_price: form.value.list_price,
-      stock_quantity: form.value.stock_quantity,
-    },
+    body: form_data,
   });
 };
 const create_category = async () => {

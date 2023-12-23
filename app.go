@@ -17,6 +17,8 @@ func main() {
 
 	router.SetupRoutes(app)
 
+	app.Static("/images", "./images")
+
 	app.Use(func(c *fiber.Ctx) error {
 		return c.SendStatus(404)
 	})

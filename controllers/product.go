@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -41,9 +43,26 @@ func Product(c *fiber.Ctx) error {
 
 func AddProduct(c *fiber.Ctx) error {
 	product := new(models.Product)
-	if err := c.BodyParser(product); err != nil {
+
+	if form, err := c.MultipartForm(); err == nil {
+		files := form.File["file"]
+		for _, file := range files {
+			//fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
+			if err := c.SaveFile(file, fmt.Sprintf("./images/products/%s", file.Filename)); err != nil {
+				return err
+			}
+		}
+	}
+
+	product.Title = c.FormValue("title")
+	product.CategoryId, _ = strconv.Atoi(c.FormValue("category_id"))
+	listprice, err := strconv.ParseFloat(c.FormValue("list_price"), 32)
+	if err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
+	product.ListPrice = float32(listprice)
+	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
+	product.Images = c.FormValue("images")
 
 	id := c.Query("id")
 	token := c.Locals("user").(*jwt.Token)

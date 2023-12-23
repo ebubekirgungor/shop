@@ -14,7 +14,7 @@ export default defineNuxtConfig({
   },
   googleFonts: {
     families: {
-      Poppins: [400,500],
+      Poppins: [400, 500],
     }
   },
   modules: ["@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt", "@nuxtjs/google-fonts"],
