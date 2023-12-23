@@ -34,3 +34,6 @@ client/node_modules
 
 # nginx
 nginx.bat
+
+# Static
+images/
