@@ -69,6 +69,7 @@
       <label :class="label"
         >List Price<input
           :class="input"
+          step="any"
           type="number"
           min="1"
           v-model="form.list_price"
@@ -85,7 +86,7 @@
         <div class="grid grid-cols-auto gap-4">
           <div
             v-for="image in images"
-            class="transition duration-200 ease-in-out w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover hover:brightness-75"
+            class="transition duration-200 ease-in-out w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover hover:brightness-90"
             :style="'background-image: url(' + image + ');'"
           ></div>
           <label class="w-52">
@@ -125,7 +126,9 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useUser } from "@/store/user";
+import { useToast } from "vue-toastification";
 const { user } = useUser();
+const toast = useToast();
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -178,7 +181,7 @@ const create = async () => {
   for (const item in form_values) {
     form_data.append(item, form_values[item]);
   }
-  await useFetch("/api/products", {
+  const { data } = await useFetch("/api/products", {
     method: "post",
     headers: {
       Authorization: `Bearer ${user.token}`,
@@ -186,6 +189,16 @@ const create = async () => {
     query: { id: user.id },
     body: form_data,
   });
+  if ((data as any).value.ID) {
+    toast.success("Product created", {
+      bodyClassName: "toast-font",
+    });
+    navigateTo("/admin/products");
+  } else {
+    toast.warning("Error", {
+      bodyClassName: "toast-font",
+    });
+  }
 };
 const create_category = async () => {
   const { data } = await useFetch("/api/categories", {

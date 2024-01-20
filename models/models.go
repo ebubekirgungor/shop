@@ -6,15 +6,24 @@ import (
 
 type User struct {
 	gorm.Model
-	Email     string  `gorm:"uniqueIndex;not null" json:"email"`
-	Password  string  `gorm:"not null"`
-	FirstName string  `gorm:"not null" json:"first_name"`
-	LastName  string  `gorm:"not null" json:"last_name"`
-	Phone     string  `json:"phone"`
-	BirthDate string  `gorm:"type:date;default:null" json:"birthdate"`
-	Gender    string  `gorm:"type:char(1)" json:"gender"`
-	Role      int     `gorm:"size:1;default:0" json:"role"`
-	Orders    []Order `json:"orders"`
+	Email     string    `gorm:"uniqueIndex;not null" json:"email"`
+	Password  string    `gorm:"not null"`
+	FirstName string    `gorm:"not null" json:"first_name"`
+	LastName  string    `gorm:"not null" json:"last_name"`
+	Phone     string    `json:"phone"`
+	BirthDate string    `gorm:"type:date;default:null" json:"birthdate"`
+	Gender    string    `gorm:"type:char(1)" json:"gender"`
+	Role      int       `gorm:"size:1;default:0" json:"role"`
+	Addresses []Address `json:"addresses"`
+	Orders    []Order   `json:"orders"`
+}
+
+type Address struct {
+	gorm.Model
+	Title   string `gorm:"not null" json:"title"`
+	Address string `gorm:"not null" json:"address"`
+	UserId  int    `gorm:"not null" json:"user_id"`
+	User    User
 }
 
 type Category struct {

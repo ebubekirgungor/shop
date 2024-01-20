@@ -5,6 +5,7 @@ import (
 	"shop/database"
 	"shop/models"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -47,9 +48,15 @@ func AddProduct(c *fiber.Ctx) error {
 	if form, err := c.MultipartForm(); err == nil {
 		files := form.File["file"]
 		for _, file := range files {
-			//fmt.Println(file.Filename, file.Size, file.Header["Content-Type"][0])
-			if err := c.SaveFile(file, fmt.Sprintf("./images/products/%s", file.Filename)); err != nil {
-				return err
+			if strings.HasPrefix(file.Header["Content-Type"][0], "image/") &&
+				(strings.HasSuffix(file.Filename, ".jpg") ||
+					strings.HasSuffix(file.Filename, ".jpeg") ||
+					strings.HasSuffix(file.Filename, ".png")) {
+				if err := c.SaveFile(file, fmt.Sprintf("./images/products/%s", file.Filename)); err != nil {
+					return err
+				}
+			} else {
+				return c.Status(500).JSON(fiber.Map{"error": "Invalid file format"})
 			}
 		}
 	}

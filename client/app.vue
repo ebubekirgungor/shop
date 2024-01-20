@@ -21,4 +21,7 @@
 .background-leave-to {
   opacity: 0;
 }
+.Vue-Toastification__toast-body.toast-font {
+  font-family: "Poppins";
+}
 </style>

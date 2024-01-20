@@ -17,6 +17,7 @@
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.7.3",
     "postcss": "^8.4.30",
+    "sass": "^1.69.5",
     "tailwindcss": "^3.3.3"
   },
   "overrides": {
@@ -24,6 +25,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7"
+    "pinia": "^2.1.7",
+    "vue-toastification": "^2.0.0-rc.5"
   }
 }
