@@ -59,7 +59,6 @@ func AddUser(c *fiber.Ctx) error {
 	hash, err := hashPassword(user.Password)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "hash"})
-
 	}
 
 	user.Password = hash
@@ -98,6 +97,41 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.Phone = uui.Phone
 	user.BirthDate = uui.BirthDate
 	user.Gender = uui.Gender
+	database.DB.Db.Save(&user)
+
+	return c.JSON(user)
+}
+
+func UpdatePassword(c *fiber.Ctx) error {
+	type UpdatePasswordInput struct {
+		OldPassword string `json:"old_password"`
+		NewPassword string `json:"new_password"`
+	}
+	var upi UpdatePasswordInput
+	if err := c.BodyParser(&upi); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
+	}
+
+	user := new(models.User)
+	database.DB.Db.First(&user, c.Params("id"))
+
+	id := c.Params("id")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, id) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(upi.OldPassword)); err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid old password"})
+	}
+
+	new_hash, err := hashPassword(upi.NewPassword)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "hash"})
+	}
+
+	user.Password = new_hash
 	database.DB.Db.Save(&user)
 
 	return c.JSON(user)

@@ -18,6 +18,7 @@ func SetupRoutes(app *fiber.App) {
 	users.Get("/:id", middleware.Protected(), controllers.User)
 	users.Post("/", controllers.AddUser)
 	users.Patch("/:id", middleware.Protected(), controllers.UpdateUser)
+	users.Patch("/password/:id", middleware.Protected(), controllers.UpdatePassword)
 	users.Delete("/:id", middleware.Protected(), controllers.DeleteUser)
 
 	addresses := api.Group("/addresses")
