@@ -7,11 +7,14 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
 func Addresses(c *fiber.Ctx) error {
 	user := models.User{}
-	database.DB.Db.Preload("Addresses").First(&user, c.Params("id"))
+	database.DB.Db.Preload("Addresses", func(db *gorm.DB) *gorm.DB {
+		return db.Order("addresses.created_at DESC")
+	}).First(&user, c.Params("id"))
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}

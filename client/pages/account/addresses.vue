@@ -99,19 +99,19 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] h-auto rounded-xl z-3"
+          class="flex flex-col p-2 bg-white -mt-48 w-[12vw] h-auto rounded-xl z-3"
         >
           <button
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out w-8 h-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl grow">Delete address</h1>
+          <h1 class="text-center text-xl">Delete address</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_address_id" required />
-            <div>Are you sure?</div>
+            <div class="text-center">Are you sure?</div>
             <button type="submit" :class="button">Delete</button>
           </form>
         </div>
@@ -123,12 +123,25 @@
       Addresses
     </div>
     <div
-      class="flex justify-center items-center p-6 w-[50vw] h-full bg-white rounded-xl shadow-md"
+      class="flex justify-center items-center p-6 w-[50vw] h-full min-h-[18rem] bg-white rounded-xl shadow-md"
     >
       <div v-if="fetch_complete" class="w-full grid grid-cols-auto_box gap-6">
-        <div v-for="address in addresses" :class="box + ' bg-gray-50'">
+        <div
+          @click="add_dialog = true"
+          :class="
+            box +
+            ' transition duration-200 ease-in-out flex items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300'
+          "
+        >
+          <div
+            class="w-24 h-24 bg-[url(/icons/add.svg)] bg-no-repeat bg-cover"
+          ></div>
+        </div>
+        <div v-for="address in addresses" :class="box + ' bg-gray-50 gap-y-2'">
           <div class="flex">
-            <div class="grow">{{ address.title }}</div>
+            <div class="grow w-0 break-words font-medium">
+              {{ address.title }}
+            </div>
             <button
               @click="
                 open_edit_dialog(address.ID, address.title, address.address)
@@ -141,17 +154,6 @@
             ></button>
           </div>
           <div class="text-sm select-text">{{ address.address }}</div>
-        </div>
-        <div
-          @click="add_dialog = true"
-          :class="
-            box +
-            ' transition duration-200 ease-in-out flex items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300'
-          "
-        >
-          <div
-            class="w-24 h-24 bg-[url(/icons/add.svg)] bg-no-repeat bg-cover"
-          ></div>
         </div>
       </div>
       <div
@@ -221,7 +223,7 @@ const create = async () => {
   });
   if ((data as any).value.title) {
     add_dialog.value = false;
-    addresses.value.push((data as any).value);
+    addresses.value.unshift((data as any).value);
     new_address.value = {
       title: "",
       address: "",
