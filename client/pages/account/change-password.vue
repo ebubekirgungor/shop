@@ -43,7 +43,9 @@
 </template>
 <script setup lang="ts">
 import { useUser } from "@/store/user";
+import { useToast } from "vue-toastification";
 const { user } = useUser();
+const toast = useToast();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -62,6 +64,17 @@ const update = async () => {
     body: {
       old_password: form.value.old_password,
       new_password: form.value.new_password,
+    },
+    onResponse({ response }) {
+      if (response._data.ID) {
+        toast.success("Password changed", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
     },
   });
 };

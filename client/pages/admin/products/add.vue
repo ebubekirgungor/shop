@@ -155,19 +155,13 @@ const upload = (event: any) => {
     });
   });
 };
-const form_div =
-  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
-const input =
-  "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
-const add_category_button =
-  "transition duration-300 ease-in-out w-32 rounded-md bg-black/5 text-sm hover:bg-black/10";
-const create_button =
-  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const label = "flex flex-col gap-y-2";
 onMounted(() => {
   nextTick(async () => {
-    const { data } = await useFetch<any>("/api/categories");
-    categories.value = data.value;
+    await useFetch<any>("/api/categories", {
+      onResponse({ response }) {
+        categories.value = response._data;
+      },
+    });
   });
 });
 const create = async () => {
@@ -181,27 +175,28 @@ const create = async () => {
   for (const item in form_values) {
     form_data.append(item, form_values[item]);
   }
-  const { data } = await useFetch("/api/products", {
+  await useFetch("/api/products", {
     method: "post",
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
     query: { id: user.id },
     body: form_data,
+    onResponse({ response }) {
+      if (response._data.ID) {
+        toast.success("Product created", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
-  if ((data as any).value.ID) {
-    toast.success("Product created", {
-      bodyClassName: "toast-font",
-    });
-    navigateTo("/admin/products");
-  } else {
-    toast.warning("Error", {
-      bodyClassName: "toast-font",
-    });
-  }
 };
 const create_category = async () => {
-  const { data } = await useFetch("/api/categories", {
+  await useFetch("/api/categories", {
     method: "post",
     headers: {
       Authorization: `Bearer ${user.token}`,
@@ -210,10 +205,28 @@ const create_category = async () => {
     body: {
       title: category_new.value,
     },
+    onResponse({ response }) {
+      if (response._data.title) {
+        category_dialog.value = false;
+        categories.value.push(response._data);
+        toast.success("Category created", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
-  if ((data as any).value.title) {
-    category_dialog.value = false;
-    categories.value.push((data as any).value);
-  }
 };
+const form_div =
+  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
+const input =
+  "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
+const add_category_button =
+  "transition duration-300 ease-in-out w-32 rounded-md bg-black/5 text-sm hover:bg-black/10";
+const create_button =
+  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
+const label = "flex flex-col gap-y-2";
 </script>

@@ -128,7 +128,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 
 	new_hash, err := hashPassword(upi.NewPassword)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "hash"})
+		return c.Status(500).JSON(fiber.Map{"error": "hash"})
 	}
 
 	user.Password = new_hash

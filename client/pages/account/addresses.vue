@@ -166,7 +166,9 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useUser } from "@/store/user";
+import { useToast } from "vue-toastification";
 const { user } = useUser();
+const toast = useToast();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -200,17 +202,19 @@ const edit_address = ref({
 const delete_address_id = ref("");
 onMounted(() => {
   nextTick(async () => {
-    const { data } = await useFetch<any>(`/api/addresses/${user.id}`, {
+    await useFetch<any>(`/api/addresses/${user.id}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
+      onResponse({ response }) {
+        addresses.value = response._data.addresses;
+        fetch_complete.value = true;
+      },
     });
-    addresses.value = data.value.addresses;
-    fetch_complete.value = true;
   });
 });
 const create = async () => {
-  const { data } = await useFetch("/api/addresses", {
+  await useFetch("/api/addresses", {
     method: "post",
     headers: {
       Authorization: `Bearer ${user.token}`,
@@ -220,18 +224,27 @@ const create = async () => {
       title: new_address.value.title,
       address: new_address.value.address,
     },
+    onResponse({ response }) {
+      if (response._data.title) {
+        add_dialog.value = false;
+        addresses.value.unshift(response._data);
+        new_address.value = {
+          title: "",
+          address: "",
+        };
+        toast.success("Address created", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
-  if ((data as any).value.title) {
-    add_dialog.value = false;
-    addresses.value.unshift((data as any).value);
-    new_address.value = {
-      title: "",
-      address: "",
-    };
-  }
 };
 const update = async () => {
-  const { data } = await useFetch(`/api/addresses/${edit_address.value.ID}`, {
+  await useFetch(`/api/addresses/${edit_address.value.ID}`, {
     method: "patch",
     headers: {
       Authorization: `Bearer ${user.token}`,
@@ -241,39 +254,57 @@ const update = async () => {
       title: edit_address.value.title,
       address: edit_address.value.address,
     },
+    onResponse({ response }) {
+      if (response._data.title) {
+        addresses.value[
+          addresses.value
+            .map((address: any) => address.ID)
+            .indexOf(edit_address.value.ID)
+        ] = edit_address.value;
+        edit_dialog.value = false;
+        edit_address.value = {
+          ID: null,
+          title: "",
+          address: "",
+        };
+        toast.success("Address updated", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
-  if ((data as any).value.title) {
-    addresses.value[
-      addresses.value
-        .map((address: any) => address.ID)
-        .indexOf(edit_address.value.ID)
-    ] = edit_address.value;
-    edit_dialog.value = false;
-    edit_address.value = {
-      ID: null,
-      title: "",
-      address: "",
-    };
-  }
 };
 const remove = async () => {
-  const { data } = await useFetch(`/api/addresses/${delete_address_id.value}`, {
+  await useFetch(`/api/addresses/${delete_address_id.value}`, {
     method: "delete",
     headers: {
       Authorization: `Bearer ${user.token}`,
     },
     query: { userid: user.id },
+    onResponse({ response }) {
+      if (response._data) {
+        addresses.value.splice(
+          addresses.value
+            .map((address: any) => address.ID)
+            .indexOf(delete_address_id.value),
+          1
+        );
+        delete_dialog.value = false;
+        delete_address_id.value = "";
+        toast.success("Address removed", {
+          bodyClassName: "toast-font",
+        });
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
-  if ((data as any).value) {
-    addresses.value.splice(
-      addresses.value
-        .map((address: any) => address.ID)
-        .indexOf(delete_address_id.value),
-      1
-    );
-    delete_dialog.value = false;
-    delete_address_id.value = "";
-  }
 };
 const box = "flex flex-col p-4 shadow-md text-xl w-60 h-60 rounded-xl";
 const input =

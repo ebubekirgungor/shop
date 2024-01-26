@@ -31,15 +31,15 @@
       <label :class="label">
         Birthdate
         <div class="flex gap-x-[7%]">
-          <select :class="input + ' w-full'" v-model="form.birthdate.day">
+          <select :class="input + input_select" v-model="form.birthdate.day">
             <option value="">Day</option>
             <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
           </select>
-          <select :class="input + ' w-full'" v-model="form.birthdate.month">
+          <select :class="input + input_select" v-model="form.birthdate.month">
             <option value="">Month</option>
             <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
           </select>
-          <select :class="input + ' w-full'" v-model="form.birthdate.year">
+          <select :class="input + input_select" v-model="form.birthdate.year">
             <option value="">Year</option>
             <option
               v-for="i in Array.from(
@@ -133,7 +133,9 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useUser } from "@/store/user";
+import { useToast } from "vue-toastification";
 const { user } = useUser();
+const toast = useToast();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -162,35 +164,30 @@ const form_old = ref({
   },
   gender: "",
 });
-
-const form_div =
-  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
-const input =
-  "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
-const label = "flex flex-col gap-y-2";
-const radio = "transition duration-200 ease-in-out cursor-pointer focus:ring-0";
-const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
-const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
+const data_to_form = async (data: any) => {
+  form.value = { ...data };
+  const birthdate = data.birthdate.slice(0, 10);
+  form.value.birthdate = {
+    day: birthdate == "" ? "0" : new Date(birthdate).getDate().toString(),
+    month:
+      birthdate == "" ? "0" : (new Date(birthdate).getMonth() + 1).toString(),
+    year: birthdate == "" ? "0" : new Date(birthdate).getFullYear().toString(),
+  };
+  phone_format();
+  form_old.value = { ...form.value };
+  form_old.value.birthdate = { ...form.value.birthdate };
+};
 onMounted(() => {
   nextTick(async () => {
-    const { data } = await useFetch<any>(`/api/users/${user.id}`, {
+    await useFetch<any>(`/api/users/${user.id}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,
       },
+      onResponse({ response }) {
+        data_to_form(response._data);
+        fetch_complete.value = true;
+      },
     });
-    form.value = { ...data.value };
-    const birthdate = data!.value!.birthdate.slice(0, 10);
-    form.value.birthdate = {
-      day: birthdate == "" ? "0" : new Date(birthdate).getDate().toString(),
-      month:
-        birthdate == "" ? "0" : (new Date(birthdate).getMonth() + 1).toString(),
-      year:
-        birthdate == "" ? "0" : new Date(birthdate).getFullYear().toString(),
-    };
-    phone_format();
-    form_old.value = { ...form.value };
-    form_old.value.birthdate = { ...form.value.birthdate };
-    fetch_complete.value = true;
   });
 });
 const update = async () => {
@@ -206,6 +203,18 @@ const update = async () => {
       birthdate: `${form.value.birthdate.year}-${form.value.birthdate.month}-${form.value.birthdate.day}`,
       gender: form.value.gender,
     },
+    onResponse({ response }) {
+      if (response._data.ID) {
+        toast.success("User updated", {
+          bodyClassName: "toast-font",
+        });
+        data_to_form(response._data);
+      } else {
+        toast.warning(response._data.error, {
+          bodyClassName: "toast-font",
+        });
+      }
+    },
   });
 };
 const phone_format = () => {
@@ -216,4 +225,13 @@ const phone_format = () => {
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
+const form_div =
+  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
+const input =
+  "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
+const input_select = " w-full cursor-pointer";
+const label = "flex flex-col gap-y-2";
+const radio = "transition duration-200 ease-in-out cursor-pointer focus:ring-0";
+const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
+const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 </script>
