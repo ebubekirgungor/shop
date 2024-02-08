@@ -35,6 +35,7 @@ type Category struct {
 type Product struct {
 	gorm.Model
 	Title         string `gorm:"not null" json:"title"`
+	Url           string `gorm:"uniqueIndex;not null" json:"url"`
 	CategoryId    int    `gorm:"not null" json:"category_id"`
 	Category      Category
 	ListPrice     float32  `gorm:"not null" json:"list_price"`

@@ -12,7 +12,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
         >
           <button
             @click="add_dialog = false"
@@ -55,7 +55,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
         >
           <button
             @click="edit_dialog = false"
@@ -99,7 +99,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
       >
         <div
-          class="flex flex-col p-2 bg-white -mt-48 w-[12vw] h-auto rounded-xl z-3"
+          class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl z-3"
         >
           <button
             @click="delete_dialog = false"
@@ -207,8 +207,10 @@ onMounted(() => {
         Authorization: `Bearer ${user.token}`,
       },
       onResponse({ response }) {
-        addresses.value = response._data.addresses;
-        fetch_complete.value = true;
+        if (response._data.addresses) {
+          addresses.value = response._data.addresses;
+          fetch_complete.value = true;
+        }
       },
     });
   });

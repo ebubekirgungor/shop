@@ -12,7 +12,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-48 w-[28rem] h-auto rounded-xl z-3"
         >
           <button
             @click="category_dialog = false"
@@ -53,7 +53,10 @@
       <label :class="label"
         >Category
         <div class="flex gap-x-4">
-          <select :class="input" v-model="form.category_id">
+          <select
+            :class="input + ' w-full cursor-pointer'"
+            v-model="form.category_id"
+          >
             <option value="" selected>Select category</option>
             <option v-for="c in categories" :value="c.ID">{{ c.title }}</option>
           </select>
@@ -142,7 +145,7 @@ const form = ref({
   list_price: null,
   stock_quantity: null,
 });
-const form_data = new FormData();
+let form_data = new FormData();
 const images = ref<any>([]);
 const image_filenames = ref<any>([]);
 const upload = (event: any) => {
@@ -167,6 +170,7 @@ onMounted(() => {
 const create = async () => {
   const form_values = <any>{
     title: form.value.title,
+    url: form.value.title.toLowerCase().replaceAll(" ", "-"),
     category_id: form.value.category_id,
     list_price: form.value.list_price,
     stock_quantity: form.value.stock_quantity,
@@ -187,6 +191,7 @@ const create = async () => {
         toast.success("Product created", {
           bodyClassName: "toast-font",
         });
+        form_data = new FormData();
       } else {
         toast.warning(response._data.error, {
           bodyClassName: "toast-font",

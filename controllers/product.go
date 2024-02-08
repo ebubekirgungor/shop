@@ -20,22 +20,26 @@ func AllProducts(c *fiber.Ctx) error {
 		all_products = append(all_products, fiber.Map{
 			"id":             product.ID,
 			"title":          product.Title,
-			"category":       product.Category,
+			"url":            product.Url,
+			"category":       product.Category.Title,
 			"list_price":     product.ListPrice,
 			"stock_quantity": product.StockQuantity,
 			"orders":         product.Orders,
 		})
+	}
+	if all_products == nil {
+		return c.Status(200).JSON(products)
 	}
 	return c.Status(200).JSON(all_products)
 }
 
 func Product(c *fiber.Ctx) error {
 	product := models.Product{}
-	database.DB.Db.Preload("Category").Preload("Orders").First(&product, c.Params("id"))
+	database.DB.Db.Preload("Category").Preload("Orders").First(&product, c.Params("url"))
 	return c.Status(200).JSON(fiber.Map{
 		"id":             product.ID,
 		"title":          product.Title,
-		"category":       product.Category,
+		"category":       product.Category.Title,
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
 		"orders":         product.Orders,
@@ -43,6 +47,12 @@ func Product(c *fiber.Ctx) error {
 }
 
 func AddProduct(c *fiber.Ctx) error {
+	check_product := models.Product{}
+	database.DB.Db.First(&check_product, c.FormValue("url"))
+	if check_product.Title != "" {
+		return c.Status(500).JSON(fiber.Map{"error": "Product with given title is already exists"})
+	}
+
 	product := new(models.Product)
 
 	if form, err := c.MultipartForm(); err == nil {
@@ -62,10 +72,11 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 
 	product.Title = c.FormValue("title")
+	product.Url = c.FormValue("url")
 	product.CategoryId, _ = strconv.Atoi(c.FormValue("category_id"))
 	listprice, err := strconv.ParseFloat(c.FormValue("list_price"), 32)
 	if err != nil {
-		return c.Status(400).JSON(err.Error())
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid price value"})
 	}
 	product.ListPrice = float32(listprice)
 	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
@@ -88,7 +99,19 @@ func AddProduct(c *fiber.Ctx) error {
 }
 
 func DeleteProduct(c *fiber.Ctx) error {
-	product := []models.Product{}
+	product := models.Product{}
+
+	id := c.Query("id")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, c.Query("userid")) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	if !isAdmin(id) {
+		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
+	}
+
 	database.DB.Db.Where("id = ?", c.Params("id")).Delete(&product)
 
 	return c.Status(200).JSON("Product deleted")
