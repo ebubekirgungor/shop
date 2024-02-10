@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4 pb-8">
     <transition name="background" mode="out-in">
       <div
         v-if="category_dialog"
@@ -44,7 +44,7 @@
     <div
       class="flex items-center gap-x-4 p-6 text-xl bg-white rounded-xl shadow-md"
     >
-      Products
+      Add Product
     </div>
     <form @submit.prevent="create" :class="form_div">
       <label :class="label"

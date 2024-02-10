@@ -212,6 +212,12 @@ const delete_product_id = ref("");
 const delete_dialog = ref(false);
 const products = ref<any>([]);
 const filter = ref("");
+const current_page = ref(1);
+const items_per_page = ref(5);
+const items_per_page_options = [5, 10, 25, 50, 100];
+const sort_by_field = ref("");
+const sort_direction = ref(0);
+const arrow_active = ref("");
 onMounted(() => {
   nextTick(async () => {
     await useFetch<any>(`/api/products`, {
@@ -229,12 +235,6 @@ const filtered_products = computed(() => {
     product.title.toLowerCase().includes(filter.value.toLowerCase())
   );
 });
-const current_page = ref(1);
-const items_per_page = ref(5);
-const items_per_page_options = [5, 10, 25, 50, 100];
-const sort_by_field = ref("");
-const sort_direction = ref(0);
-const arrow_active = ref("");
 const total_pages = computed(() =>
   Math.ceil(filtered_products.value.length / items_per_page.value)
 );
@@ -296,7 +296,7 @@ const icon =
   "transition duration-300 ease-in-out w-9 h-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 ";
 const th_button = "flex gap-x-1 items-center h-12 cursor-pointer group";
 const th_icon =
-  "transition duration-300 ease-in-out w-6 h-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 ";
+  "transition duration-200 ease-in-out w-6 h-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 ";
 </script>
 <style>
 td {
