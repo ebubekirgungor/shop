@@ -16,7 +16,7 @@
             :to="user.token ? '/account/orders' : '/login'"
             :class="button + (user.token ? '' : ' sm:hover:-translate-y-0.5')"
           >
-            <div class="w-6 h-6 bg-[url(/icons/account.svg)]"></div>
+            <div class="size-6 bg-[url(/icons/account.svg)]"></div>
             <span class="mt-0.5 hidden sm:block">{{
               user.token ? "Account" : "Login"
             }}</span>
@@ -40,11 +40,11 @@
           </div>
         </div>
         <button :class="button + ' sm:hover:-translate-y-0.5'">
-          <div class="w-6 h-6 bg-[url(/icons/favorite.svg)]"></div>
+          <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
           <span class="mt-0.5 hidden sm:block">Favorites</span>
         </button>
         <button :class="button + ' sm:hover:-translate-y-0.5'">
-          <div class="w-6 h-6 bg-[url(/icons/cart.svg)]"></div>
+          <div class="size-6 bg-[url(/icons/cart.svg)]"></div>
           <span class="mt-0.5 hidden sm:block">Cart</span>
         </button>
       </div>

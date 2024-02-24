@@ -183,7 +183,7 @@ const form_step = "sm:mt-8 flex flex-col gap-y-6 w-[300px]";
 const form_field = "flex flex-col gap-y-1";
 const button =
   "sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const showpassword = "w-6 h-6 absolute ml-[265px] ";
+const showpassword = "size-6 absolute ml-[265px] ";
 const eye = ref(false);
 const input =
   "transition duration-200 ease-in-out w-full h-11 border-gray-300 bg-gray-50 rounded-md text-sm";

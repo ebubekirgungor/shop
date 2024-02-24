@@ -6,7 +6,7 @@
 <style>
 .modal-enter-active,
 .modal-leave-active {
-  transition: all 0.3s;
+  transition: opacity 0.2s, transform 0.3s;
 }
 .modal-enter-from,
 .modal-leave-to {

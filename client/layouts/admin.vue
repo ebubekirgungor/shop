@@ -3,7 +3,7 @@
     <main class="flex justify-center mt-4 gap-x-4">
       <nav class="flex flex-col bg-white rounded-xl shadow-md w-64 h-auto gap-y-4 p-4 mb-8">
         <NuxtLink :class="$route.path.includes('products') ? link + active : link" to="/admin/products">
-          <div class="w-6 h-6 bg-[url(/icons/product.svg)]"></div>
+          <div class="size-6 bg-[url(/icons/product.svg)]"></div>
           <span>Products</span>
         </NuxtLink>
       </nav>

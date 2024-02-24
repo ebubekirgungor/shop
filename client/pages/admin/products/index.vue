@@ -3,20 +3,20 @@
     <transition name="background" mode="out-in">
       <div
         v-if="delete_dialog"
-        class="bg-black/40 inset-x-0 inset-y-0 w-full h-full fixed"
+        class="bg-black/40 inset-x-0 inset-y-0 size-full fixed"
       ></div>
     </transition>
     <transition name="modal" mode="out-in">
       <div
         v-if="delete_dialog"
-        class="flex justify-center items-center inset-x-0 inset-y-0 w-full h-full fixed"
+        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
           class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl z-3"
         >
           <button
             @click="delete_dialog = false"
-            class="self-end transition duration-300 ease-in-out w-8 h-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
+            class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
           <h1 class="text-center text-xl">Delete product</h1>
           <form
@@ -187,7 +187,7 @@
       </div>
       <div v-else class="flex justify-center">
         <div
-          class="animate-spin w-24 h-24 bg-[url(/icons/loading.svg)] bg-no-repeat bg-cover"
+          class="animate-spin size-24 bg-[url(/icons/loading.svg)] bg-no-repeat bg-cover"
         ></div>
       </div>
     </div>
@@ -245,9 +245,13 @@ const displayed_products = computed(() => {
     sorted_products.sort((a, b) => {
       const fieldA = a[sort_by_field.value];
       const fieldB = b[sort_by_field.value];
-      if (fieldA < fieldB) return -sort_direction.value;
-      if (fieldA > fieldB) return sort_direction.value;
-      return 0;
+      if (typeof fieldA === "number" && typeof fieldB === "number") {
+        return (fieldA - fieldB) * sort_direction.value;
+      } else {
+        const strA = String(fieldA).toLowerCase();
+        const strB = String(fieldB).toLowerCase();
+        return strA.localeCompare(strB) * sort_direction.value;
+      }
     });
   }
   return sorted_products.slice(start_index, start_index + items_per_page.value);
@@ -293,10 +297,10 @@ const remove = async () => {
 const button =
   "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
 const icon =
-  "transition duration-300 ease-in-out w-9 h-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 ";
+  "transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 ";
 const th_button = "flex gap-x-1 items-center h-12 cursor-pointer group";
 const th_icon =
-  "transition duration-200 ease-in-out w-6 h-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 ";
+  "transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 ";
 </script>
 <style>
 td {

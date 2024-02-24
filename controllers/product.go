@@ -13,7 +13,7 @@ import (
 
 func AllProducts(c *fiber.Ctx) error {
 	products := []models.Product{}
-	database.DB.Db.Preload("Category").Preload("Orders").Find(&products)
+	database.DB.Db.Preload("Category").Preload("Orders").Order("created_at").Find(&products)
 
 	var all_products []fiber.Map
 	for _, product := range products {
@@ -37,7 +37,7 @@ func Product(c *fiber.Ctx) error {
 	product := models.Product{}
 	database.DB.Db.Preload("Category").Preload("Orders").Where("url = ?", c.Params("url")).First(&product)
 	return c.Status(200).JSON(fiber.Map{
-		"id":             product.ID,
+		"ID":             product.ID,
 		"title":          product.Title,
 		"category_id":    product.Category.ID,
 		"list_price":     product.ListPrice,
