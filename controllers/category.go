@@ -21,20 +21,20 @@ func Category(c *fiber.Ctx) error {
 }
 
 func AddCategory(c *fiber.Ctx) error {
-	category := new(models.Category)
-	if err := c.BodyParser(category); err != nil {
-		return c.Status(400).JSON(err.Error())
-	}
-
-	id := c.Query("id")
+	userid := c.QueryInt("userid")
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
-	if !isAdmin(id) {
+	if !isAdmin(userid) {
 		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
+	}
+
+	category := new(models.Category)
+	if err := c.BodyParser(category); err != nil {
+		return c.Status(400).JSON(err.Error())
 	}
 
 	database.DB.Db.Create(&category)
@@ -43,8 +43,15 @@ func AddCategory(c *fiber.Ctx) error {
 }
 
 func DeleteCategory(c *fiber.Ctx) error {
-	category := []models.Category{}
+	userid := c.QueryInt("userid")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, userid) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	category := models.Category{}
 	database.DB.Db.Where("id = ?", c.Params("id")).Delete(&category)
 
-	return c.Status(200).JSON("Category deleted")
+	return c.Status(200).JSON("Address deleted")
 }

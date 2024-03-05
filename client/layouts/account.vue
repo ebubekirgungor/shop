@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout name="default">
-    <main class="flex justify-center mt-4 gap-x-4">
-      <nav class="flex flex-col bg-white rounded-xl shadow-md w-64 h-auto gap-y-4 p-4">
+    <main class="flex justify-center m-4 gap-x-4">
+      <nav class="flex flex-col bg-white rounded-xl shadow-md min-w-64 h-auto gap-y-4 p-4">
         <NuxtLink :class="$route.path.endsWith('orders') ? link + active : link" to="/account/orders">
           <div class="size-6 bg-[url(/icons/order.svg)]"></div>
           <span>Orders</span>

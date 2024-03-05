@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <transition name="background" mode="out-in">
       <div
         v-if="add_dialog || edit_dialog || delete_dialog"
@@ -123,7 +123,7 @@
       Addresses
     </div>
     <div
-      class="flex justify-center items-center p-6 w-[50vw] h-full min-h-[18rem] bg-white rounded-xl shadow-md"
+      class="flex justify-center items-center p-6 min-w-[35rem] h-full min-h-[18rem] bg-white rounded-xl shadow-md"
     >
       <div v-if="fetch_complete" class="w-full grid grid-cols-auto_box gap-6">
         <div
@@ -165,9 +165,8 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useUser } from "@/store/user";
 import { useToast } from "vue-toastification";
-const { user } = useUser();
+const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -202,10 +201,7 @@ const edit_address = ref({
 const delete_address_id = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(`/api/addresses/${user.id}`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+    await useFetch<any>(`/api/addresses/${userid.value}`, {
       onResponse({ response }) {
         if (response._data.addresses) {
           addresses.value = response._data.addresses;
@@ -218,10 +214,7 @@ onMounted(() => {
 const create = async () => {
   await useFetch("/api/addresses", {
     method: "post",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { id: user.id },
+    query: { userid: userid.value },
     body: {
       title: new_address.value.title,
       address: new_address.value.address,
@@ -248,10 +241,7 @@ const create = async () => {
 const update = async () => {
   await useFetch(`/api/addresses/${edit_address.value.ID}`, {
     method: "patch",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { userid: user.id },
+    query: { userid: userid.value },
     body: {
       title: edit_address.value.title,
       address: edit_address.value.address,
@@ -283,10 +273,7 @@ const update = async () => {
 const remove = async () => {
   await useFetch(`/api/addresses/${delete_address_id.value}`, {
     method: "delete",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { userid: user.id },
+    query: { userid: userid.value },
     onResponse({ response }) {
       if (response._data) {
         addresses.value.splice(

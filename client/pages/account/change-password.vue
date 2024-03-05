@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
       class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
     >
@@ -7,7 +7,7 @@
     </div>
     <form
       @submit.prevent="update"
-      class="flex flex-col items-center justify-center p-6 gap-y-5 w-[50vw] h-auto bg-white rounded-xl shadow-md"
+      class="flex flex-col items-center justify-center p-6 gap-y-5 min-w-[25rem] h-auto bg-white rounded-xl shadow-md"
     >
       <input
         :class="input"
@@ -42,9 +42,8 @@
   </main>
 </template>
 <script setup lang="ts">
-import { useUser } from "@/store/user";
 import { useToast } from "vue-toastification";
-const { user } = useUser();
+const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -56,11 +55,8 @@ const form = ref({
   new_password2: "",
 });
 const update = async () => {
-  await useFetch(`/api/users/password/${user.id}`, {
+  await useFetch(`/api/users/password/${userid.value}`, {
     method: "patch",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
     body: {
       old_password: form.value.old_password,
       new_password: form.value.new_password,

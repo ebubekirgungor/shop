@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4 pb-8">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <transition name="background" mode="out-in">
       <div
         v-if="delete_dialog"
@@ -42,7 +42,7 @@
       </NuxtLink>
     </div>
     <div
-      class="flex flex-col justify-center p-5 w-[50vw] h-full min-h-[14rem] bg-white rounded-xl shadow-md"
+      class="flex flex-col justify-center p-5 min-w-[40rem] h-full min-h-[14rem] bg-white rounded-xl shadow-md"
     >
       <div v-if="fetch_complete" class="flex flex-col gap-y-4">
         <input
@@ -195,9 +195,8 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useUser } from "@/store/user";
 import { useToast } from "vue-toastification";
-const { user } = useUser();
+const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -269,10 +268,7 @@ const sort = async (field: string) => {
 const remove = async () => {
   await useFetch(`/api/products/${delete_product_id.value}`, {
     method: "delete",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { userid: user.id },
+    query: { userid: userid.value },
     onResponse({ response }) {
       if (response._data) {
         products.value.splice(

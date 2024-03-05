@@ -1,9 +1,9 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md">
       Orders
     </div>
-    <div class="flex items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md">
+    <div class="flex items-center p-6 min-w-[40rem] h-auto bg-white rounded-xl shadow-md">
       Orders
     </div>
   </main>

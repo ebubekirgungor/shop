@@ -10,6 +10,7 @@ import (
 func Protected() fiber.Handler {
 	return jwtware.New(jwtware.Config{
 		SigningKey:   jwtware.SigningKey{Key: []byte(config.Config("SECRET"))},
+		TokenLookup:  "cookie:token",
 		ErrorHandler: jwtError,
 	})
 }

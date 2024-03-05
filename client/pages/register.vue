@@ -1,8 +1,10 @@
 <template>
-  <main class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4">
-    <h1 class="mt-8 text-xl">Create new account</h1>
+  <main
+    class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4 m-4"
+  >
+    <h1 class="mt-4 text-xl">Create new account</h1>
     <div
-      class="flex justify-center bg-white sm:w-[400px] sm:h-[520px] sm:border sm:rounded-xl"
+      class="flex justify-center bg-white sm:pt-8 sm:pb-4 sm:w-[25rem] sm:h-[31rem] sm:border sm:rounded-xl"
     >
       <form v-if="step == 1" @submit.prevent="check_email" :class="form_step">
         <div :class="form_field">
@@ -25,7 +27,7 @@
             required
           />
         </div>
-        <div :class="form_field">
+        <div :class="form_field + ' grow'">
           <label for="last_name">Last Name</label>
           <input
             :class="input"
@@ -35,7 +37,6 @@
             required
           />
         </div>
-        <h1 class="grow text-center text-red-500">{{ register_error }}</h1>
         <div>
           <button
             type="submit"
@@ -178,16 +179,10 @@
 definePageMeta({
   middleware: "auth",
 });
+import { useToast, POSITION } from "vue-toastification";
+const toast = useToast();
 const step = ref(1);
-const form_step = "sm:mt-8 flex flex-col gap-y-6 w-[300px]";
-const form_field = "flex flex-col gap-y-1";
-const button =
-  "sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const showpassword = "size-6 absolute ml-[265px] ";
 const eye = ref(false);
-const input =
-  "transition duration-200 ease-in-out w-full h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
-const radio = "transition duration-200 ease-in-out cursor-pointer focus:ring-0";
 const form = ref({
   email: "",
   first_name: "",
@@ -201,22 +196,26 @@ const form = ref({
   gender: "",
   password: "",
 });
-const register_error = ref("");
 const check_email = async () => {
-  const { data: check } = await useFetch("/api/auth/check_user", {
+  await useFetch("/api/auth/check_user", {
     method: "post",
     body: {
       email: form.value.email,
     },
+    onResponse({ response }) {
+      if (response._data) {
+        toast.warning("User with given e-mail is already exists", {
+          bodyClassName: "toast-font",
+          position: POSITION.TOP_CENTER,
+        });
+      } else {
+        step.value++;
+      }
+    },
   });
-  if (check.value) {
-    register_error.value = "User with given e-mail is already exists";
-  } else {
-    step.value++;
-  }
 };
 const register = async () => {
-  const { data: response } = await useFetch("/api/users", {
+  await useFetch("/api/users", {
     method: "post",
     body: {
       email: form.value.email,
@@ -226,11 +225,19 @@ const register = async () => {
       birthdate: `${form.value.birthdate.year}-${form.value.birthdate.month}-${form.value.birthdate.day}`,
       gender: form.value.gender,
       password: form.value.password,
+      cart: [],
+    },
+    onResponse({ response }) {
+      if (response._data.status == "success") {
+        navigateTo("/login");
+      } else {
+        toast.error("Server error", {
+          bodyClassName: "toast-font",
+          position: POSITION.TOP_CENTER,
+        });
+      }
     },
   });
-  if ((response.value as any).status == "success") {
-    navigateTo("/login");
-  } else register_error.value = (response.value as any).message as string;
 };
 const phone_format = () => {
   let x: any = form.value.phone
@@ -240,4 +247,13 @@ const phone_format = () => {
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
+const form_step = "flex flex-col gap-y-6 w-[300px]";
+const form_field = "flex flex-col gap-y-1";
+const button =
+  "sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
+const showpassword = "size-6 absolute ml-[265px] ";
+const input =
+  "transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent";
+const radio =
+  "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
 </script>

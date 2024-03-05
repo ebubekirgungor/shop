@@ -12,7 +12,6 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@nuxtjs/google-fonts": "^3.0.2",
-    "@pinia-plugin-persistedstate/nuxt": "^1.1.2",
     "@tailwindcss/forms": "^0.5.6",
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.7.3",
@@ -24,8 +23,6 @@
     "vue": "latest"
   },
   "dependencies": {
-    "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7",
     "vue-toastification": "^2.0.0-rc.5"
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
       class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
     >
@@ -132,9 +132,8 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useUser } from "@/store/user";
 import { useToast } from "vue-toastification";
-const { user } = useUser();
+const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -179,10 +178,7 @@ const data_to_form = async (data: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(`/api/users/${user.id}`, {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
+    await useFetch<any>(`/api/users/${userid.value}`, {
       onResponse({ response }) {
         data_to_form(response._data);
         fetch_complete.value = true;
@@ -191,11 +187,8 @@ onMounted(() => {
   });
 });
 const update = async () => {
-  await useFetch(`/api/users/${user.id}`, {
+  await useFetch(`/api/users/${userid.value}`, {
     method: "patch",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
     body: {
       first_name: form.value.first_name,
       last_name: form.value.last_name,
@@ -226,12 +219,12 @@ const phone_format = () => {
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
 const form_div =
-  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
+  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 min-w-[40rem] h-auto bg-white rounded-xl shadow-md";
 const input =
   "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const input_select = " w-full cursor-pointer";
 const label = "flex flex-col gap-y-2";
-const radio = "transition duration-200 ease-in-out cursor-pointer focus:ring-0";
+const radio = "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
 const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
 const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 </script>

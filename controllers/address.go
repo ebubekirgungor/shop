@@ -3,7 +3,6 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -11,19 +10,19 @@ import (
 )
 
 func Addresses(c *fiber.Ctx) error {
+	userid, _ := c.ParamsInt("id")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, userid) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	user := models.User{}
 	database.DB.Db.Preload("Addresses", func(db *gorm.DB) *gorm.DB {
 		return db.Order("addresses.created_at DESC")
-	}).First(&user, c.Params("id"))
+	}).First(&user, userid)
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
-	}
-
-	id := c.Params("id")
-	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
 	return c.Status(200).JSON(fiber.Map{
@@ -32,19 +31,19 @@ func Addresses(c *fiber.Ctx) error {
 }
 
 func AddAddress(c *fiber.Ctx) error {
+	userid := c.QueryInt("userid")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, userid) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	address := new(models.Address)
 	if err := c.BodyParser(address); err != nil {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	id := c.Query("id")
-	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
-	}
-
-	address.UserId, _ = strconv.Atoi(c.Query("id"))
+	address.UserId = userid
 
 	database.DB.Db.Create(&address)
 
@@ -52,6 +51,13 @@ func AddAddress(c *fiber.Ctx) error {
 }
 
 func UpdateAddress(c *fiber.Ctx) error {
+	userid := c.QueryInt("userid")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, userid) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	type UpdateAddressInput struct {
 		Title   string `json:"title"`
 		Address string `json:"address"`
@@ -63,13 +69,6 @@ func UpdateAddress(c *fiber.Ctx) error {
 
 	address := new(models.Address)
 	database.DB.Db.First(&address, c.Params("id"))
-
-	userid, _ := strconv.Atoi(c.Query("userid"))
-	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, c.Query("userid")) {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
-	}
 
 	if userid != address.UserId {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid user id"})
@@ -83,14 +82,14 @@ func UpdateAddress(c *fiber.Ctx) error {
 }
 
 func DeleteAddress(c *fiber.Ctx) error {
-	address := models.Address{}
-
-	userid, _ := strconv.Atoi(c.Query("userid"))
+	userid := c.QueryInt("userid")
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, c.Query("userid")) {
+	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
+
+	address := models.Address{}
 
 	database.DB.Db.First(&address, c.Params("id"))
 

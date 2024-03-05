@@ -9,11 +9,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/datatypes"
 )
 
 func AllProducts(c *fiber.Ctx) error {
 	products := []models.Product{}
-	database.DB.Db.Preload("Category").Preload("Orders").Order("created_at").Find(&products)
+	database.DB.Db.Preload("Category").Order("created_at").Find(&products)
 
 	var all_products []fiber.Map
 	for _, product := range products {
@@ -24,7 +25,6 @@ func AllProducts(c *fiber.Ctx) error {
 			"category":       product.Category.Title,
 			"list_price":     product.ListPrice,
 			"stock_quantity": product.StockQuantity,
-			"orders":         product.Orders,
 		})
 	}
 	if all_products == nil {
@@ -35,7 +35,7 @@ func AllProducts(c *fiber.Ctx) error {
 
 func Product(c *fiber.Ctx) error {
 	product := models.Product{}
-	database.DB.Db.Preload("Category").Preload("Orders").Where("url = ?", c.Params("url")).First(&product)
+	database.DB.Db.Preload("Category").Where("url = ?", c.Params("url")).First(&product)
 	return c.Status(200).JSON(fiber.Map{
 		"ID":             product.ID,
 		"title":          product.Title,
@@ -43,19 +43,18 @@ func Product(c *fiber.Ctx) error {
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
 		"images":         product.Images,
-		"orders":         product.Orders,
 	})
 }
 
 func AddProduct(c *fiber.Ctx) error {
-	id := c.Query("id")
+	userid := c.QueryInt("userid")
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
-	if !isAdmin(id) {
+	if !isAdmin(userid) {
 		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
 	}
 
@@ -92,7 +91,7 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 	product.ListPrice = float32(listprice)
 	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
-	product.Images = c.FormValue("images")
+	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
 	database.DB.Db.Create(&product)
 
@@ -100,14 +99,14 @@ func AddProduct(c *fiber.Ctx) error {
 }
 
 func UpdateProduct(c *fiber.Ctx) error {
-	id := c.Query("id")
+	userid := c.QueryInt("userid")
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
-	if !isAdmin(id) {
+	if !isAdmin(userid) {
 		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
 	}
 
@@ -139,7 +138,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	}
 	product.ListPrice = float32(listprice)
 	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
-	product.Images = c.FormValue("images")
+	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
 	database.DB.Db.Save(&product)
 
@@ -147,18 +146,18 @@ func UpdateProduct(c *fiber.Ctx) error {
 }
 
 func DeleteProduct(c *fiber.Ctx) error {
-	product := models.Product{}
-
-	id := c.Query("id")
+	userid := c.QueryInt("userid")
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, c.Query("userid")) {
+	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
-	if !isAdmin(id) {
+	if !isAdmin(userid) {
 		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
 	}
+
+	product := models.Product{}
 
 	database.DB.Db.Where("id = ?", c.Params("id")).Delete(&product)
 

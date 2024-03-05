@@ -14,7 +14,7 @@ func hashPassword(password string) (string, error) {
 	return string(bytes), err
 }
 
-func validUser(id string, p string) bool {
+func validUser(id int, p string) bool {
 	user := models.User{}
 	database.DB.Db.First(&user, id)
 	if user.Email == "" {
@@ -27,17 +27,17 @@ func validUser(id string, p string) bool {
 }
 
 func User(c *fiber.Ctx) error {
-	user := models.User{}
-	database.DB.Db.Preload("Orders").First(&user, c.Params("id"))
-	if user.Email == "" {
-		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
-	}
-
-	id := c.Params("id")
+	id, _ := c.ParamsInt("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	user := models.User{}
+	database.DB.Db.First(&user, id)
+	if user.Email == "" {
+		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
 
 	return c.Status(200).JSON(fiber.Map{
@@ -47,6 +47,7 @@ func User(c *fiber.Ctx) error {
 		"phone":      user.Phone,
 		"birthdate":  user.BirthDate,
 		"gender":     user.Gender,
+		"cart":       user.Cart,
 	})
 }
 
@@ -70,6 +71,13 @@ func AddUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
+	id, _ := c.ParamsInt("id")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, id) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	type UpdateUserInput struct {
 		FirstName string `json:"first_name"`
 		LastName  string `json:"last_name"`
@@ -83,14 +91,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	user := new(models.User)
-	database.DB.Db.First(&user, c.Params("id"))
-
-	id := c.Params("id")
-	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
-	}
+	database.DB.Db.First(&user, id)
 
 	user.FirstName = uui.FirstName
 	user.LastName = uui.LastName
@@ -103,6 +104,13 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
+	id, _ := c.ParamsInt("id")
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, id) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
 	type UpdatePasswordInput struct {
 		OldPassword string `json:"old_password"`
 		NewPassword string `json:"new_password"`
@@ -113,14 +121,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	}
 
 	user := new(models.User)
-	database.DB.Db.First(&user, c.Params("id"))
-
-	id := c.Params("id")
-	token := c.Locals("user").(*jwt.Token)
-
-	if !validToken(token, id) {
-		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
-	}
+	database.DB.Db.First(&user, id)
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(upi.OldPassword)); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid old password"})
@@ -147,7 +148,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
 
-	id := c.Params("id")
+	id, _ := c.ParamsInt("id")
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -157,7 +158,6 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	if !validUser(id, password_input.Password) {
 		return c.Status(500).JSON(fiber.Map{"error": "Not valid user"})
-
 	}
 
 	user := new(models.User)

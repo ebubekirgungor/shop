@@ -1,21 +1,23 @@
 package models
 
 import (
+	"gorm.io/datatypes"
 	"gorm.io/gorm"
 )
 
 type User struct {
 	gorm.Model
-	Email     string    `gorm:"uniqueIndex;not null" json:"email"`
-	Password  string    `gorm:"not null"`
-	FirstName string    `gorm:"not null" json:"first_name"`
-	LastName  string    `gorm:"not null" json:"last_name"`
-	Phone     string    `json:"phone"`
-	BirthDate string    `gorm:"type:date;default:null" json:"birthdate"`
-	Gender    string    `gorm:"type:char(1)" json:"gender"`
-	Role      int       `gorm:"size:1;default:0" json:"role"`
-	Addresses []Address `json:"addresses"`
-	Orders    []Order   `json:"orders"`
+	Email     string         `gorm:"uniqueIndex;not null" json:"email"`
+	Password  string         `gorm:"not null"`
+	FirstName string         `gorm:"not null" json:"first_name"`
+	LastName  string         `gorm:"not null" json:"last_name"`
+	Phone     string         `json:"phone"`
+	BirthDate string         `gorm:"type:date;default:null" json:"birthdate"`
+	Gender    string         `gorm:"type:char(1)" json:"gender"`
+	Role      int            `gorm:"size:1;default:0" json:"role"`
+	Addresses []Address      `json:"addresses"`
+	Orders    []Order        `json:"orders"`
+	Cart      datatypes.JSON `gorm:"not null" json:"cart"`
 }
 
 type Address struct {
@@ -38,10 +40,10 @@ type Product struct {
 	Url           string `gorm:"uniqueIndex;not null" json:"url"`
 	CategoryId    int    `gorm:"not null" json:"category_id"`
 	Category      Category
-	ListPrice     float32  `gorm:"not null" json:"list_price"`
-	StockQuantity int      `gorm:"not null" json:"stock_quantity"`
-	Images        string   `gorm:"not null" json:"images"`
-	Orders        []*Order `gorm:"many2many:order_products;"`
+	ListPrice     float32        `gorm:"not null" json:"list_price"`
+	StockQuantity int            `gorm:"not null" json:"stock_quantity"`
+	Images        datatypes.JSON `gorm:"not null" json:"images"`
+	//Orders        []Order       `gorm:"many2many:order_products;"`
 }
 
 type Order struct {
@@ -49,5 +51,5 @@ type Order struct {
 	Price    float32 `gorm:"not null" json:"price"`
 	UserId   int     `gorm:"not null" json:"user_id"`
 	User     User
-	Products []*Product `gorm:"many2many:order_products;"`
+	Products []Product `gorm:"many2many:order_products;"`
 }

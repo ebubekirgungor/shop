@@ -1,5 +1,5 @@
 <template>
-  <main class="flex flex-col gap-y-4 pb-8">
+  <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <transition name="background" mode="out-in">
       <div
         v-if="category_dialog || image_gallery || delete_dialog"
@@ -43,7 +43,7 @@
         class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-3 -mt-48 w-[48rem] h-[28rem] z-3 bg-no-repeat bg-cover"
+          class="flex flex-col p-3 -mt-[15vh] w-[48rem] h-[28rem] z-3 bg-no-repeat bg-cover"
           :style="'background-image: url(' + image_current + ');'"
         >
           <button
@@ -93,7 +93,10 @@
     >
       {{ is_add ? "Add product" : "Edit product" }}
     </div>
-    <form @submit.prevent="create_update" :class="form_div">
+    <form
+      @submit.prevent="create_update"
+      class="grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 min-w-[30rem] h-auto bg-white rounded-xl shadow-md"
+    >
       <label :class="label"
         >Title<input :class="input" type="text" v-model="form.title"
       /></label>
@@ -119,7 +122,7 @@
       <label :class="label"
         >List Price<input
           :class="input"
-          step="any"
+          step=".01"
           type="number"
           min="1"
           v-model="form.list_price"
@@ -189,9 +192,8 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useUser } from "@/store/user";
 import { useToast } from "vue-toastification";
-const { user } = useUser();
+const userid = useCookie("userid");
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
@@ -246,7 +248,7 @@ const open_gallery = (image: any) => {
 const data_to_form = (response: any) => {
   form.value = response;
   const images_array: any = [];
-  JSON.parse(response.images).forEach((image: any) => {
+  response.images.forEach((image: any) => {
     images_array.push({
       order: image.order,
       name: image.name,
@@ -291,10 +293,7 @@ const create_update = async () => {
   }
   await useFetch(is_add ? "/api/products" : "/api/products/" + form.value.ID, {
     method: is_add ? "post" : "patch",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { id: user.id },
+    query: { userid: userid.value },
     body: form_data,
     onResponse({ response }) {
       if (response._data.ID) {
@@ -332,10 +331,7 @@ const remove = async () => {
 const create_category = async () => {
   await useFetch("/api/categories", {
     method: "post",
-    headers: {
-      Authorization: `Bearer ${user.token}`,
-    },
-    query: { id: user.id },
+    query: { userid: userid.value },
     body: {
       title: category_new.value,
     },
@@ -354,8 +350,6 @@ const create_category = async () => {
     },
   });
 };
-const form_div =
-  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 w-[50vw] h-auto bg-white rounded-xl shadow-md";
 const input =
   "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const add_category_button =

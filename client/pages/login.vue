@@ -1,13 +1,12 @@
 <template>
-  <main class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4">
-    <h1 class="mt-8 text-xl">Sign in to your account</h1>
+  <main
+    class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4 m-4"
+  >
+    <h1 class="mt-4 text-xl">Sign in to your account</h1>
     <div
-      class="flex justify-center bg-white sm:w-[400px] sm:h-[520px] sm:border sm:rounded-xl"
+      class="flex justify-center bg-white sm:pt-8 sm:pb-4 sm:w-[25rem] sm:h-[31rem] sm:border sm:rounded-xl"
     >
-      <form
-        @submit.prevent="login"
-        class="sm:mt-8 flex flex-col gap-y-6 w-[300px]"
-      >
+      <form @submit.prevent="login" class="flex flex-col gap-y-6 w-[300px]">
         <div class="flex flex-col gap-y-1">
           <label for="email">E-mail</label>
           <input
@@ -39,10 +38,21 @@
             ></button>
           </div>
         </div>
-        <NuxtLink to="/reset-password" class="text-center"
-          >Forgot password?</NuxtLink
-        >
-        <h1 class="grow mt-5 text-center text-red-500">{{ login_error }}</h1>
+        <div class="grow">
+          <div class="flex justify-between">
+            <div class="flex items-center gap-x-2">
+              <input
+                type="checkbox"
+                v-model="form.remember_me"
+                id="remember_me"
+                class="transition duration-200 ease-in-out size-5 cursor-pointer rounded-md border-gray-300 text-gray-800 hover:border-gray-500 focus:ring-0 focus:ring-offset-0"
+              /><label for="remember_me" class="cursor-pointer"
+                >Remember Me</label
+              >
+            </div>
+            <NuxtLink to="/reset-password">Forgot password?</NuxtLink>
+          </div>
+        </div>
         <div>
           <button
             type="submit"
@@ -67,28 +77,40 @@
 definePageMeta({
   middleware: "auth",
 });
-import { useUser } from "@/store/user";
+import { useToast, POSITION } from "vue-toastification";
+const toast = useToast();
 const showpassword = "size-6 absolute ml-[265px] ";
 const eye = ref(false);
-const input =
-  "transition duration-200 ease-in-out w-full h-11 border-gray-300 bg-gray-50 rounded-md text-sm";
 const form = ref({
   email: "",
   password: "",
+  remember_me: false,
 });
-const login_error = ref("");
 const login = async () => {
-  const { data: response } = await useFetch("/api/auth/login", {
+  await useFetch("/api/auth/login", {
     method: "post",
     body: {
       email: form.value.email,
       password: form.value.password,
+      remember_me: form.value.remember_me,
+    },
+    onResponse({ response }) {
+      if (response._data.status == "success") {
+        navigateTo("/account");
+      } else {
+        toast.error(
+          response._data.message == "login"
+            ? "Email and/or password is incorrect"
+            : "Server error",
+          {
+            bodyClassName: "toast-font",
+            position: POSITION.TOP_CENTER,
+          }
+        );
+      }
     },
   });
-  if ((response.value as any).status == "success") {
-    const user = useUser();
-    user.user = (response.value as any).data;
-    navigateTo("/account");
-  } else login_error.value = (response.value as any).message as string;
 };
+const input =
+  "transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent";
 </script>

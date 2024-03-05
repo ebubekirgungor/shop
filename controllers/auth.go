@@ -21,19 +21,14 @@ type UserData struct {
 	Role     int    `json:"role"`
 }
 
-func validToken(t *jwt.Token, id string) bool {
-	n, err := strconv.Atoi(id)
-	if err != nil {
-		return false
-	}
-
+func validToken(t *jwt.Token, id int) bool {
 	claims := t.Claims.(jwt.MapClaims)
 	uid := int(claims["user_id"].(float64))
 
-	return uid == n
+	return uid == id
 }
 
-func isAdmin(id string) bool {
+func isAdmin(id int) bool {
 	user := models.User{}
 	database.DB.Db.First(&user, id)
 	return user.Role != 0
@@ -77,8 +72,9 @@ func CheckUser(c *fiber.Ctx) error {
 
 func Login(c *fiber.Ctx) error {
 	type LoginInput struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Email      string `json:"email"`
+		Password   string `json:"password"`
+		RememberMe bool   `json:"remember_me"`
 	}
 
 	input := new(LoginInput)
@@ -95,7 +91,7 @@ func Login(c *fiber.Ctx) error {
 	userModel, err = getUser(email)
 
 	if userModel == nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "login", "data": err})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"status": "error", "message": "server", "data": err})
 	} else {
 		userData = UserData{
 			ID:       userModel.ID,
@@ -112,16 +108,59 @@ func Login(c *fiber.Ctx) error {
 
 	claims := token.Claims.(jwt.MapClaims)
 	claims["user_id"] = userData.ID
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+
+	var expires time.Time
+
+	if input.RememberMe {
+		expires = time.Now().Add(time.Hour * 24 * 30)
+	} else {
+		expires = time.Now().Add(time.Hour * 1)
+	}
+
+	claims["exp"] = expires.Unix()
 
 	t, err := token.SignedString([]byte(config.Config("SECRET")))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
 
-	return c.JSON(fiber.Map{"status": "success", "message": "Success login", "data": fiber.Map{
-		"id":    userData.ID,
-		"token": t,
-		"role":  userData.Role,
-	}})
+	c.Cookie(&fiber.Cookie{
+		Name:    "userid",
+		Value:   strconv.Itoa(int(userData.ID)),
+		Expires: expires,
+	})
+	c.Cookie(&fiber.Cookie{
+		Name:    "role",
+		Value:   strconv.Itoa(userData.Role),
+		Expires: expires,
+	})
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    t,
+		Expires:  expires,
+		HTTPOnly: true,
+	})
+
+	return c.JSON(fiber.Map{"status": "success", "message": "ok"})
+}
+
+func Logout(c *fiber.Ctx) error {
+	c.Cookie(&fiber.Cookie{
+		Name:    "userid",
+		Value:   "",
+		Expires: time.Now(),
+	})
+	c.Cookie(&fiber.Cookie{
+		Name:    "role",
+		Value:   "",
+		Expires: time.Now(),
+	})
+	c.Cookie(&fiber.Cookie{
+		Name:     "token",
+		Value:    "",
+		Expires:  time.Now(),
+		HTTPOnly: true,
+	})
+
+	return c.JSON(fiber.Map{"status": "success", "message": "ok"})
 }
