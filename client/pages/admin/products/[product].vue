@@ -193,7 +193,6 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
@@ -293,7 +292,6 @@ const create_update = async () => {
   }
   await useFetch(is_add ? "/api/products" : "/api/products/" + form.value.ID, {
     method: is_add ? "post" : "patch",
-    query: { userid: userid.value },
     body: form_data,
     onResponse({ response }) {
       if (response._data.ID) {
@@ -331,7 +329,6 @@ const remove = async () => {
 const create_category = async () => {
   await useFetch("/api/categories", {
     method: "post",
-    query: { userid: userid.value },
     body: {
       title: category_new.value,
     },

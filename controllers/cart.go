@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -13,7 +14,7 @@ import (
 )
 
 func Cart(c *fiber.Ctx) error {
-	userid, _ := c.ParamsInt("id")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 	if !validToken(token, userid) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
@@ -33,6 +34,10 @@ func Cart(c *fiber.Ctx) error {
 	err := json.Unmarshal(user.Cart, &cartData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	if len(cartData) == 0 {
+		return c.Status(200).JSON([]string{})
 	}
 
 	ids := []string{}
@@ -67,7 +72,7 @@ func Cart(c *fiber.Ctx) error {
 		})
 	}
 	if found_products == nil {
-		return c.Status(200).JSON("[]")
+		return c.Status(200).JSON([]string{})
 	}
 	return c.Status(200).JSON(found_products)
 }
@@ -91,6 +96,10 @@ func UnregisteredCart(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if len(cartData) == 0 {
+		return c.Status(200).JSON([]string{})
+	}
+
 	ids := []string{}
 	for _, item := range cartData {
 		ids = append(ids, fmt.Sprintf("%d", item.ID))
@@ -123,13 +132,13 @@ func UnregisteredCart(c *fiber.Ctx) error {
 		})
 	}
 	if found_products == nil {
-		return c.Status(200).JSON("[]")
+		return c.Status(200).JSON([]string{})
 	}
 	return c.Status(200).JSON(found_products)
 }
 
 func UpdateCart(c *fiber.Ctx) error {
-	userid, _ := c.ParamsInt("id")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {

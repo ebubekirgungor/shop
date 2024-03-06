@@ -138,14 +138,16 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
+const role = useCookie("role");
 const toast = useToast();
+const cart_unregistered = useCookie<any>("cart");
+if (!cart_unregistered.value) cart_unregistered.value = [];
 const cart = ref<any>([]);
 const shipping = ref(50);
 onMounted(() => {
   nextTick(async () => {
     await useFetch<any>(
-      userid.value ? `/api/users/${userid.value}/cart` : "/api/cart",
+      role.value != undefined ? "/api/users/cart" : "/api/cart",
       {
         onResponse({ response }) {
           cart.value = response._data;

@@ -3,6 +3,7 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -21,7 +22,7 @@ func Category(c *fiber.Ctx) error {
 }
 
 func AddCategory(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -43,7 +44,7 @@ func AddCategory(c *fiber.Ctx) error {
 }
 
 func DeleteCategory(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {

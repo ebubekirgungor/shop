@@ -166,7 +166,6 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -201,7 +200,7 @@ const edit_address = ref({
 const delete_address_id = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(`/api/addresses/${userid.value}`, {
+    await useFetch<any>("/api/addresses", {
       onResponse({ response }) {
         if (response._data.addresses) {
           addresses.value = response._data.addresses;
@@ -214,7 +213,6 @@ onMounted(() => {
 const create = async () => {
   await useFetch("/api/addresses", {
     method: "post",
-    query: { userid: userid.value },
     body: {
       title: new_address.value.title,
       address: new_address.value.address,
@@ -241,7 +239,6 @@ const create = async () => {
 const update = async () => {
   await useFetch(`/api/addresses/${edit_address.value.ID}`, {
     method: "patch",
-    query: { userid: userid.value },
     body: {
       title: edit_address.value.title,
       address: edit_address.value.address,
@@ -273,7 +270,6 @@ const update = async () => {
 const remove = async () => {
   await useFetch(`/api/addresses/${delete_address_id.value}`, {
     method: "delete",
-    query: { userid: userid.value },
     onResponse({ response }) {
       if (response._data) {
         addresses.value.splice(

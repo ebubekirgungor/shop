@@ -3,6 +3,7 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -10,7 +11,7 @@ import (
 )
 
 func AllOrders(c *fiber.Ctx) error {
-	userid, _ := c.ParamsInt("id")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -47,7 +48,7 @@ func Order(c *fiber.Ctx) error {
 }
 
 func AddOrder(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -69,7 +70,7 @@ func AddOrder(c *fiber.Ctx) error {
 func DeleteOrder(c *fiber.Ctx) error {
 	order := models.Order{}
 
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {

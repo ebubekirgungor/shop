@@ -196,7 +196,6 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -268,7 +267,6 @@ const sort = async (field: string) => {
 const remove = async () => {
   await useFetch(`/api/products/${delete_product_id.value}`, {
     method: "delete",
-    query: { userid: userid.value },
     onResponse({ response }) {
       if (response._data) {
         products.value.splice(

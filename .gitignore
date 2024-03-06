@@ -32,8 +32,8 @@ client/node_modules
 # .env
 .env
 
-# nginx
-nginx.bat
-
 # Static
 images/
+
+# Certs
+certs/

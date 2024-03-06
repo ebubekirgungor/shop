@@ -28,7 +28,7 @@ func AllProducts(c *fiber.Ctx) error {
 		})
 	}
 	if all_products == nil {
-		return c.Status(200).JSON(products)
+		return c.Status(200).JSON([]string{})
 	}
 	return c.Status(200).JSON(all_products)
 }
@@ -47,7 +47,7 @@ func Product(c *fiber.Ctx) error {
 }
 
 func AddProduct(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -99,7 +99,7 @@ func AddProduct(c *fiber.Ctx) error {
 }
 
 func UpdateProduct(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -146,7 +146,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 }
 
 func DeleteProduct(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {

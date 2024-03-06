@@ -14,20 +14,22 @@
         <div
           :class="
             'flex flex-col group items-center w-10 sm:w-20 h-16 ' +
-            (userid ? 'mt-10' : 'mt-6')
+            (role != undefined ? 'mt-10' : 'mt-6')
           "
         >
           <NuxtLink
-            :to="userid ? '/account/orders' : '/login'"
-            :class="button + (userid ? '' : ' sm:hover:-translate-y-0.5')"
+            :to="role != undefined ? '/account/orders' : '/login'"
+            :class="
+              button + (role != undefined ? '' : ' sm:hover:-translate-y-0.5')
+            "
           >
             <div class="size-6 bg-[url(/icons/account.svg)]"></div>
             <span class="mt-0.5 hidden sm:block">{{
-              userid ? "Account" : "Login"
+              role != undefined ? "Account" : "Login"
             }}</span>
           </NuxtLink>
           <div
-            v-if="userid"
+            v-if="role != undefined"
             class="flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
           >
             <NuxtLink v-if="role != 0" to="/admin" :class="menu_item"
@@ -51,11 +53,9 @@
   </div>
 </template>
 <script setup lang="ts">
-const userid = useCookie("userid");
-const role = useCookie("role");
+const role = useCookie<number | null>("role");
 const logout = async () => {
-  userid.value = "";
-  role.value = "";
+  role.value = null;
   await useFetch("/api/auth/logout", {
     onResponse({ response }) {
       if (response._data.status == "success") {

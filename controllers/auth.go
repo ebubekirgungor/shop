@@ -125,19 +125,23 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	c.Cookie(&fiber.Cookie{
-		Name:    "userid",
-		Value:   strconv.Itoa(int(userData.ID)),
-		Expires: expires,
+		Name:     "userid",
+		Value:    strconv.Itoa(int(userData.ID)),
+		Expires:  expires,
+		Secure:   true,
+		HTTPOnly: true,
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:    "role",
 		Value:   strconv.Itoa(userData.Role),
 		Expires: expires,
+		Secure:  true,
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    t,
 		Expires:  expires,
+		Secure:   true,
 		HTTPOnly: true,
 	})
 
@@ -146,19 +150,23 @@ func Login(c *fiber.Ctx) error {
 
 func Logout(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
-		Name:    "userid",
-		Value:   "",
-		Expires: time.Now(),
+		Name:     "userid",
+		Value:    "",
+		Expires:  time.Now(),
+		Secure:   true,
+		HTTPOnly: true,
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:    "role",
 		Value:   "",
 		Expires: time.Now(),
+		Secure:  true,
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:     "token",
 		Value:    "",
 		Expires:  time.Now(),
+		Secure:   true,
 		HTTPOnly: true,
 	})
 

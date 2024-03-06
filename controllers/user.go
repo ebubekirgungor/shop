@@ -3,6 +3,7 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -27,7 +28,7 @@ func validUser(id int, p string) bool {
 }
 
 func User(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -71,7 +72,7 @@ func AddUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -104,7 +105,7 @@ func UpdateUser(c *fiber.Ctx) error {
 }
 
 func UpdatePassword(c *fiber.Ctx) error {
-	id, _ := c.ParamsInt("id")
+	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {
@@ -148,7 +149,7 @@ func DeleteUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
 
-	id, _ := c.ParamsInt("id")
+	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, id) {

@@ -1,5 +1,11 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
+  devServer: {
+    https: {
+      key: "../certs/RootCA.key",
+      cert: "../certs/RootCA.pem",
+    },
+  },
   app: {
     head: {
       title: "Shop",

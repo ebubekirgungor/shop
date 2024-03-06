@@ -100,7 +100,7 @@
 import { nextTick } from "vue";
 const route = useRoute();
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
+const role = useCookie<number>("role");
 const toast = useToast();
 const product = ref<any>({
   ID: "",
@@ -132,8 +132,8 @@ onMounted(() => {
         images.value = images_array;
       },
     });
-    if (userid.value) {
-      await useFetch<any>(`/api/users/${userid.value}`, {
+    if (role.value != undefined) {
+      await useFetch<any>("/api/users", {
         onResponse({ response }) {
           cart.value = response._data.cart;
           product_cart_quantity.value =
@@ -173,8 +173,8 @@ const add_to_cart = async () => {
     cart.value[existing_index].quantity += quantity.value;
     product_cart_quantity.value += quantity.value;
   }
-  if (userid.value) {
-    await useFetch(`/api/users/${userid.value}/cart`, {
+  if (role.value != undefined) {
+    await useFetch("/api/users/cart", {
       method: "patch",
       body: {
         cart: JSON.parse(JSON.stringify(cart.value)),

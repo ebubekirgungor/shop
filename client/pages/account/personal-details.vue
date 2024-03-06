@@ -133,7 +133,6 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
-const userid = useCookie("userid");
 const toast = useToast();
 definePageMeta({
   middleware: "auth",
@@ -178,7 +177,7 @@ const data_to_form = async (data: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(`/api/users/${userid.value}`, {
+    await useFetch<any>("/api/users", {
       onResponse({ response }) {
         data_to_form(response._data);
         fetch_complete.value = true;
@@ -187,7 +186,7 @@ onMounted(() => {
   });
 });
 const update = async () => {
-  await useFetch(`/api/users/${userid.value}`, {
+  await useFetch("/api/users", {
     method: "patch",
     body: {
       first_name: form.value.first_name,
@@ -224,7 +223,8 @@ const input =
   "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const input_select = " w-full cursor-pointer";
 const label = "flex flex-col gap-y-2";
-const radio = "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
+const radio =
+  "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
 const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
 const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 </script>

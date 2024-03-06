@@ -3,6 +3,7 @@ package controllers
 import (
 	"shop/database"
 	"shop/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -10,7 +11,7 @@ import (
 )
 
 func Addresses(c *fiber.Ctx) error {
-	userid, _ := c.ParamsInt("id")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -31,7 +32,7 @@ func Addresses(c *fiber.Ctx) error {
 }
 
 func AddAddress(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -51,7 +52,7 @@ func AddAddress(c *fiber.Ctx) error {
 }
 
 func UpdateAddress(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
@@ -82,7 +83,7 @@ func UpdateAddress(c *fiber.Ctx) error {
 }
 
 func DeleteAddress(c *fiber.Ctx) error {
-	userid := c.QueryInt("userid")
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
 	if !validToken(token, userid) {
