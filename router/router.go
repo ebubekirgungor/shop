@@ -11,6 +11,8 @@ import (
 func SetupRoutes(app *fiber.App) {
 	api := app.Group(config.Config("API_BASE"))
 
+	api.Get("/search", controllers.Search)
+
 	auth := api.Group("/auth")
 	auth.Post("/login", controllers.Login)
 	auth.Post("/check_user", controllers.CheckUser)

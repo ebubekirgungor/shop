@@ -3,11 +3,27 @@
     <nav
       class="bg-white h-24 flex flex-col sm:flex-row sm:border-b justify-center items-center gap-x-10"
     >
-      <input
-        class="order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out sm:ml-[14vw] w-[90%] sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] sm:focus:shadow-lg sm:focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
-        type="text"
-        placeholder="Search products"
-      />
+      <div>
+        <input
+          class="order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out sm:ml-[14vw] w-[90%] sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] sm:focus:shadow-lg sm:focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
+          type="text"
+          placeholder="Search products"
+          v-model="search"
+          @focus="search_focus = true"
+          @blur="search_focus = false"
+        />
+        <transition name="background" mode="out-in"
+          ><div
+            v-if="search_focus && products.length > 0"
+            class="fixed flex flex-col divide-y sm:ml-[14vw] w-[550px] h-auto scale-[1.01] p-5 bg-white shadow-2xl rounded-b-lg"
+          >
+            <div class="flex justify-between py-2" v-for="product in products">
+              <NuxtLink :to="'/' + product.url">{{ product.title }}</NuxtLink>
+              <div class="text-gray-400">{{ product.category }}</div>
+            </div>
+          </div>
+        </transition>
+      </div>
       <div
         class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
       >
@@ -55,6 +71,11 @@
 <script setup lang="ts">
 const config = useRuntimeConfig().public;
 const role = useCookie<number | null>("role");
+interface Product {
+  category: string;
+  title: string;
+  url: string;
+}
 const logout = async () => {
   role.value = null;
   await useFetch(config.apiBase + "/auth/logout", {
@@ -65,6 +86,17 @@ const logout = async () => {
     },
   });
 };
+const search = ref("");
+const search_focus = ref(false);
+const products = ref<Product[]>([]);
+watch(search, async () => {
+  await useFetch(config.apiBase + "/search", {
+    query: { q: search.value },
+    onResponse({ response }) {
+      products.value = response._data;
+    },
+  });
+});
 const button =
   "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent";
 const menu_item = "flex justify-center items-center w-full h-8";
