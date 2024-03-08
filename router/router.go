@@ -1,6 +1,7 @@
 package router
 
 import (
+	"shop/config"
 	"shop/controllers"
 	"shop/middleware"
 
@@ -8,7 +9,7 @@ import (
 )
 
 func SetupRoutes(app *fiber.App) {
-	api := app.Group("/api")
+	api := app.Group(config.Config("API_BASE"))
 
 	auth := api.Group("/auth")
 	auth.Post("/login", controllers.Login)
@@ -25,11 +26,11 @@ func SetupRoutes(app *fiber.App) {
 	users.Patch("/cart", middleware.Protected(), controllers.UpdateCart)
 	api.Get("/cart", controllers.UnregisteredCart)
 
-	addresses := api.Group("/addresses")
-	addresses.Get("/", middleware.Protected(), controllers.Addresses)
-	addresses.Post("/", middleware.Protected(), controllers.AddAddress)
-	addresses.Patch("/:id", middleware.Protected(), controllers.UpdateAddress)
-	addresses.Delete("/:id", middleware.Protected(), controllers.DeleteAddress)
+	addresses := api.Group("/addresses", middleware.Protected())
+	addresses.Get("/", controllers.Addresses)
+	addresses.Post("/", controllers.AddAddress)
+	addresses.Patch("/:id", controllers.UpdateAddress)
+	addresses.Delete("/:id", controllers.DeleteAddress)
 
 	categories := api.Group("/categories")
 	categories.Get("/", controllers.AllCategories)

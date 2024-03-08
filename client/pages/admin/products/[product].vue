@@ -30,7 +30,11 @@
               v-model="category_new"
               required
             />
-            <button :disabled="!category_new" type="submit" :class="button">
+            <button
+              :disabled="!category_new || categories.find((category: any) => category.title == category_new)"
+              type="submit"
+              :class="button"
+            >
               Create
             </button>
           </form>
@@ -194,6 +198,7 @@
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 const route = useRoute();
 const router = useRouter();
 definePageMeta({
@@ -260,17 +265,20 @@ const data_to_form = (response: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>("/api/categories", {
+    await useFetch<any>(config.apiBase + "/categories", {
       onResponse({ response }) {
         categories.value = response._data;
       },
     });
     if (!is_add) {
-      await useFetch<any>("/api/products/" + route.params.product, {
-        onResponse({ response }) {
-          data_to_form(response._data);
-        },
-      });
+      await useFetch<any>(
+        config.apiBase + "/products/" + route.params.product,
+        {
+          onResponse({ response }) {
+            data_to_form(response._data);
+          },
+        }
+      );
     }
   });
 });
@@ -290,24 +298,32 @@ const create_update = async () => {
   for (const image in images_to_upload) {
     form_data.append("file", images_to_upload[image]);
   }
-  await useFetch(is_add ? "/api/products" : "/api/products/" + form.value.ID, {
-    method: is_add ? "post" : "patch",
-    body: form_data,
-    onResponse({ response }) {
-      if (response._data.ID) {
-        toast.success("Product " + (is_add ? "created" : "updated"), {
-          bodyClassName: "toast-font",
-        });
-        router.push("/admin/products/" + response._data.url);
-        images_to_upload = [];
-        data_to_form(response._data);
-      } else {
-        toast.warning(response._data.error, {
-          bodyClassName: "toast-font",
-        });
-      }
-    },
-  });
+  await useFetch(
+    is_add
+      ? config.apiBase + "/products"
+      : config.apiBase + "/products/" + form.value.ID,
+    {
+      headers: {
+        Authorization: config.apiKey,
+      },
+      method: is_add ? "post" : "patch",
+      body: form_data,
+      onResponse({ response }) {
+        if (response._data.ID) {
+          toast.success("Product " + (is_add ? "created" : "updated"), {
+            bodyClassName: "toast-font",
+          });
+          router.push("/admin/products/" + response._data.url);
+          images_to_upload = [];
+          data_to_form(response._data);
+        } else {
+          toast.warning(response._data.error, {
+            bodyClassName: "toast-font",
+          });
+        }
+      },
+    }
+  );
 };
 const remove = async () => {
   images_to_upload.splice(delete_image_order.value);
@@ -327,7 +343,10 @@ const remove = async () => {
   });
 };
 const create_category = async () => {
-  await useFetch("/api/categories", {
+  await useFetch(config.apiBase + "/categories", {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "post",
     body: {
       title: category_new.value,
@@ -336,6 +355,7 @@ const create_category = async () => {
       if (response._data.title) {
         category_dialog.value = false;
         categories.value.push(response._data);
+        category_new.value = "";
         toast.success("Category created", {
           bodyClassName: "toast-font",
         });

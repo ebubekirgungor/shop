@@ -167,6 +167,7 @@
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -200,7 +201,10 @@ const edit_address = ref({
 const delete_address_id = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>("/api/addresses", {
+    await useFetch<any>(config.apiBase + "/addresses", {
+      headers: {
+        Authorization: config.apiKey,
+      },
       onResponse({ response }) {
         if (response._data.addresses) {
           addresses.value = response._data.addresses;
@@ -211,7 +215,10 @@ onMounted(() => {
   });
 });
 const create = async () => {
-  await useFetch("/api/addresses", {
+  await useFetch(config.apiBase + "/addresses", {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "post",
     body: {
       title: new_address.value.title,
@@ -238,6 +245,9 @@ const create = async () => {
 };
 const update = async () => {
   await useFetch(`/api/addresses/${edit_address.value.ID}`, {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "patch",
     body: {
       title: edit_address.value.title,
@@ -269,6 +279,9 @@ const update = async () => {
 };
 const remove = async () => {
   await useFetch(`/api/addresses/${delete_address_id.value}`, {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "delete",
     onResponse({ response }) {
       if (response._data) {

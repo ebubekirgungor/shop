@@ -79,6 +79,7 @@ definePageMeta({
 });
 import { useToast, POSITION } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 const showpassword = "size-6 absolute ml-[265px] ";
 const eye = ref(false);
 const form = ref({
@@ -87,7 +88,7 @@ const form = ref({
   remember_me: false,
 });
 const login = async () => {
-  await useFetch("/api/auth/login", {
+  await useFetch(config.apiBase + "/auth/login", {
     method: "post",
     body: {
       email: form.value.email,

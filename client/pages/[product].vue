@@ -98,10 +98,11 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-const route = useRoute();
 import { useToast } from "vue-toastification";
-const role = useCookie<number>("role");
 const toast = useToast();
+const config = useRuntimeConfig().public;
+const route = useRoute();
+const role = useCookie<number>("role");
 const product = ref<any>({
   ID: "",
   title: "",
@@ -118,7 +119,7 @@ const cart = ref<any>([]);
 const product_cart_quantity = ref();
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>("/api/products/" + route.params.product, {
+    await useFetch<any>(config.apiBase + "/products/" + route.params.product, {
       onResponse({ response }) {
         product.value = response._data;
         const images_array: any = [];
@@ -133,7 +134,10 @@ onMounted(() => {
       },
     });
     if (role.value != undefined) {
-      await useFetch<any>("/api/users", {
+      await useFetch<any>(config.apiBase + "/users", {
+        headers: {
+          Authorization: config.apiKey,
+        },
         onResponse({ response }) {
           cart.value = response._data.cart;
           product_cart_quantity.value =
@@ -174,7 +178,10 @@ const add_to_cart = async () => {
     product_cart_quantity.value += quantity.value;
   }
   if (role.value != undefined) {
-    await useFetch("/api/users/cart", {
+    await useFetch(config.apiBase + "/users/cart", {
+      headers: {
+        Authorization: config.apiKey,
+      },
       method: "patch",
       body: {
         cart: JSON.parse(JSON.stringify(cart.value)),

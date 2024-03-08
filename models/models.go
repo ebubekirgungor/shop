@@ -22,7 +22,7 @@ type User struct {
 
 type Address struct {
 	gorm.Model
-	Title   string `gorm:"not null" json:"title"`
+	Title   string `gorm:"uniqueIndex;not null" json:"title"`
 	Address string `gorm:"not null" json:"address"`
 	UserId  int    `gorm:"not null" json:"user_id"`
 	User    User
@@ -30,7 +30,7 @@ type Address struct {
 
 type Category struct {
 	gorm.Model
-	Title    string    `gorm:"not null" json:"title"`
+	Title    string    `gorm:"uniqueIndex;not null" json:"title"`
 	Products []Product `json:"products"`
 }
 
@@ -43,7 +43,6 @@ type Product struct {
 	ListPrice     float32        `gorm:"not null" json:"list_price"`
 	StockQuantity int            `gorm:"not null" json:"stock_quantity"`
 	Images        datatypes.JSON `gorm:"not null" json:"images"`
-	//Orders        []Order       `gorm:"many2many:order_products;"`
 }
 
 type Order struct {

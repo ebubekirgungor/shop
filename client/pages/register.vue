@@ -181,6 +181,7 @@ definePageMeta({
 });
 import { useToast, POSITION } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 const step = ref(1);
 const eye = ref(false);
 const form = ref({
@@ -197,7 +198,7 @@ const form = ref({
   password: "",
 });
 const check_email = async () => {
-  await useFetch("/api/auth/check_user", {
+  await useFetch(config.apiBase + "/auth/check_user", {
     method: "post",
     body: {
       email: form.value.email,
@@ -215,7 +216,7 @@ const check_email = async () => {
   });
 };
 const register = async () => {
-  await useFetch("/api/users", {
+  await useFetch(config.apiBase + "/users", {
     method: "post",
     body: {
       email: form.value.email,

@@ -53,10 +53,11 @@
   </div>
 </template>
 <script setup lang="ts">
+const config = useRuntimeConfig().public;
 const role = useCookie<number | null>("role");
 const logout = async () => {
   role.value = null;
-  await useFetch("/api/auth/logout", {
+  await useFetch(config.apiBase + "/auth/logout", {
     onResponse({ response }) {
       if (response._data.status == "success") {
         navigateTo("/");

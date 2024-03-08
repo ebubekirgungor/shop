@@ -24,7 +24,7 @@
       <label :class="label"
         >E-mail<input
           disabled
-          :class="input + ' bg-gray-500/40 cursor-not-allowed'"
+          :class="input + ' bg-gray-300 cursor-not-allowed'"
           :placeholder="form.email"
           type="text"
       /></label>
@@ -134,6 +134,7 @@
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -177,7 +178,10 @@ const data_to_form = async (data: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>("/api/users", {
+    await useFetch<any>(config.apiBase + "/users", {
+      headers: {
+        Authorization: config.apiKey,
+      },
       onResponse({ response }) {
         data_to_form(response._data);
         fetch_complete.value = true;
@@ -186,7 +190,10 @@ onMounted(() => {
   });
 });
 const update = async () => {
-  await useFetch("/api/users", {
+  await useFetch(config.apiBase + "/users", {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "patch",
     body: {
       first_name: form.value.first_name,

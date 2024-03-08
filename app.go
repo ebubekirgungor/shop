@@ -6,7 +6,7 @@ import (
 	"shop/database"
 	"shop/router"
 
-	"github.com/ebubekirgungor/http2"
+	"github.com/dgrr/http2"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/valyala/fasthttp"
@@ -21,10 +21,6 @@ func main() {
 	router.SetupRoutes(app)
 
 	app.Static("/images", "./images")
-
-	app.Use(func(c *fiber.Ctx) error {
-		return c.SendStatus(404)
-	})
 
 	s := &fasthttp.Server{
 		Handler: app.Handler(),

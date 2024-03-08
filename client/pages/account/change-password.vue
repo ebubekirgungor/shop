@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -54,7 +55,10 @@ const form = ref({
   new_password2: "",
 });
 const update = async () => {
-  await useFetch("/api/users/password", {
+  await useFetch(config.apiBase + "/users/password", {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "patch",
     body: {
       old_password: form.value.old_password,

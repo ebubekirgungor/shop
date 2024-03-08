@@ -6,6 +6,12 @@ export default defineNuxtConfig({
       cert: "../certs/RootCA.pem",
     },
   },
+  runtimeConfig: {
+    public: {
+      apiBase: process.env.API_BASE,
+      apiKey: process.env.API_KEY,
+    },
+  },
   app: {
     head: {
       title: "Shop",

@@ -197,6 +197,7 @@
 import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
+const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -218,7 +219,7 @@ const sort_direction = ref(0);
 const arrow_active = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(`/api/products`, {
+    await useFetch<any>(config.apiBase + "/products", {
       onResponse({ response }) {
         if (response._data) {
           products.value = response._data;
@@ -265,7 +266,10 @@ const sort = async (field: string) => {
   }
 };
 const remove = async () => {
-  await useFetch(`/api/products/${delete_product_id.value}`, {
+  await useFetch(config.apiBase + "/products/" + delete_product_id.value, {
+    headers: {
+      Authorization: config.apiKey,
+    },
     method: "delete",
     onResponse({ response }) {
       if (response._data) {
