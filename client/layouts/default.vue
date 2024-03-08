@@ -90,12 +90,16 @@ const search = ref("");
 const search_focus = ref(false);
 const products = ref<Product[]>([]);
 watch(search, async () => {
-  await useFetch(config.apiBase + "/search", {
-    query: { q: search.value },
-    onResponse({ response }) {
-      products.value = response._data;
-    },
-  });
+  if (search.value.length > 1) {
+    await useFetch(config.apiBase + "/search", {
+      query: { q: search.value },
+      onResponse({ response }) {
+        products.value = response._data;
+      },
+    });
+  } else {
+    products.value = [];
+  }
 });
 const button =
   "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent";

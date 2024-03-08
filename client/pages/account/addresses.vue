@@ -122,15 +122,16 @@
     >
       Addresses
     </div>
-    <div
-      class="flex justify-center items-center p-6 min-w-[35rem] h-full min-h-[18rem] bg-white rounded-xl shadow-md"
-    >
-      <div v-if="fetch_complete" class="w-full grid grid-cols-auto_box gap-6">
+    <div class="flex p-6 min-w-[35rem] bg-white rounded-xl shadow-md">
+      <div
+        v-if="fetch_complete"
+        class="w-full grid grid-cols-4 grid-cols-auto_box gap-6"
+      >
         <div
           @click="add_dialog = true"
           :class="
             box +
-            ' transition duration-200 ease-in-out flex items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300'
+            ' transition duration-200 ease-in-out items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300'
           "
         >
           <div
@@ -156,10 +157,11 @@
           <div class="text-sm select-text">{{ address.address }}</div>
         </div>
       </div>
-      <div
-        v-else
-        class="animate-spin size-24 bg-[url(/icons/loading.svg)] bg-no-repeat bg-cover"
-      ></div>
+      <div v-else class="flex items-center justify-center w-full">
+        <div
+          class="animate-spin size-24 bg-[url(/icons/loading.svg)] bg-no-repeat bg-cover"
+        ></div>
+      </div>
     </div>
   </main>
 </template>
@@ -185,7 +187,11 @@ const fetch_complete = ref(false);
 const add_dialog = ref(false);
 const edit_dialog = ref(false);
 const delete_dialog = ref(false);
-const open_edit_dialog = (id: number | null, title: string, address: string) => {
+const open_edit_dialog = (
+  id: number | null,
+  title: string,
+  address: string
+) => {
   edit_address.value = {
     ID: id,
     title: title,
@@ -287,7 +293,7 @@ const update = async () => {
   });
 };
 const remove = async () => {
-  await useFetch(`/api/addresses/${delete_address_id.value}`, {
+  await useFetch(config.apiBase + "/addresses/" + delete_address_id.value, {
     headers: {
       Authorization: config.apiKey,
     },
@@ -313,7 +319,7 @@ const remove = async () => {
     },
   });
 };
-const box = "flex flex-col p-4 shadow-md text-xl size-60 rounded-xl";
+const box = "flex flex-col p-4 shadow-md text-xl size-56 rounded-xl";
 const input =
   "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const button =

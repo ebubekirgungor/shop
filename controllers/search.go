@@ -8,10 +8,6 @@ import (
 )
 
 func Search(c *fiber.Ctx) error {
-	if c.Query("q") == "" {
-		return c.Status(200).JSON([]string{})
-	}
-
 	products := []models.Product{}
 	database.DB.Db.Preload("Category").Where("title ILIKE ? AND stock_quantity > ?", "%"+c.Query("q")+"%", 0).Find(&products)
 
