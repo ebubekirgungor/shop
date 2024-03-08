@@ -172,11 +172,20 @@ definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+interface Address {
+  ID: number | null;
+  title: string;
+  address: string;
+}
+interface NewAddress {
+  title: string;
+  address: string;
+}
 const fetch_complete = ref(false);
 const add_dialog = ref(false);
 const edit_dialog = ref(false);
 const delete_dialog = ref(false);
-const open_edit_dialog = (id: any, title: string, address: string) => {
+const open_edit_dialog = (id: number | null, title: string, address: string) => {
   edit_address.value = {
     ID: id,
     title: title,
@@ -184,24 +193,24 @@ const open_edit_dialog = (id: any, title: string, address: string) => {
   };
   edit_dialog.value = true;
 };
-const open_delete_dialog = (id: string) => {
+const open_delete_dialog = (id: number | null) => {
   delete_address_id.value = id;
   delete_dialog.value = true;
 };
-const addresses = ref<any>([]);
-const new_address = ref({
+const addresses = ref<Address[]>([]);
+const new_address = ref<NewAddress>({
   title: "",
   address: "",
 });
-const edit_address = ref({
+const edit_address = ref<Address>({
   ID: null,
   title: "",
   address: "",
 });
-const delete_address_id = ref("");
+const delete_address_id = ref<number | null>(null);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(config.apiBase + "/addresses", {
+    await useFetch<Address[]>(config.apiBase + "/addresses", {
       headers: {
         Authorization: config.apiKey,
       },
@@ -244,7 +253,7 @@ const create = async () => {
   });
 };
 const update = async () => {
-  await useFetch(`/api/addresses/${edit_address.value.ID}`, {
+  await useFetch(config.apiBase + "/addresses/" + edit_address.value.ID, {
     headers: {
       Authorization: config.apiKey,
     },
@@ -257,7 +266,7 @@ const update = async () => {
       if (response._data.title) {
         addresses.value[
           addresses.value
-            .map((address: any) => address.ID)
+            .map((address: Address) => address.ID)
             .indexOf(edit_address.value.ID)
         ] = edit_address.value;
         edit_dialog.value = false;
@@ -287,12 +296,12 @@ const remove = async () => {
       if (response._data) {
         addresses.value.splice(
           addresses.value
-            .map((address: any) => address.ID)
+            .map((address: Address) => address.ID)
             .indexOf(delete_address_id.value),
           1
         );
         delete_dialog.value = false;
-        delete_address_id.value = "";
+        delete_address_id.value = null;
         toast.success("Address removed", {
           bodyClassName: "toast-font",
         });

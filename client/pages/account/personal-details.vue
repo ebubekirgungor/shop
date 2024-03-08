@@ -139,8 +139,20 @@ definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+interface Form {
+  email: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
+  birthdate: {
+    day: string;
+    month: string;
+    year: string;
+  };
+  gender: string;
+}
 const fetch_complete = ref(false);
-const form = ref({
+const form = ref<Form>({
   email: "",
   first_name: "",
   last_name: "",
@@ -152,7 +164,8 @@ const form = ref({
   },
   gender: "",
 });
-const form_old = ref({
+const form_old = ref<Form>({
+  email: "",
   first_name: "",
   last_name: "",
   phone: "",
@@ -163,9 +176,9 @@ const form_old = ref({
   },
   gender: "",
 });
-const data_to_form = async (data: any) => {
+const data_to_form = async (data: Form) => {
   form.value = { ...data };
-  const birthdate = data.birthdate.slice(0, 10);
+  const birthdate = (data.birthdate as unknown as string).slice(0, 10);
   form.value.birthdate = {
     day: birthdate == "" ? "0" : new Date(birthdate).getDate().toString(),
     month:
@@ -178,7 +191,7 @@ const data_to_form = async (data: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(config.apiBase + "/users", {
+    await useFetch<Form>(config.apiBase + "/users", {
       headers: {
         Authorization: config.apiKey,
       },
@@ -217,9 +230,9 @@ const update = async () => {
   });
 };
 const phone_format = () => {
-  let x: any = form.value.phone
+  let x: RegExpMatchArray | null = form.value.phone
     .replace(/\D/g, "")
-    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/) as RegExpMatchArray;
   form.value.phone = !x[2]
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");

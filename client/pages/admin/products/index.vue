@@ -202,14 +202,22 @@ definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+interface Product {
+  id: number | null;
+  title: string;
+  url: string;
+  category: string;
+  list_price: number | null;
+  stock_quantity: string;
+}
 const fetch_complete = ref(false);
-const open_delete_dialog = (id: string) => {
+const open_delete_dialog = (id: Product["id"]) => {
   delete_product_id.value = id;
   delete_dialog.value = true;
 };
-const delete_product_id = ref("");
+const delete_product_id = ref<Product["id"]>(null);
 const delete_dialog = ref(false);
-const products = ref<any>([]);
+const products = ref<Product[]>([]);
 const filter = ref("");
 const current_page = ref(1);
 const items_per_page = ref(5);
@@ -219,7 +227,7 @@ const sort_direction = ref(0);
 const arrow_active = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(config.apiBase + "/products", {
+    await useFetch<Product[]>(config.apiBase + "/products", {
       onResponse({ response }) {
         if (response._data) {
           products.value = response._data;
@@ -230,7 +238,7 @@ onMounted(() => {
   });
 });
 const filtered_products = computed(() => {
-  return products.value.filter((product: any) =>
+  return products.value.filter((product: Product) =>
     product.title.toLowerCase().includes(filter.value.toLowerCase())
   );
 });
@@ -242,8 +250,8 @@ const displayed_products = computed(() => {
   let sorted_products = [...filtered_products.value];
   if (sort_by_field.value) {
     sorted_products.sort((a, b) => {
-      const fieldA = a[sort_by_field.value];
-      const fieldB = b[sort_by_field.value];
+      const fieldA = a[sort_by_field.value as keyof Product];
+      const fieldB = b[sort_by_field.value as keyof Product];
       if (typeof fieldA === "number" && typeof fieldB === "number") {
         return (fieldA - fieldB) * sort_direction.value;
       } else {
@@ -275,12 +283,12 @@ const remove = async () => {
       if (response._data) {
         products.value.splice(
           products.value
-            .map((product: any) => product.id)
+            .map((product: Product) => product.id)
             .indexOf(delete_product_id.value),
           1
         );
         delete_dialog.value = false;
-        delete_product_id.value = "";
+        delete_product_id.value = null;
         toast.success("Product removed", {
           bodyClassName: "toast-font",
         });

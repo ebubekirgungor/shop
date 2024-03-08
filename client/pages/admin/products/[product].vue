@@ -31,7 +31,7 @@
               required
             />
             <button
-              :disabled="!category_new || categories.find((category: any) => category.title == category_new)"
+              :disabled="!category_new || !!categories.find((category: Category) => category.title == category_new)"
               type="submit"
               :class="button"
             >
@@ -205,54 +205,76 @@ definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+interface Category {
+  ID: number;
+  title: string;
+}
+interface Image {
+  order: number | null;
+  name: string;
+  url: string;
+}
+interface Product {
+  ID?: number | null;
+  title: string;
+  category_id: string;
+  list_price: number | null;
+  stock_quantity: string;
+  images?: Image[];
+}
 const is_add = route.params.product == "add";
-const open_delete_dialog = (event: any, order: string) => {
+const open_delete_dialog = (event: Event, order: Image["order"]) => {
   event.stopPropagation();
   delete_image_order.value = order;
   delete_dialog.value = true;
 };
-const delete_image_order = ref("");
+const delete_image_order = ref<Product["ID"]>(null);
 const delete_dialog = ref(false);
-const categories = ref<any>([]);
+const categories = ref<Category[]>([]);
 const category_dialog = ref(false);
 const category_new = ref("");
 const image_gallery = ref(false);
-const form = ref({
-  ID: "",
+const form = ref<Product>({
+  ID: null,
   title: "",
   category_id: "",
   list_price: null,
   stock_quantity: "",
 });
-let form_old = {
-  ID: "",
+let form_old = <Product>{
+  ID: null,
   title: "",
   category_id: "",
   list_price: null,
   stock_quantity: "",
 };
-let images_to_upload: any = [];
-const images = ref<any>([]);
-let images_old: any = [];
+let images_to_upload: File[] = [];
+const images = ref<Image[]>([]);
+let images_old: Image[] = [];
 const image_current = ref("");
-const upload = (event: any) => {
-  Array.prototype.slice.call(event.target.files).forEach((file: any) => {
-    images.value.push({
-      order: images.value.length,
-      name: file.name,
-      url: URL.createObjectURL(file),
+interface EventTarget {
+  files: unknown;
+}
+const upload = (event: Event) => {
+  Array.prototype.slice
+    .call((event.target as unknown as EventTarget).files)
+    .forEach((file: File) => {
+      images.value.push({
+        order: images.value.length,
+        name: file.name,
+        url: URL.createObjectURL(file),
+      });
+      images_to_upload.push(file);
     });
-    images_to_upload.push(file);
-  });
 };
-const open_gallery = (image: any) => {
+const open_gallery = (image: Image["url"]) => {
   image_gallery.value = true;
   image_current.value = image;
 };
-const data_to_form = (response: any) => {
+const data_to_form = (response: Product) => {
   form.value = response;
-  const images_array: any = [];
-  response.images.forEach((image: any) => {
+  const images_array: Image[] = [];
+  (response.images as Image[]).forEach((image: Image) => {
     images_array.push({
       order: image.order,
       name: image.name,
@@ -265,13 +287,13 @@ const data_to_form = (response: any) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(config.apiBase + "/categories", {
+    await useFetch<Category[]>(config.apiBase + "/categories", {
       onResponse({ response }) {
         categories.value = response._data;
       },
     });
     if (!is_add) {
-      await useFetch<any>(
+      await useFetch<Product>(
         config.apiBase + "/products/" + route.params.product,
         {
           onResponse({ response }) {
@@ -283,17 +305,20 @@ onMounted(() => {
   });
 });
 const create_update = async () => {
-  const form_values = <any>{
+  const form_values = {
     title: form.value.title,
     url: form.value.title.toLowerCase().replaceAll(" ", "-"),
     category_id: form.value.category_id,
     list_price: form.value.list_price,
     stock_quantity: form.value.stock_quantity,
-    images: JSON.stringify(images.value.map(({ url, ...rest }: any) => rest)),
+    images: JSON.stringify(images.value.map(({ url, ...rest }: Image) => rest)),
   };
   const form_data = new FormData();
   for (const item in form_values) {
-    form_data.append(item, form_values[item]);
+    form_data.append(
+      item,
+      (form_values as unknown as { [key: string]: string })[item]
+    );
   }
   for (const image in images_to_upload) {
     form_data.append("file", images_to_upload[image]);
@@ -326,18 +351,18 @@ const create_update = async () => {
   );
 };
 const remove = async () => {
-  images_to_upload.splice(delete_image_order.value);
+  images_to_upload.splice(delete_image_order.value as number);
   images.value.splice(
     images.value
-      .map((image: any) => image.order)
-      .indexOf(delete_image_order.value),
+      .map((image: Image) => image.order)
+      .indexOf(delete_image_order.value as number),
     1
   );
   for (let i = 0; i < images.value.length; i++) {
     images.value[i].order = i;
   }
   delete_dialog.value = false;
-  delete_image_order.value = "";
+  delete_image_order.value = null;
   toast.success("Image removed", {
     bodyClassName: "toast-font",
   });

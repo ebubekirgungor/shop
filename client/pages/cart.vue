@@ -79,7 +79,7 @@
     >
       <div class="text-[17px]">
         Selected products ({{
-          cart.reduce((total: number, product: any) => {
+          cart.reduce((total: number, product: Cart) => {
             return total + (product.cart.selected ? 1 : 0);
           }, 0)
         }})
@@ -87,7 +87,7 @@
       <div class="flex gap-x-1 text-3xl">
         {{
           (
-            cart.reduce((total: number, product: any) => {
+            cart.reduce((total: number, product: Cart) => {
               return (
                 total +
                 product.list_price *
@@ -107,7 +107,7 @@
           <div>
             {{
               cart
-                .reduce((total: number, product: any) => {
+                .reduce((total: number, product: Cart) => {
                   return (
                     total +
                     product.list_price *
@@ -141,13 +141,31 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const role = useCookie("role");
-const cart_unregistered = useCookie<any>("cart");
+interface Image {
+  order: number;
+  name: string;
+  url: string;
+}
+interface Cart {
+  id: number;
+  title: string;
+  url: string;
+  list_price: number;
+  stock_quantity: number;
+  images: Image[];
+  cart: {
+    id: number;
+    quantity: number;
+    selected: boolean;
+  };
+}
+const cart_unregistered = useCookie<Object[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
-const cart = ref<any>([]);
+const cart = ref<Cart[]>([]);
 const shipping = ref(50);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(
+    await useFetch<Cart[]>(
       role.value != undefined
         ? config.apiBase + "/users/cart"
         : config.apiBase + "/cart",
@@ -164,7 +182,7 @@ onMounted(() => {
 });
 const remove_from_cart = async (product_id: number) => {
   cart.value.splice(
-    cart.value.map((item: any) => item.id).indexOf(product_id),
+    cart.value.map((item: Cart) => item.id).indexOf(product_id),
     1
   );
 };

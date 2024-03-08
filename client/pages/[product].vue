@@ -103,38 +103,61 @@ const toast = useToast();
 const config = useRuntimeConfig().public;
 const route = useRoute();
 const role = useCookie<number>("role");
-const product = ref<any>({
-  ID: "",
+interface Image {
+  order: number;
+  name: string;
+  url: string;
+}
+interface Product {
+  ID: number | null;
+  title: string;
+  category_id: string;
+  list_price: number;
+  stock_quantity: string;
+}
+interface User {
+  cart: Cart;
+}
+interface Cart {
+  id: number | null;
+  quantity: number;
+  selected: boolean;
+}
+const product = ref<Product>({
+  ID: null,
   title: "",
   category_id: "",
   list_price: 0,
   stock_quantity: "",
 });
-const images = ref<any>([]);
+const images = ref<Image[]>([]);
 const current_slide = ref(0);
 const quantity = ref(1);
-const cart_unregistered = useCookie<any>("cart");
+const cart_unregistered = useCookie<Cart[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
-const cart = ref<any>([]);
+const cart = ref<Cart[]>([]);
 const product_cart_quantity = ref();
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<any>(config.apiBase + "/products/" + route.params.product, {
-      onResponse({ response }) {
-        product.value = response._data;
-        const images_array: any = [];
-        response._data.images.forEach((image: any) => {
-          images_array.push({
-            order: image.order,
-            name: image.name,
-            url: "/images/products/" + image.name,
+    await useFetch<Product>(
+      config.apiBase + "/products/" + route.params.product,
+      {
+        onResponse({ response }) {
+          product.value = response._data;
+          const images_array: Image[] = [];
+          response._data.images.forEach((image: Image) => {
+            images_array.push({
+              order: image.order,
+              name: image.name,
+              url: "/images/products/" + image.name,
+            });
           });
-        });
-        images.value = images_array;
-      },
-    });
+          images.value = images_array;
+        },
+      }
+    );
     if (role.value != undefined) {
-      await useFetch<any>(config.apiBase + "/users", {
+      await useFetch<User>(config.apiBase + "/users", {
         headers: {
           Authorization: config.apiKey,
         },
@@ -142,7 +165,7 @@ onMounted(() => {
           cart.value = response._data.cart;
           product_cart_quantity.value =
             cart.value[
-              cart.value.findIndex((item: any) => item.id == product.value.ID)
+              cart.value.findIndex((item: Cart) => item.id == product.value.ID)
             ].quantity;
           if (product_cart_quantity.value >= product.value.stock_quantity)
             quantity.value = 0;
@@ -154,7 +177,7 @@ onMounted(() => {
       if (cart_unregistered.value.length > 0) {
         product_cart_quantity.value =
           cart.value[
-            cart.value.findIndex((item: any) => item.id == product.value.ID)
+            cart.value.findIndex((item: Cart) => item.id == product.value.ID)
           ].quantity;
         if (product_cart_quantity.value >= product.value.stock_quantity)
           quantity.value = 0;
@@ -164,7 +187,7 @@ onMounted(() => {
 });
 const add_to_cart = async () => {
   const existing_index = cart.value.findIndex(
-    (item: any) => item.id == product.value.ID
+    (item: Cart) => item.id == product.value.ID
   );
   if (existing_index === -1) {
     cart.value.push({

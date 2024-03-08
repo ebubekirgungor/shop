@@ -241,9 +241,9 @@ const register = async () => {
   });
 };
 const phone_format = () => {
-  let x: any = form.value.phone
+  let x: RegExpMatchArray | null = form.value.phone
     .replace(/\D/g, "")
-    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+    .match(/(\d{0,3})(\d{0,3})(\d{0,4})/) as RegExpMatchArray;
   form.value.phone = !x[2]
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
