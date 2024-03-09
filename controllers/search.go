@@ -9,7 +9,7 @@ import (
 
 func Search(c *fiber.Ctx) error {
 	products := []models.Product{}
-	database.DB.Db.Preload("Category").Where("title ILIKE ? AND stock_quantity > ?", "%"+c.Query("q")+"%", 0).Find(&products)
+	database.DB.Db.Preload("Category").Where("title ILIKE ? OR title ILIKE ? AND stock_quantity > ?", c.Query("q")+"%", "% "+c.Query("q")+"%", 0).Find(&products)
 
 	var all_products []fiber.Map
 	for _, product := range products {

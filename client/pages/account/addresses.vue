@@ -122,7 +122,9 @@
     >
       Addresses
     </div>
-    <div class="flex p-6 min-w-[35rem] bg-white rounded-xl shadow-md">
+    <div
+      class="flex p-6 min-w-[35rem] min-h-[17rem] bg-white rounded-xl shadow-md"
+    >
       <div
         v-if="fetch_complete"
         class="w-full grid grid-cols-4 grid-cols-auto_box gap-6"
