@@ -1,5 +1,16 @@
 <template>
-  <main class="flex justify-center gap-x-4 m-4">
+  <div v-if="cart.length == 0" class="flex flex-col items-center mt-8 gap-y-12">
+    <div
+      class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/cart.svg)] contrast-0"
+    ></div>
+    <div class="text-3xl text-gray-600">Your cart is empty</div>
+    <NuxtLink
+      to="/"
+      class="transition duration-200 ease-in-out flex justify-center items-center w-52 h-10 rounded-full text-lg border-2 border-black hover:bg-black/10"
+      >Return to shopping</NuxtLink
+    >
+  </div>
+  <main v-else class="flex justify-center gap-x-4 m-4">
     <div
       class="flex flex-col gap-y-4 w-[clamp(40rem,60rem,60rem)] min-w-[40rem]"
     >

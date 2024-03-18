@@ -18,19 +18,19 @@ import (
 type UserData struct {
 	ID       uint   `json:"id"`
 	Password string `json:"password"`
-	Role     int    `json:"role"`
+	Role     uint8  `json:"role"`
 }
 
-func validToken(t *jwt.Token, id int) bool {
+func validToken(t *jwt.Token, id uint) bool {
 	claims := t.Claims.(jwt.MapClaims)
-	uid := int(claims["user_id"].(float64))
+	uid := uint(claims["user_id"].(float64))
 
 	return uid == id
 }
 
 func isAdmin(id int) bool {
 	user := models.User{}
-	database.DB.Db.First(&user, id)
+	database.Db.First(&user, id)
 	return user.Role != 0
 }
 
@@ -41,7 +41,7 @@ func CheckPasswordHash(password, hash string) bool {
 
 func getUser(e string) (*models.User, error) {
 	var user models.User
-	if err := database.DB.Db.Where(&models.User{Email: e}).Find(&user).Error; err != nil {
+	if err := database.Db.Where(&models.User{Email: e}).Find(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
@@ -61,7 +61,7 @@ func CheckUser(c *fiber.Ctx) error {
 		return c.JSON("error")
 	}
 
-	database.DB.Db.Where("email = ?", input.Email).First(&user)
+	database.Db.Where("email = ?", input.Email).First(&user)
 
 	if user.Email == "" {
 		return c.JSON(false)
@@ -133,7 +133,7 @@ func Login(c *fiber.Ctx) error {
 	})
 	c.Cookie(&fiber.Cookie{
 		Name:    "role",
-		Value:   strconv.Itoa(userData.Role),
+		Value:   strconv.Itoa(int(userData.Role)),
 		Expires: expires,
 		Secure:  true,
 	})

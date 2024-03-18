@@ -12,11 +12,7 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-type Dbinstance struct {
-	Db *gorm.DB
-}
-
-var DB Dbinstance
+var Db *gorm.DB
 
 func ConnectDb() {
 	dsn := fmt.Sprintf("host=localhost user=postgres password=%s dbname=%s port=%s sslmode=disable",
@@ -41,7 +37,5 @@ func ConnectDb() {
 	db.AutoMigrate(&models.Product{})
 	db.AutoMigrate(&models.Order{})
 
-	DB = Dbinstance{
-		Db: db,
-	}
+	Db = db
 }

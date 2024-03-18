@@ -28,6 +28,11 @@ func SetupRoutes(app *fiber.App) {
 	users.Patch("/cart", middleware.Protected(), controllers.UpdateCart)
 	api.Get("/cart", controllers.UnregisteredCart)
 
+	favorites := api.Group("/favorites")
+	favorites.Get("/", middleware.Protected(), controllers.Favorites)
+	favorites.Post("/:id", middleware.Protected(), controllers.AddFavorite)
+	favorites.Delete("/:id", middleware.Protected(), controllers.DeleteFavorite)
+
 	addresses := api.Group("/addresses", middleware.Protected())
 	addresses.Get("/", controllers.Addresses)
 	addresses.Post("/", controllers.AddAddress)

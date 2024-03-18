@@ -14,7 +14,7 @@ import (
 
 func AllProducts(c *fiber.Ctx) error {
 	products := []models.Product{}
-	database.DB.Db.Preload("Category").Order("created_at").Find(&products)
+	database.Db.Preload("Category").Order("created_at").Find(&products)
 
 	var all_products []fiber.Map
 	for _, product := range products {
@@ -35,7 +35,10 @@ func AllProducts(c *fiber.Ctx) error {
 
 func Product(c *fiber.Ctx) error {
 	product := models.Product{}
-	database.DB.Db.Preload("Category").Where("url = ?", c.Params("url")).First(&product)
+	user := models.User{}
+	database.Db.Preload("Category").Preload("Users").Where("url = ?", c.Params("url")).First(&product)
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
+	database.Db.Model(&product).Where("ID IN ?", []int{userid}).Association("Users").Find(&user)
 	return c.Status(200).JSON(fiber.Map{
 		"ID":             product.ID,
 		"title":          product.Title,
@@ -43,6 +46,7 @@ func Product(c *fiber.Ctx) error {
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
 		"images":         product.Images,
+		"is_favorite":    user.Email != "",
 	})
 }
 
@@ -50,7 +54,7 @@ func AddProduct(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -59,7 +63,7 @@ func AddProduct(c *fiber.Ctx) error {
 	}
 
 	check_product := models.Product{}
-	database.DB.Db.First(&check_product, c.FormValue("url"))
+	database.Db.First(&check_product, c.FormValue("url"))
 	if check_product.Title != "" {
 		return c.Status(500).JSON(fiber.Map{"error": "Product with given title is already exists"})
 	}
@@ -84,16 +88,18 @@ func AddProduct(c *fiber.Ctx) error {
 
 	product.Title = c.FormValue("title")
 	product.Url = c.FormValue("url")
-	product.CategoryId, _ = strconv.Atoi(c.FormValue("category_id"))
+	CategoryId, _ := strconv.ParseUint(c.FormValue("category_id"), 10, 32)
+	product.CategoryId = uint(CategoryId)
 	listprice, err := strconv.ParseFloat(c.FormValue("list_price"), 32)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid price value"})
 	}
 	product.ListPrice = float32(listprice)
-	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
+	StockQuantity, _ := strconv.ParseUint(c.FormValue("stock_quantity"), 10, 32)
+	product.StockQuantity = uint16(StockQuantity)
 	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
-	database.DB.Db.Create(&product)
+	database.Db.Create(&product)
 
 	return c.Status(200).JSON(product)
 }
@@ -102,7 +108,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -111,7 +117,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	}
 
 	product := new(models.Product)
-	database.DB.Db.First(&product, c.Params("id"))
+	database.Db.First(&product, c.Params("id"))
 
 	if form, err := c.MultipartForm(); err == nil {
 		files := form.File["file"]
@@ -131,16 +137,18 @@ func UpdateProduct(c *fiber.Ctx) error {
 
 	product.Title = c.FormValue("title")
 	product.Url = c.FormValue("url")
-	product.CategoryId, _ = strconv.Atoi(c.FormValue("category_id"))
+	CategoryId, _ := strconv.ParseUint(c.FormValue("category_id"), 10, 32)
+	product.CategoryId = uint(CategoryId)
 	listprice, err := strconv.ParseFloat(c.FormValue("list_price"), 32)
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid price value"})
 	}
 	product.ListPrice = float32(listprice)
-	product.StockQuantity, _ = strconv.Atoi(c.FormValue("stock_quantity"))
+	StockQuantity, _ := strconv.ParseUint(c.FormValue("stock_quantity"), 10, 32)
+	product.StockQuantity = uint16(StockQuantity)
 	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
-	database.DB.Db.Save(&product)
+	database.Db.Save(&product)
 
 	return c.Status(200).JSON(product)
 }
@@ -149,7 +157,7 @@ func DeleteProduct(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -159,7 +167,7 @@ func DeleteProduct(c *fiber.Ctx) error {
 
 	product := models.Product{}
 
-	database.DB.Db.Where("id = ?", c.Params("id")).Delete(&product)
+	database.Db.Where("id = ?", c.Params("id")).Delete(&product)
 
 	return c.Status(200).JSON("Product deleted")
 }

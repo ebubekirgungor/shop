@@ -1,4 +1,4 @@
-export default defineNuxtRouteMiddleware((to, _) => {
+export default defineNuxtRouteMiddleware((to) => {
   const role = useCookie<number>("role");
   if (
     role.value == undefined &&

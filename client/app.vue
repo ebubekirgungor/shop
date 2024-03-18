@@ -4,6 +4,11 @@
   </NuxtLayout>
 </template>
 <style>
+* {
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 .modal-enter-active,
 .modal-leave-active {
   transition: opacity 0.2s, transform 0.3s;

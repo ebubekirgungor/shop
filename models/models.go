@@ -14,17 +14,18 @@ type User struct {
 	Phone     string         `json:"phone"`
 	BirthDate string         `gorm:"type:date;default:null" json:"birthdate"`
 	Gender    string         `gorm:"type:char(1)" json:"gender"`
-	Role      int            `gorm:"size:1;default:0" json:"role"`
+	Role      uint8          `gorm:"size:1;default:0" json:"role"`
 	Addresses []Address      `json:"addresses"`
 	Orders    []Order        `json:"orders"`
 	Cart      datatypes.JSON `gorm:"not null" json:"cart"`
+	Favorites []*Product     `gorm:"many2many:user_products;" json:"favorites"`
 }
 
 type Address struct {
 	gorm.Model
 	Title   string `gorm:"uniqueIndex;not null" json:"title"`
 	Address string `gorm:"not null" json:"address"`
-	UserId  int    `gorm:"not null" json:"user_id"`
+	UserId  uint   `gorm:"not null" json:"user_id"`
 	User    User
 }
 
@@ -36,19 +37,21 @@ type Category struct {
 
 type Product struct {
 	gorm.Model
+	ID            uint   `gorm:"primarykey"`
 	Title         string `gorm:"not null" json:"title"`
 	Url           string `gorm:"uniqueIndex;not null" json:"url"`
-	CategoryId    int    `gorm:"not null" json:"category_id"`
+	CategoryId    uint   `gorm:"not null" json:"category_id"`
 	Category      Category
 	ListPrice     float32        `gorm:"not null" json:"list_price"`
-	StockQuantity int            `gorm:"not null" json:"stock_quantity"`
+	StockQuantity uint16         `gorm:"not null" json:"stock_quantity"`
 	Images        datatypes.JSON `gorm:"not null" json:"images"`
+	Users         []*User        `gorm:"many2many:user_products;"`
 }
 
 type Order struct {
 	gorm.Model
 	Price    float32 `gorm:"not null" json:"price"`
-	UserId   int     `gorm:"not null" json:"user_id"`
+	UserId   uint    `gorm:"not null" json:"user_id"`
 	User     User
-	Products []Product `gorm:"many2many:order_products;"`
+	Products []Product `gorm:"many2many:order_products;" json:"products"`
 }

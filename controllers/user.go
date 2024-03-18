@@ -17,7 +17,7 @@ func hashPassword(password string) (string, error) {
 
 func validUser(id int, p string) bool {
 	user := models.User{}
-	database.DB.Db.First(&user, id)
+	database.Db.First(&user, id)
 	if user.Email == "" {
 		return false
 	}
@@ -31,12 +31,12 @@ func User(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, uint(id)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
 	user := models.User{}
-	database.DB.Db.First(&user, id)
+	database.Db.First(&user, id)
 	if user.Email == "" {
 		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
 	}
@@ -64,7 +64,7 @@ func AddUser(c *fiber.Ctx) error {
 	}
 
 	user.Password = hash
-	if err := database.DB.Db.Create(&user).Error; err != nil {
+	if err := database.Db.Create(&user).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"status": "error", "message": "create"})
 	}
 
@@ -75,7 +75,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, uint(id)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -92,14 +92,14 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	user := new(models.User)
-	database.DB.Db.First(&user, id)
+	database.Db.First(&user, id)
 
 	user.FirstName = uui.FirstName
 	user.LastName = uui.LastName
 	user.Phone = uui.Phone
 	user.BirthDate = uui.BirthDate
 	user.Gender = uui.Gender
-	database.DB.Db.Save(&user)
+	database.Db.Save(&user)
 
 	return c.JSON(user)
 }
@@ -108,7 +108,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, uint(id)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -122,7 +122,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	}
 
 	user := new(models.User)
-	database.DB.Db.First(&user, id)
+	database.Db.First(&user, id)
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(upi.OldPassword)); err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid old password"})
@@ -134,7 +134,7 @@ func UpdatePassword(c *fiber.Ctx) error {
 	}
 
 	user.Password = new_hash
-	database.DB.Db.Save(&user)
+	database.Db.Save(&user)
 
 	return c.JSON(user)
 }
@@ -152,7 +152,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, id) {
+	if !validToken(token, uint(id)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 
 	}
@@ -163,8 +163,8 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	user := new(models.User)
 
-	database.DB.Db.First(&user, id)
-	database.DB.Db.Delete(&user)
+	database.Db.First(&user, id)
+	database.Db.Delete(&user)
 
 	return c.JSON("User deleted")
 }

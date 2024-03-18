@@ -14,12 +14,12 @@ func Addresses(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
 	user := models.User{}
-	database.DB.Db.Preload("Addresses", func(db *gorm.DB) *gorm.DB {
+	database.Db.Preload("Addresses", func(db *gorm.DB) *gorm.DB {
 		return db.Order("addresses.created_at DESC")
 	}).First(&user, userid)
 	if user.Email == "" {
@@ -35,7 +35,7 @@ func AddAddress(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -44,9 +44,9 @@ func AddAddress(c *fiber.Ctx) error {
 		return c.Status(400).JSON(err.Error())
 	}
 
-	address.UserId = userid
+	address.UserId = uint(userid)
 
-	database.DB.Db.Create(&address)
+	database.Db.Create(&address)
 
 	return c.Status(200).JSON(address)
 }
@@ -55,7 +55,7 @@ func UpdateAddress(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
@@ -69,15 +69,15 @@ func UpdateAddress(c *fiber.Ctx) error {
 	}
 
 	address := new(models.Address)
-	database.DB.Db.First(&address, c.Params("id"))
+	database.Db.First(&address, c.Params("id"))
 
-	if userid != address.UserId {
+	if uint(userid) != address.UserId {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid user id"})
 	}
 
 	address.Title = uai.Title
 	address.Address = uai.Address
-	database.DB.Db.Save(&address)
+	database.Db.Save(&address)
 
 	return c.JSON(address)
 }
@@ -86,19 +86,19 @@ func DeleteAddress(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
 
-	if !validToken(token, userid) {
+	if !validToken(token, uint(userid)) {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
 	address := models.Address{}
 
-	database.DB.Db.First(&address, c.Params("id"))
+	database.Db.First(&address, c.Params("id"))
 
-	if userid != address.UserId {
+	if uint(userid) != address.UserId {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid user id"})
 	}
 
-	database.DB.Db.Where("id = ?", c.Params("id")).Delete(&address)
+	database.Db.Where("id = ?", c.Params("id")).Delete(&address)
 
 	return c.Status(200).JSON("Address deleted")
 }

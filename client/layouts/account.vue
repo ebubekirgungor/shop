@@ -22,6 +22,10 @@
           <div class="size-6 bg-[url(/icons/password.svg)]"></div>
           <span>Change Password</span>
         </NuxtLink>
+        <NuxtLink :class="$route.path.endsWith('favorites') ? link + active : link" to="/account/favorites">
+          <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
+          <span>Favorites</span>
+        </NuxtLink>
       </nav>
       <slot />
     </main>

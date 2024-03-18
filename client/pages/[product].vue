@@ -37,7 +37,7 @@
         <div class="flex justify-center gap-x-4 mx-4">
           <button
             v-for="(image, index) in images"
-            class="transition duration-200 ease-in-out size-12 rounded-md bg-no-repeat bg-cover"
+            class="transition duration-200 ease-in-out size-12 rounded-md bg-no-repeat bg-cover bg-center"
             :class="{ 'ring ring-3 ring-black': index == current_slide }"
             :style="'background-image: url(' + image.url + ');'"
             @click="current_slide = index"
@@ -50,7 +50,32 @@
         ></div>
       </div>
       <div class="flex flex-col w-full gap-y-6 p-6">
-        <div class="text-xl select-text">{{ product.title }}</div>
+        <div class="flex justify-between items-center">
+          <div class="text-xl select-text">{{ product.title }}</div>
+          <button
+            v-if="role != undefined"
+            @click="toggle_favorite"
+            class="transition duration-200 ease-in-out flex justify-center items-center size-12 bg-black/5 rounded-full hover:bg-black/10"
+          >
+            <div
+              class="bg-no-repeat bg-center size-7 bg-contain"
+              :class="
+                product.is_favorite
+                  ? 'bg-[url(/icons/favorite_filled.svg)]'
+                  : 'bg-[url(/icons/favorite.svg)] contrast-0'
+              "
+            ></div>
+            <div
+              v-if="animate"
+              class="absolute bg-no-repeat bg-center size-7 bg-contain animate-ping"
+              :class="
+                product.is_favorite
+                  ? 'bg-[url(/icons/favorite_filled.svg)]'
+                  : 'bg-[url(/icons/favorite.svg)] contrast-0'
+              "
+            ></div>
+          </button>
+        </div>
         <div class="flex gap-x-2 text-5xl">
           {{
             product.list_price.toLocaleString("tr-TR", {
@@ -114,6 +139,7 @@ interface Product {
   category_id: string;
   list_price: number;
   stock_quantity: string;
+  is_favorite: boolean;
 }
 interface User {
   cart: Cart;
@@ -129,6 +155,7 @@ const product = ref<Product>({
   category_id: "",
   list_price: 0,
   stock_quantity: "",
+  is_favorite: false,
 });
 const images = ref<Image[]>([]);
 const current_slide = ref(0);
@@ -137,6 +164,7 @@ const cart_unregistered = useCookie<Cart[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
 const cart = ref<Cart[]>([]);
 const product_cart_quantity = ref();
+const animate = ref(false);
 onMounted(() => {
   nextTick(async () => {
     await useFetch<Product>(
@@ -233,6 +261,25 @@ const add_to_cart = async () => {
       ? (quantity.value = 0)
       : (quantity.value = 1);
   }
+};
+const toggle_favorite = async () => {
+  await useFetch(config.apiBase + "/favorites/" + product.value.ID, {
+    headers: {
+      Authorization: config.apiKey,
+    },
+    method: product.value.is_favorite ? "delete" : "post",
+    onResponse({ response }) {
+      if (response._data == "ok") {
+        product.value.is_favorite = !product.value.is_favorite;
+        if (product.value.is_favorite) {
+          animate.value = true;
+          setTimeout(() => {
+            animate.value = false;
+          }, 500);
+        }
+      }
+    },
+  });
 };
 const icon =
   "transition duration-300 ease-in-out bg-no-repeat bg-center size-10 bg-white rounded-full hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 ";
