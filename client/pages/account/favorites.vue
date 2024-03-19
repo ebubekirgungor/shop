@@ -63,20 +63,23 @@
               delete_dialog = true;
               delete_product_id = product.ID;
             "
-            class="absolute mt-2 ml-44 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
+            class="fixed mt-2 ml-44 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
           ></button>
-          <img
-            v-if="product.images.length > 0"
-            class="size-56 object-contain"
-            :src="'/images/products/' + product.images[0].name"
-          />
-          <div v-else class="size-56 border rounded-lg">
+          <NuxtLink :to="'/' + product.url">
+            <img
+              v-if="product.images.length > 0"
+              class="size-56 object-contain"
+              :src="'/images/products/' + product.images[0].name"
+            />
             <div
-              class="size-56 bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-75 invert"
+              v-else
+              class="size-56 bg-no-repeat bg-center bg-contain bg-[url(/images/products/product.png)]"
             ></div>
-          </div>
-          <div class="flex flex-col gap-y-4 p-4">
-            <div class="text-lg">{{ product.title }}</div>
+          </NuxtLink>
+          <div class="flex flex-col gap-y-6 p-4">
+            <NuxtLink :to="'/' + product.url" class="text-md">{{
+              product.title
+            }}</NuxtLink>
             <div class="text-2xl">
               {{
                 product.list_price.toLocaleString("tr-TR", {
@@ -108,6 +111,7 @@ interface Image {
 interface Product {
   ID: number | null;
   title: string;
+  url: string;
   category_id: string;
   list_price: number;
   stock_quantity: string;
