@@ -5,35 +5,16 @@
     >
       Orders
       <button
-        @click="status_filter = null"
-        class="transition duration-200 ease-in-out px-4 text-[15px] border-2 rounded-xl hover:bg-black/10"
-        :class="{ 'bg-black/10': status_filter == null }"
-      >
-        All
-      </button>
-      <button
-        @click="status_filter = DeliveryStatus.InProgress"
+        v-for="status in status_names.filter(
+          (status) => status.status != DeliveryStatus.Delivered
+        )"
+        @click="status_filter = status.status"
         class="transition duration-200 ease-in-out px-4 text-[15px] border-2 rounded-xl hover:bg-black/10 whitespace-nowrap"
-        :class="{ 'bg-black/10': status_filter == DeliveryStatus.InProgress }"
+        :class="{ 'bg-black/10': status_filter == status.status }"
       >
-        In Progress
-      </button>
-      <button
-        @click="status_filter = DeliveryStatus.Returned"
-        class="transition duration-200 ease-in-out px-4 text-[15px] border-2 rounded-xl hover:bg-black/10"
-        :class="{ 'bg-black/10': status_filter == DeliveryStatus.Returned }"
-      >
-        Returned
-      </button>
-      <button
-        @click="status_filter = DeliveryStatus.Canceled"
-        class="transition duration-200 ease-in-out px-4 text-[15px] border-2 rounded-xl hover:bg-black/10"
-        :class="{ 'bg-black/10': status_filter == DeliveryStatus.Canceled }"
-      >
-        Canceled
+        {{ status.name }}
       </button>
     </div>
-
     <div class="flex p-6 min-w-[35rem] bg-white rounded-xl shadow-md">
       <div class="w-full flex flex-col gap-y-6">
         <input
@@ -93,8 +74,8 @@
             >
           </div>
           <div class="flex items-center px-5 pt-4 gap-x-4">
-            <div :class="status_names[order.delivery_status].icon"></div>
-            {{ status_names[order.delivery_status].name }}
+            <div :class="status_names[order.delivery_status + 1].icon"></div>
+            {{ status_names[order.delivery_status + 1].name }}
           </div>
           <div class="grid grid-cols-auto_box_orders items-center p-5 gap-4">
             <NuxtLink
@@ -146,20 +127,29 @@ enum DeliveryStatus {
 }
 const status_names = [
   {
+    name: "All",
+    icon: "",
+    status: null,
+  },
+  {
     name: "Delivered",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/check.svg)]",
+    status: DeliveryStatus.Delivered,
   },
   {
     name: "In Progress",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/progress.svg)]",
+    status: DeliveryStatus.InProgress,
   },
   {
     name: "Returned",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/return.svg)]",
+    status: DeliveryStatus.Returned,
   },
   {
     name: "Canceled",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/close.svg)]",
+    status: DeliveryStatus.Canceled,
   },
 ];
 const options = <Object>{
