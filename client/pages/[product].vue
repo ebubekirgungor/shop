@@ -77,11 +77,7 @@
           </button>
         </div>
         <div class="flex gap-x-2 text-5xl">
-          {{
-            product.list_price.toLocaleString("tr-TR", {
-              minimumFractionDigits: 2,
-            })
-          }}
+          {{ product.list_price.toLocaleString("tr-TR") }}
           <div class="self-end text-2xl">TL</div>
         </div>
         <div class="flex gap-x-2">
@@ -101,6 +97,7 @@
             <button
               @click="quantity++"
               :disabled="
+                parseInt(product.stock_quantity) == 0 ||
                 quantity == parseInt(product.stock_quantity) ||
                 product_cart_quantity + quantity >= product.stock_quantity
               "
@@ -111,7 +108,10 @@
           </div>
           <button
             :class="button"
-            :disabled="product_cart_quantity >= product.stock_quantity"
+            :disabled="
+              parseInt(product.stock_quantity) == 0 ||
+              product_cart_quantity >= product.stock_quantity
+            "
             @click="add_to_cart()"
           >
             Add to Cart
@@ -127,6 +127,7 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const route = useRoute();
+const router = useRouter();
 const role = useCookie<number>("role");
 interface Image {
   order: number;
@@ -168,10 +169,14 @@ const animate = ref(false);
 onMounted(() => {
   nextTick(async () => {
     await useFetch<Product>(
-      config.apiBase + "/products/" + route.params.product,
+      config.apiBase +
+        "/products/" +
+        route.params.product.toString().match(/-(\d+)$/)![1],
       {
         onResponse({ response }) {
+          history.replaceState({}, "", response._data.url);
           product.value = response._data;
+          if (parseInt(product.value.stock_quantity) == 0) quantity.value = 0;
           const images_array: Image[] = [];
           response._data.images.forEach((image: Image) => {
             images_array.push({
@@ -200,7 +205,6 @@ onMounted(() => {
         },
       });
     } else {
-      console.log(cart_unregistered.value);
       cart.value = cart_unregistered.value;
       if (cart_unregistered.value.length > 0) {
         product_cart_quantity.value =

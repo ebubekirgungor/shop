@@ -31,11 +31,13 @@ func ConnectDb() {
 	log.Println("connected")
 	db.Logger = logger.Default.LogMode(logger.Info)
 	log.Println("running migrations")
-	db.AutoMigrate(&models.User{})
-	db.AutoMigrate(&models.Address{})
-	db.AutoMigrate(&models.Category{})
-	db.AutoMigrate(&models.Product{})
-	db.AutoMigrate(&models.Order{})
+	db.AutoMigrate(
+		&models.User{},
+		&models.Address{},
+		&models.Category{},
+		&models.Product{},
+		&models.Order{},
+	)
 
 	Db = db
 }

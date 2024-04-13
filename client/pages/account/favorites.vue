@@ -63,7 +63,7 @@
               delete_dialog = true;
               delete_product_id = product.ID;
             "
-            class="fixed mt-2 ml-44 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
+            class="absolute mt-2 ml-44 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
           ></button>
           <NuxtLink :to="'/' + product.url">
             <img
@@ -81,11 +81,7 @@
               product.title
             }}</NuxtLink>
             <div class="text-2xl">
-              {{
-                product.list_price.toLocaleString("tr-TR", {
-                  minimumFractionDigits: 2,
-                })
-              }}
+              {{ product.list_price.toLocaleString("tr-TR") }}
               TL
             </div>
           </div>

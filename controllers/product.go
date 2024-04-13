@@ -36,12 +36,13 @@ func AllProducts(c *fiber.Ctx) error {
 func Product(c *fiber.Ctx) error {
 	product := models.Product{}
 	user := models.User{}
-	database.Db.Preload("Category").Preload("Users").Where("url = ?", c.Params("url")).First(&product)
+	database.Db.Preload("Category").Preload("Users").First(&product, c.Params("id"))
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	database.Db.Model(&product).Where("ID IN ?", []int{userid}).Association("Users").Find(&user)
 	return c.Status(200).JSON(fiber.Map{
 		"ID":             product.ID,
 		"title":          product.Title,
+		"url":            product.Url,
 		"category_id":    product.Category.ID,
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
@@ -60,12 +61,6 @@ func AddProduct(c *fiber.Ctx) error {
 
 	if !isAdmin(userid) {
 		return c.Status(403).JSON(fiber.Map{"error": "Invalid role"})
-	}
-
-	check_product := models.Product{}
-	database.Db.First(&check_product, c.FormValue("url"))
-	if check_product.Title != "" {
-		return c.Status(500).JSON(fiber.Map{"error": "Product with given title is already exists"})
 	}
 
 	product := new(models.Product)
@@ -100,6 +95,8 @@ func AddProduct(c *fiber.Ctx) error {
 	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
 	database.Db.Create(&product)
+	product.Url = product.Url + "-" + strconv.Itoa(int(product.ID))
+	database.Db.Save(&product)
 
 	return c.Status(200).JSON(product)
 }
@@ -136,7 +133,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	}
 
 	product.Title = c.FormValue("title")
-	product.Url = c.FormValue("url")
+	product.Url = c.FormValue("url") + "-" + strconv.Itoa(int(product.ID))
 	CategoryId, _ := strconv.ParseUint(c.FormValue("category_id"), 10, 32)
 	product.CategoryId = uint(CategoryId)
 	listprice, err := strconv.ParseFloat(c.FormValue("list_price"), 32)

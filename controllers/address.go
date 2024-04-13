@@ -60,8 +60,9 @@ func UpdateAddress(c *fiber.Ctx) error {
 	}
 
 	type UpdateAddressInput struct {
-		Title   string `json:"title"`
-		Address string `json:"address"`
+		Title        string `json:"title"`
+		CustomerName string `json:"customer_name"`
+		Address      string `json:"address"`
 	}
 	var uai UpdateAddressInput
 	if err := c.BodyParser(&uai); err != nil {
@@ -76,6 +77,7 @@ func UpdateAddress(c *fiber.Ctx) error {
 	}
 
 	address.Title = uai.Title
+	address.CustomerName = uai.CustomerName
 	address.Address = uai.Address
 	database.Db.Save(&address)
 

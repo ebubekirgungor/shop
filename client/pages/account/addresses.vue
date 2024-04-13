@@ -12,7 +12,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-[10vh] w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
         >
           <button
             @click="add_dialog = false"
@@ -28,6 +28,13 @@
               type="text"
               placeholder="Title"
               v-model="new_address.title"
+              required
+            />
+            <input
+              :class="input"
+              type="text"
+              placeholder="Customer name"
+              v-model="new_address.customer_name"
               required
             />
             <textarea
@@ -55,7 +62,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-[10vh] w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
         >
           <button
             @click="edit_dialog = false"
@@ -72,6 +79,13 @@
               type="text"
               placeholder="Title"
               v-model="edit_address.title"
+              required
+            />
+            <input
+              :class="input"
+              type="text"
+              placeholder="Customer name"
+              v-model="edit_address.customer_name"
               required
             />
             <textarea
@@ -147,7 +161,12 @@
             </div>
             <button
               @click="
-                open_edit_dialog(address.ID, address.title, address.address)
+                open_edit_dialog(
+                  address.ID,
+                  address.title,
+                  address.customer_name,
+                  address.address
+                )
               "
               class="mr-1 transition duration-300 ease-in-out size-9 bg-[url(/icons/edit.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
             ></button>
@@ -156,6 +175,7 @@
               class="transition duration-300 ease-in-out size-9 bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
             ></button>
           </div>
+          <div class="text-sm text-gray-500">{{ address.customer_name }}</div>
           <div class="text-sm select-text">{{ address.address }}</div>
         </div>
       </div>
@@ -179,10 +199,12 @@ definePageMeta({
 interface Address {
   ID: number | null;
   title: string;
+  customer_name: string;
   address: string;
 }
 interface NewAddress {
   title: string;
+  customer_name: string;
   address: string;
 }
 const fetch_complete = ref(false);
@@ -192,11 +214,13 @@ const delete_dialog = ref(false);
 const open_edit_dialog = (
   id: number | null,
   title: string,
+  customer_name: string,
   address: string
 ) => {
   edit_address.value = {
     ID: id,
     title: title,
+    customer_name: customer_name,
     address: address,
   };
   edit_dialog.value = true;
@@ -208,11 +232,13 @@ const open_delete_dialog = (id: number | null) => {
 const addresses = ref<Address[]>([]);
 const new_address = ref<NewAddress>({
   title: "",
+  customer_name: "",
   address: "",
 });
 const edit_address = ref<Address>({
   ID: null,
   title: "",
+  customer_name: "",
   address: "",
 });
 const delete_address_id = ref<number | null>(null);
@@ -239,6 +265,7 @@ const create = async () => {
     method: "post",
     body: {
       title: new_address.value.title,
+      customer_name: new_address.value.customer_name,
       address: new_address.value.address,
     },
     onResponse({ response }) {
@@ -247,6 +274,7 @@ const create = async () => {
         addresses.value.unshift(response._data);
         new_address.value = {
           title: "",
+          customer_name: "",
           address: "",
         };
         toast.success("Address created", {
@@ -268,6 +296,7 @@ const update = async () => {
     method: "patch",
     body: {
       title: edit_address.value.title,
+      customer_name: edit_address.value.customer_name,
       address: edit_address.value.address,
     },
     onResponse({ response }) {
@@ -281,6 +310,7 @@ const update = async () => {
         edit_address.value = {
           ID: null,
           title: "",
+          customer_name: "",
           address: "",
         };
         toast.success("Address updated", {

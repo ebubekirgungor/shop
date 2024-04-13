@@ -12,14 +12,14 @@
   </div>
   <main v-else class="flex justify-center gap-x-4 m-4">
     <div
-      class="flex flex-col gap-y-4 w-[clamp(40rem,60rem,60rem)] min-w-[40rem]"
+      class="flex flex-col gap-y-4 w-[clamp(40rem,65rem,65rem)] min-w-[40rem]"
     >
       <div
         class="flex gap-x-2 p-6 text-xl h-auto bg-white rounded-xl shadow-md"
       >
         Cart
         <div class="text-[16px] text-gray-500 mt-0.5">
-          ({{ cart.length == 1 ? "1 product" : cart.length + " products" }})
+          ({{ items_count + (items_count == 1 ? " item" : " items") }})
         </div>
       </div>
       <div class="flex h-auto bg-white rounded-xl shadow-md">
@@ -28,6 +28,7 @@
             <div class="flex items-center gap-x-4">
               <input
                 v-model="product.cart.selected"
+                @click="update_cart_unregistered"
                 type="checkbox"
                 class="transition duration-200 ease-in-out size-5 cursor-pointer rounded-md border-gray-300 text-gray-800 hover:border-gray-500 focus:ring-0 focus:ring-offset-0"
               />
@@ -48,7 +49,10 @@
             <div class="flex justify-between items-center w-96">
               <div class="flex text-xl border border-gray-300 rounded-full">
                 <button
-                  @click="product.cart.quantity--"
+                  @click="
+                    product.cart.quantity--;
+                    update_cart_unregistered();
+                  "
                   :disabled="product.cart.quantity == 1"
                   class="transition duration-300 ease-in-out size-8 rounded-l-full pl-1 hover:bg-black/10 disabled:pointer-events-none"
                 >
@@ -60,7 +64,10 @@
                   {{ product.cart.quantity }}
                 </div>
                 <button
-                  @click="product.cart.quantity++"
+                  @click="
+                    product.cart.quantity++;
+                    update_cart_unregistered();
+                  "
                   :disabled="product.cart.quantity == product.stock_quantity"
                   class="transition duration-300 ease-in-out size-8 rounded-r-full hover:bg-black/10 disabled:pointer-events-none"
                 >
@@ -71,7 +78,9 @@
                 {{
                   (product.list_price * product.cart.quantity).toLocaleString(
                     "tr-TR",
-                    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
+                    {
+                      maximumFractionDigits: 2,
+                    }
                   )
                 }}
                 TL
@@ -86,12 +95,12 @@
       </div>
     </div>
     <div
-      class="flex flex-col gap-y-5 p-6 min-w-60 h-fit bg-white rounded-xl shadow-md"
+      class="flex flex-col gap-y-5 p-6 min-w-64 h-fit bg-white rounded-xl shadow-md"
     >
       <div class="text-[17px]">
-        Selected products ({{
+        Selected items ({{
           cart.reduce((total: number, product: Cart) => {
-            return total + (product.cart.selected ? 1 : 0);
+            return total + (product.cart.selected ? product.cart.quantity : 0);
           }, 0)
         }})
       </div>
@@ -106,7 +115,6 @@
               );
             }, 0) + shipping
           ).toLocaleString("tr-TR", {
-            minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })
         }}
@@ -126,7 +134,6 @@
                   );
                 }, 0)
                 .toLocaleString("tr-TR", {
-                  minimumFractionDigits: 2,
                   maximumFractionDigits: 2,
                 })
             }}
@@ -139,7 +146,12 @@
         </div>
       </div>
       <button
-        class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-xl bg-black text-white hover:bg-black/80 font-medium mt-4"
+        @click="checkout"
+        :disabled="
+          cart.reduce((total: number, product: Cart) => {
+            return total + (product.cart.selected ? 1 : 0);
+          }, 0) == 0"
+        class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-xl bg-black text-white hover:bg-black/80 font-medium mt-4 disabled:bg-black/60 disabled:pointer-events-none"
       >
         Checkout
       </button>
@@ -173,6 +185,12 @@ interface Cart {
 const cart_unregistered = useCookie<Object[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
 const cart = ref<Cart[]>([]);
+let cart_copy = "";
+const items_count = computed(() => {
+  return cart.value.reduce((total: number, product: Cart) => {
+    return total + product.cart.quantity;
+  }, 0);
+});
 const shipping = ref(50);
 onMounted(() => {
   nextTick(async () => {
@@ -186,15 +204,50 @@ onMounted(() => {
         },
         onResponse({ response }) {
           cart.value = response._data;
+          cart_copy = JSON.stringify(response._data);
         },
       }
     );
   });
+  if (role.value != undefined) {
+    setInterval(async () => {
+      if (JSON.stringify(cart.value) != cart_copy) {
+        if (await update_cart()) cart_copy = JSON.stringify(cart.value);
+      }
+    }, 10000);
+  }
 });
+const update_cart = async () => {
+  const { data } = await useFetch<string>(config.apiBase + "/users/cart", {
+    headers: {
+      Authorization: config.apiKey,
+    },
+    method: "patch",
+    body: {
+      cart: JSON.parse(
+        JSON.stringify(cart.value.map((item: Cart) => item.cart))
+      ),
+    },
+  });
+  return data.value == "ok";
+};
+const update_cart_unregistered = async () => {
+  if (role.value == undefined) {
+    setTimeout(() => {
+      cart_unregistered.value = JSON.parse(
+        JSON.stringify(cart.value.map((item: Cart) => item.cart))
+      );
+    }, 500);
+  }
+};
 const remove_from_cart = async (product_id: number) => {
   cart.value.splice(
     cart.value.map((item: Cart) => item.id).indexOf(product_id),
     1
   );
+  update_cart_unregistered();
+};
+const checkout = async () => {
+  if (await update_cart()) navigateTo("/checkout");
 };
 </script>

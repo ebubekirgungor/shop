@@ -153,11 +153,7 @@ func UpdateCart(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Error in input"})
 	}
 
-	user := new(models.User)
-	database.Db.First(&user, userid)
-
-	user.Cart = ci.Cart
-	database.Db.Save(&user)
+	database.Db.Model(&models.User{}).Where("id = ?", userid).Update("cart", ci.Cart)
 
 	return c.JSON("ok")
 }

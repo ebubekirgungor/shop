@@ -294,7 +294,9 @@ onMounted(() => {
     });
     if (!is_add) {
       await useFetch<Product>(
-        config.apiBase + "/products/" + route.params.product,
+        config.apiBase +
+          "/products/" +
+          route.params.product.toString().match(/-(\d+)$/)![1],
         {
           onResponse({ response }) {
             data_to_form(response._data);
@@ -338,7 +340,13 @@ const create_update = async () => {
           toast.success("Product " + (is_add ? "created" : "updated"), {
             bodyClassName: "toast-font",
           });
-          router.push("/admin/products/" + response._data.url);
+          is_add
+            ? router.push("/admin/products/" + response._data.url)
+            : history.replaceState(
+                {},
+                "",
+                "/admin/products/" + response._data.url
+              );
           images_to_upload = [];
           data_to_form(response._data);
         } else {
