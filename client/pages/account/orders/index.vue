@@ -187,26 +187,20 @@ onMounted(() => {
   });
 });
 const filtered_orders = computed(() => {
-  if (status_filter.value) {
-    return orders.value
-      .filter((order: Order) => {
-        const filtered_products = order.products.filter((product) => {
-          return product.title
-            .toLowerCase()
-            .includes(search_filter.value.toLowerCase());
-        });
-        return filtered_products.length > 0;
-      })
-      .filter((order: Order) => order.delivery_status == status_filter.value);
-  } else {
-    return orders.value.filter((order: Order) => {
-      const filtered_products = order.products.filter((product) => {
-        return product.title
-          .toLowerCase()
-          .includes(search_filter.value.toLowerCase());
-      });
-      return filtered_products.length > 0;
+  const filtered_orders = orders.value.filter((order: Order) => {
+    const filtered_products = order.products.filter((product) => {
+      return product.title
+        .toLowerCase()
+        .includes(search_filter.value.toLowerCase());
     });
+    return filtered_products.length > 0;
+  });
+  if (status_filter.value) {
+    return filtered_orders.filter(
+      (order: Order) => order.delivery_status == status_filter.value
+    );
+  } else {
+    return filtered_orders;
   }
 });
 </script>
