@@ -3,16 +3,16 @@
     <transition name="background" mode="out-in">
       <div
         v-if="category_dialog || image_gallery || delete_dialog"
-        class="bg-black/40 inset-x-0 inset-y-0 size-full fixed"
+        class="bg-black/40 inset-x-0 inset-y-0 size-full fixed z-[2]"
       ></div>
     </transition>
     <transition name="modal" mode="out-in">
       <div
         v-if="category_dialog"
-        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
+        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[28rem] h-auto rounded-xl z-3"
+          class="flex flex-col p-3 bg-white -mt-48 w-[28rem] h-auto rounded-xl"
         >
           <button
             @click="category_dialog = false"
@@ -20,7 +20,7 @@
           ></button>
           <h1 class="text-center text-xl grow">Create new category</h1>
           <form
-            class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
+            class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="create_category"
           >
             <input
@@ -30,6 +30,22 @@
               v-model="category_new"
               required
             />
+            <label
+              v-if="category_image_url == ''"
+              class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 size-52 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
+            >
+              <input
+                @change="category_image_upload"
+                class="hidden"
+                type="file"
+                accept=".jpg,.jpeg,.png"
+              />
+              <div
+                class="size-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
+              ></div>
+              <h1>Click to upload</h1>
+            </label>
+            <img v-else class="size-52" :src="category_image_url" />
             <button
               :disabled="!category_new || !!categories.find((category: Category) => category.title == category_new)"
               type="submit"
@@ -44,7 +60,7 @@
     <transition name="modal" mode="out-in">
       <div
         v-if="image_gallery"
-        class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed z-[2]"
+        class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
         <div class="flex flex-col p-3 -mt-[15vh] w-[48rem] h-[28rem]">
           <img class="object-cover rounded-md h-full" :src="image_current" />
@@ -69,7 +85,7 @@
     <transition name="modal" mode="out-in">
       <div
         v-if="delete_dialog"
-        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
+        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
         <div class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl">
           <button
@@ -136,16 +152,16 @@
       /></label>
       <div :class="label + ' col-span-2'">
         <label>Images</label>
-        <div class="grid grid-cols-auto gap-4">
+        <div class="grid grid-cols-auto gap-4 mt-2">
           <div
             v-for="image in images"
             @click="open_gallery(image.url)"
-            class="flex flex-col rounded-xl cursor-pointer"
+            class="flex flex-col w-52 h-32 rounded-xl cursor-pointer"
           >
             <button
               type="button"
               @click="open_delete_dialog($event, image.order)"
-              class="z-[1] self-end -mb-9 mr-9 size-7 bg-white bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-md"
+              class="z-[1] self-end -mb-9 mr-2 size-7 bg-white bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-md"
             ></button>
             <img
               class="w-52 h-32 object-center object-cover rounded-xl"
@@ -244,6 +260,8 @@ let form_old = <Product>{
   stock_quantity: "",
 };
 let images_to_upload: File[] = [];
+let category_image: File;
+let category_image_url = ref("");
 const images = ref<Image[]>([]);
 let images_old: Image[] = [];
 const image_current = ref("");
@@ -261,6 +279,12 @@ const upload = (event: Event) => {
       });
       images_to_upload.push(file);
     });
+};
+const category_image_upload = (event: Event) => {
+  category_image = (event.target as any).files[0];
+  category_image_url.value = URL.createObjectURL(
+    (event.target as any).files[0]
+  );
 };
 const open_gallery = (image: Image["url"]) => {
   image_gallery.value = true;
@@ -371,14 +395,16 @@ const remove = async () => {
   });
 };
 const create_category = async () => {
+  const form_data = new FormData();
+  form_data.append("file", category_image);
+  form_data.append("title", category_new.value);
+  form_data.append("image", category_image.name);
   await useFetch(config.apiBase + "/categories", {
     headers: {
       Authorization: config.apiKey,
     },
     method: "post",
-    body: {
-      title: category_new.value,
-    },
+    body: form_data,
     onResponse({ response }) {
       if (response._data.title) {
         category_dialog.value = false;

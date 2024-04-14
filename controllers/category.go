@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"fmt"
 	"shop/database"
 	"shop/models"
 	"strconv"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -34,10 +36,23 @@ func AddCategory(c *fiber.Ctx) error {
 	}
 
 	category := new(models.Category)
-	if err := c.BodyParser(category); err != nil {
-		return c.Status(400).JSON(err.Error())
+
+	if form, err := c.MultipartForm(); err == nil {
+		file := form.File["file"]
+		if strings.HasPrefix(file[0].Header["Content-Type"][0], "image/") &&
+			(strings.HasSuffix(file[0].Filename, ".jpg") ||
+				strings.HasSuffix(file[0].Filename, ".jpeg") ||
+				strings.HasSuffix(file[0].Filename, ".png")) {
+			if err := c.SaveFile(file[0], fmt.Sprintf("./images/categories/%s", file[0].Filename)); err != nil {
+				return err
+			}
+		} else {
+			return c.Status(500).JSON(fiber.Map{"error": "Invalid file format"})
+		}
 	}
 
+	category.Title = c.FormValue("title")
+	category.Image = c.FormValue("image")
 	database.Db.Create(&category)
 
 	return c.Status(200).JSON(category)

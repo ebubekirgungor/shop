@@ -6,6 +6,10 @@
           <div class="size-6 bg-[url(/icons/product.svg)]"></div>
           <span>Products</span>
         </NuxtLink>
+        <NuxtLink :class="$route.path.includes('categories') ? link + active : link" to="/admin/categories">
+          <div class="size-6 bg-[url(/icons/category.svg)]"></div>
+          <span>Categories</span>
+        </NuxtLink>
       </nav>
       <slot />
     </main>

@@ -33,6 +33,7 @@ type Address struct {
 type Category struct {
 	gorm.Model
 	Title    string    `gorm:"uniqueIndex;not null" json:"title"`
+	Image    string    `json:"image"`
 	Products []Product `json:"products"`
 }
 
