@@ -81,12 +81,13 @@
             <NuxtLink
               v-for="product in order.products"
               :to="'/' + product.url"
-              class="flex justify-end items-end min-w-24 size-24 border border-gray-300 rounded-lg bg-center bg-contain bg-no-repeat"
-              :style="
-                'background-image: url(/images/products/' + product.image + ');'
-              "
-              ><span
-                class="-mb-3.5 -mr-3.5 flex justify-center items-center size-7 rounded-full bg-gray-300 font-medium"
+              class="flex justify-center min-w-24 size-24 border border-gray-300 rounded-lg"
+              ><img
+                class="object-center object-contain rounded-lg"
+                :src="'/images/products/' + product.image"
+              />
+              <span
+                class="absolute mt-20 ml-24 flex justify-center items-center size-7 rounded-full bg-gray-300 font-medium"
                 >{{ product.quantity }}</span
               ></NuxtLink
             >
@@ -138,17 +139,17 @@ const status_names = [
   },
   {
     name: "In Progress",
-    icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/progress.svg)]",
+    icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/progress.svg)]",
     status: DeliveryStatus.InProgress,
   },
   {
     name: "Returned",
-    icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/return.svg)]",
+    icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/return.svg)]",
     status: DeliveryStatus.Returned,
   },
   {
     name: "Canceled",
-    icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/close.svg)]",
+    icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/close.svg)]",
     status: DeliveryStatus.Canceled,
   },
 ];

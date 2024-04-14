@@ -44,15 +44,13 @@
     <transition name="modal" mode="out-in">
       <div
         v-if="image_gallery"
-        class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed"
+        class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed z-[2]"
       >
-        <div
-          class="flex flex-col p-3 -mt-[15vh] w-[48rem] h-[28rem] z-3 bg-no-repeat bg-cover"
-          :style="'background-image: url(' + image_current + ');'"
-        >
+        <div class="flex flex-col p-3 -mt-[15vh] w-[48rem] h-[28rem]">
+          <img class="object-cover rounded-md h-full" :src="image_current" />
           <button
             @click="image_gallery = false"
-            class="self-end transition duration-300 ease-in-out size-8 bg-white bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-white/60"
+            class="absolute mt-2 ml-[44rem] transition duration-300 ease-in-out size-8 bg-white bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-white/60"
           ></button>
         </div>
         <div class="flex gap-x-1">
@@ -73,9 +71,7 @@
         v-if="delete_dialog"
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
-        <div
-          class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl z-3"
-        >
+        <div class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl">
           <button
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
@@ -144,18 +140,17 @@
           <div
             v-for="image in images"
             @click="open_gallery(image.url)"
-            class="w-52 h-32 rounded-xl cursor-pointer bg-no-repeat bg-cover"
-            :style="'background-image: url(' + image.url + ');'"
+            class="flex flex-col rounded-xl cursor-pointer"
           >
-            <div
-              class="transition duration-200 ease-in-out flex flex-col p-3 w-52 h-32 rounded-xl hover:bg-black/20"
-            >
-              <button
-                type="button"
-                @click="open_delete_dialog($event, image.order)"
-                class="self-end size-7 bg-white bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-md"
-              ></button>
-            </div>
+            <button
+              type="button"
+              @click="open_delete_dialog($event, image.order)"
+              class="z-[1] self-end -mb-9 mr-9 size-7 bg-white bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-md"
+            ></button>
+            <img
+              class="w-52 h-32 object-center object-cover rounded-xl"
+              :src="image.url"
+            />
           </div>
           <label class="w-52">
             <div

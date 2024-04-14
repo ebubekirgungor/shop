@@ -37,11 +37,15 @@
         <div class="flex justify-center gap-x-4 mx-4">
           <button
             v-for="(image, index) in images"
-            class="transition duration-200 ease-in-out size-12 rounded-md bg-no-repeat bg-cover bg-center"
+            class="flex justify-center transition duration-200 ease-in-out size-12 rounded-md"
             :class="{ 'ring ring-3 ring-black': index == current_slide }"
-            :style="'background-image: url(' + image.url + ');'"
             @click="current_slide = index"
-          ></button>
+          >
+            <img
+              class="h-full object-center object-cover rounded-md"
+              :src="image.url"
+            />
+          </button>
         </div>
       </div>
       <div v-else class="bg-gray-200 rounded-l-xl">
