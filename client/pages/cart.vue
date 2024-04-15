@@ -194,7 +194,7 @@ const items_count = computed(() => {
 const shipping = ref(50);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Cart[]>(
+    await useFetch(
       role.value != undefined
         ? config.apiBase + "/users/cart"
         : config.apiBase + "/cart",
@@ -218,7 +218,7 @@ onMounted(() => {
   }
 });
 const update_cart = async () => {
-  const { data } = await useFetch<string>(config.apiBase + "/users/cart", {
+  const { data } = await useFetch(config.apiBase + "/users/cart", {
     headers: {
       Authorization: config.apiKey,
     },

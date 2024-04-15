@@ -244,7 +244,7 @@ const edit_address = ref<Address>({
 const delete_address_id = ref<number | null>(null);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Address[]>(config.apiBase + "/addresses", {
+    await useFetch(config.apiBase + "/addresses", {
       headers: {
         Authorization: config.apiKey,
       },

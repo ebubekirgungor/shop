@@ -227,7 +227,7 @@ const sort_direction = ref(0);
 const arrow_active = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Product[]>(config.apiBase + "/products", {
+    await useFetch(config.apiBase + "/products", {
       onResponse({ response }) {
         if (response._data) {
           products.value = response._data;

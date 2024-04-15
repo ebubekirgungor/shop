@@ -3,7 +3,11 @@
     <nav
       class="bg-white h-24 flex flex-col sm:flex-row sm:border-b justify-center items-center gap-x-10"
     >
-      <div class="sm:ml-[14vw]">
+      <NuxtLink
+        to="/"
+        class="mr-24 w-52 h-24 bg-cover bg-[url(/images/logo.png)]"
+      ></NuxtLink>
+      <div>
         <input
           class="peer order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out w-[90%] sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] sm:focus:shadow-lg sm:focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
           type="text"
@@ -57,7 +61,10 @@
             <button @click="logout()" :class="menu_item">Logout</button>
           </div>
         </div>
-        <NuxtLink to="/account/favorites" :class="button + ' sm:hover:-translate-y-0.5'">
+        <NuxtLink
+          to="/account/favorites"
+          :class="button + ' sm:hover:-translate-y-0.5'"
+        >
           <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
           <span class="mt-0.5 hidden sm:block">Favorites</span>
         </NuxtLink>

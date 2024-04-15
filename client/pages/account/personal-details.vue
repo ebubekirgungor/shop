@@ -191,7 +191,7 @@ const data_to_form = async (data: Form) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Form>(config.apiBase + "/users", {
+    await useFetch(config.apiBase + "/users", {
       headers: {
         Authorization: config.apiKey,
       },

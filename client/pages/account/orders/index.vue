@@ -165,7 +165,7 @@ const status_filter = ref<DeliveryStatus | null>(null);
 const search_filter = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Order[]>(config.apiBase + "/orders", {
+    await useFetch(config.apiBase + "/orders", {
       headers: {
         Authorization: config.apiKey,
       },

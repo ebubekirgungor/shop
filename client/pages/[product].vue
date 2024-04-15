@@ -172,7 +172,7 @@ const product_cart_quantity = ref();
 const animate = ref(false);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Product>(
+    await useFetch(
       config.apiBase +
         "/products/" +
         route.params.product.toString().match(/-(\d+)$/)![1],
@@ -194,7 +194,7 @@ onMounted(() => {
       }
     );
     if (role.value != undefined) {
-      await useFetch<User>(config.apiBase + "/users", {
+      await useFetch(config.apiBase + "/users", {
         headers: {
           Authorization: config.apiKey,
         },

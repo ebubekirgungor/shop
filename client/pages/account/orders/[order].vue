@@ -164,7 +164,7 @@ const shipping = ref(50);
 const fetch_complete = ref(false);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Order>(config.apiBase + "/orders/" + route.params.order, {
+    await useFetch(config.apiBase + "/orders/" + route.params.order, {
       headers: {
         Authorization: config.apiKey,
       },

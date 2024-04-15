@@ -52,6 +52,7 @@ func AddCategory(c *fiber.Ctx) error {
 	}
 
 	category.Title = c.FormValue("title")
+	category.Url = c.FormValue("url")
 	category.Image = c.FormValue("image")
 	database.Db.Create(&category)
 
@@ -90,6 +91,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 		category.Image = c.FormValue("image")
 	}
 	category.Title = c.FormValue("title")
+	category.Url = c.FormValue("url")
 	database.Db.Save(&category)
 
 	return c.Status(200).JSON(category)

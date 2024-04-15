@@ -118,7 +118,7 @@ const delete_product_id = ref<number | null>(null);
 const favorites = ref<Product[]>([]);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Product[]>(config.apiBase + "/favorites", {
+    await useFetch(config.apiBase + "/favorites", {
       headers: {
         Authorization: config.apiKey,
       },

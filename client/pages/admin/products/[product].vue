@@ -306,13 +306,13 @@ const data_to_form = (response: Product) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Category[]>(config.apiBase + "/categories", {
+    await useFetch(config.apiBase + "/categories", {
       onResponse({ response }) {
         categories.value = response._data;
       },
     });
     if (!is_add) {
-      await useFetch<Product>(
+      await useFetch(
         config.apiBase +
           "/products/" +
           route.params.product.toString().match(/-(\d+)$/)![1],

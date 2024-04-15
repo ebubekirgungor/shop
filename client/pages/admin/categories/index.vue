@@ -155,7 +155,9 @@
             class="size-56 object-contain rounded-t-xl"
             :src="'/images/categories/' + category.image"
           />
-          <div class="p-5 text-lg">{{ category.title }}</div>
+          <NuxtLink :to="'/' + category.url" class="p-5 text-lg">{{
+            category.title
+          }}</NuxtLink>
         </div>
       </div>
     </div>
@@ -173,6 +175,7 @@ definePageMeta({
 interface Category {
   ID: number | null;
   title: string;
+  url: string;
   image: string;
 }
 const is_add = ref(true);
@@ -186,7 +189,7 @@ const update_category_id = ref<number>();
 const categories = ref<Category[]>([]);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Category[]>(config.apiBase + "/categories", {
+    await useFetch(config.apiBase + "/categories", {
       headers: {
         Authorization: config.apiKey,
       },
@@ -220,6 +223,10 @@ const category_image_upload = (event: Event) => {
 const create_update = async () => {
   const form_data = new FormData();
   form_data.append("title", category_title.value);
+  form_data.append(
+    "url",
+    category_title.value.toLowerCase().replaceAll(" ", "-")
+  );
   if (category_image) {
     form_data.append("image", category_image!.name);
     form_data.append("file", category_image!);

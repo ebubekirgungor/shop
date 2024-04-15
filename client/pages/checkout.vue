@@ -253,7 +253,7 @@ const card = ref<Card>({
 });
 onMounted(() => {
   nextTick(async () => {
-    await useFetch<Cart[]>(
+    await useFetch(
       role.value != undefined
         ? config.apiBase + "/users/cart"
         : config.apiBase + "/cart",
@@ -266,7 +266,7 @@ onMounted(() => {
         },
       }
     );
-    await useFetch<Address[]>(config.apiBase + "/addresses", {
+    await useFetch(config.apiBase + "/addresses", {
       headers: {
         Authorization: config.apiKey,
       },
