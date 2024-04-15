@@ -43,6 +43,7 @@ func SetupRoutes(app *fiber.App) {
 	categories.Get("/", controllers.AllCategories)
 	categories.Get("/:id", controllers.Category)
 	categories.Post("/", middleware.Protected(), controllers.AddCategory)
+	categories.Patch("/:id", middleware.Protected(), controllers.UpdateCategory)
 	categories.Delete("/:id", middleware.Protected(), controllers.DeleteCategory)
 
 	products := api.Group("/products")
