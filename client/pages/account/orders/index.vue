@@ -80,7 +80,7 @@
           <div class="grid grid-cols-auto_box_orders items-center p-5 gap-4">
             <NuxtLink
               v-for="product in order.products"
-              :to="'/' + product.url"
+              :to="'/product/' + product.url"
               class="flex justify-center min-w-24 size-24 border border-gray-300 rounded-lg"
               ><img
                 class="object-center object-contain rounded-lg"

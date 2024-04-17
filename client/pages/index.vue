@@ -1,6 +1,6 @@
 <template>
   <main class="flex justify-center">
-    <div class="grid grid-cols-4 justify-items-center gap-6 p-4">
+    <div class="grid grid-cols-4 justify-items-center gap-6 p-6">
       <NuxtLink
         v-for="category in categories"
         :to="category.url"

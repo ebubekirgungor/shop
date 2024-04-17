@@ -42,7 +42,10 @@
                   class="size-24 bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-75 invert"
                 ></div>
               </div>
-              <NuxtLink :to="product.url" class="font-medium w-48">
+              <NuxtLink
+                :to="'/product/' + product.url"
+                class="font-medium w-48"
+              >
                 {{ product.title }}
               </NuxtLink>
             </div>

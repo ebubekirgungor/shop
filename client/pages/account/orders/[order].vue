@@ -29,14 +29,14 @@
               v-for="product in order?.products"
               class="flex flex-col w-56 h-[21rem] bg-white rounded-xl border"
             >
-              <NuxtLink :to="'/' + product.url">
+              <NuxtLink :to="'/product/' + product.url">
                 <img
                   class="size-56 object-contain"
                   :src="'/images/products/' + product.image"
                 />
               </NuxtLink>
               <div class="flex flex-col gap-y-6 p-4">
-                <NuxtLink :to="'/' + product.url" class="text-md">{{
+                <NuxtLink :to="'/product/' + product.url" class="text-md">{{
                   product.title
                 }}</NuxtLink>
                 <div class="flex items-center justify-between">

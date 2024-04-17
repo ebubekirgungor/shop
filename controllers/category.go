@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"shop/database"
 	"shop/models"
@@ -18,9 +19,36 @@ func AllCategories(c *fiber.Ctx) error {
 }
 
 func Category(c *fiber.Ctx) error {
+	type Image struct {
+		Name  string `json:"name"`
+		Order uint   `json:"order"`
+	}
 	category := models.Category{}
-	database.Db.First(&category, c.Params("id"))
-	return c.Status(200).JSON(category)
+	database.Db.Preload("Products").First(&category, "url = ?", c.Params("url"))
+	var all_products []fiber.Map
+	for _, product := range category.Products {
+		var images []Image
+		err := json.Unmarshal(product.Images, &images)
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		}
+		image := "product.png"
+		if len(images) != 0 {
+			image = images[0].Name
+		}
+		all_products = append(all_products, fiber.Map{
+			"id":             product.ID,
+			"title":          product.Title,
+			"url":            product.Url,
+			"image":          image,
+			"list_price":     product.ListPrice,
+			"stock_quantity": product.StockQuantity,
+		})
+	}
+	if all_products == nil {
+		return c.Status(200).JSON([]string{})
+	}
+	return c.Status(200).JSON(all_products)
 }
 
 func AddCategory(c *fiber.Ctx) error {
