@@ -40,9 +40,10 @@
           <div class="p-4">
             <button
               @click="add_to_cart(product.id)"
-              class="transition duration-300 ease-in-out w-full h-10 font-medium border-2 rounded-full hover:bg-gray-200"
+              :disabled="product.stock_quantity == 0 || cart.find((item: Cart) => item.id == product.id)?.quantity! >= product.stock_quantity"
+              class="transition duration-300 ease-in-out w-full h-10 font-medium border-2 rounded-full hover:bg-gray-200 disabled:text-gray-400 disabled:bg-gray-100 disabled:border-0 disabled:pointer-events-none"
             >
-              Add to cart
+              {{ product.stock_quantity == 0 ? "Out of stock" : "Add to cart" }}
             </button>
           </div>
         </div>
@@ -52,16 +53,15 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useToast } from "vue-toastification";
-const toast = useToast();
 const config = useRuntimeConfig().public;
 const route = useRoute();
-const router = useRouter();
 const role = useCookie<number>("role");
-interface Image {
-  order: number;
-  name: string;
-  url: string;
+const cart_unregistered = useCookie<Cart[]>("cart");
+if (!cart_unregistered.value) cart_unregistered.value = [];
+interface Cart {
+  id: number;
+  quantity: number;
+  selected: boolean;
 }
 interface Product {
   id: number;
@@ -69,10 +69,11 @@ interface Product {
   url: string;
   image: string;
   list_price: number;
-  stock_quantity: string;
+  stock_quantity: number;
   is_favorite: boolean;
 }
 const products = ref<Product[]>([]);
+const cart = ref<Cart[]>([]);
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/categories/" + route.params.category, {
@@ -80,16 +81,45 @@ onMounted(() => {
         products.value = response._data;
       },
     });
+    if (role.value != undefined) {
+      await useFetch(config.apiBase + "/users", {
+        headers: {
+          Authorization: config.apiKey,
+        },
+        onResponse({ response }) {
+          cart.value = response._data.cart;
+        },
+      });
+    } else {
+      cart.value = cart_unregistered.value;
+    }
   });
 });
 const add_to_cart = async (id: number) => {
-  await useFetch(config.apiBase + "/users/cart/" + id, {
-    headers: {
-      Authorization: config.apiKey,
-    },
-    method: "post",
-    onResponse({ response }) {},
-  });
+  if (role.value != undefined) {
+    let item: Cart = cart.value.find((item: Cart) => item.id == id)!;
+    if (item) item.quantity += 1;
+    else cart.value.push({ id: id, quantity: 1, selected: true });
+    await useFetch(config.apiBase + "/users/cart/" + id, {
+      headers: {
+        Authorization: config.apiKey,
+      },
+      method: "post",
+      onResponse({ response }) {},
+    });
+  } else {
+    for (let i = 0; i < cart_unregistered.value.length; i++) {
+      if (cart_unregistered.value[i].id == id) {
+        cart_unregistered.value[i].quantity++;
+        return true;
+      }
+    }
+    cart_unregistered.value.push({
+      id: id,
+      quantity: 1,
+      selected: true,
+    });
+  }
 };
 const toggle_favorite = async (product: Product) => {
   await useFetch(config.apiBase + "/favorites/" + product.id, {
