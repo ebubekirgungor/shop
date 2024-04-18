@@ -3,10 +3,12 @@
     <nav
       class="bg-white h-24 flex flex-col sm:flex-row sm:border-b justify-center items-center gap-x-12"
     >
-      <NuxtLink
-        to="/"
-        class="-ml-44 mr-44 w-52 h-24 bg-cover bg-[url(/images/logo.png)]"
-      ></NuxtLink>
+      <div class="flex w-80 -ml-16 mr-16">
+        <NuxtLink
+          to="/"
+          class="w-52 h-24 bg-cover bg-[url(/images/logo.png)]"
+        ></NuxtLink>
+      </div>
       <div class="flex justify-center">
         <input
           class="peer order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out w-[90%] sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] sm:focus:shadow-lg sm:focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
@@ -31,7 +33,7 @@
           </NuxtLink>
         </button>
       </div>
-      <div class="w-52">
+      <div class="w-80">
         <div
           class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
         >

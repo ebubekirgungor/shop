@@ -56,7 +56,7 @@
                 class="absolute m-2 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
               ></button>
               <img
-                class="size-52 border rounded-xl"
+                class="object-contain size-52 border rounded-xl"
                 :src="category_image_url"
               />
             </div>

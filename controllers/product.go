@@ -35,10 +35,15 @@ func AllProducts(c *fiber.Ctx) error {
 
 func Product(c *fiber.Ctx) error {
 	product := models.Product{}
-	user := models.User{}
 	database.Db.Preload("Category").Preload("Users").First(&product, c.Params("id"))
-	userid, _ := strconv.Atoi(c.Cookies("userid"))
-	database.Db.Model(&product).Where("ID IN ?", []int{userid}).Association("Users").Find(&user)
+	userid_int, _ := strconv.Atoi(c.Cookies("userid"))
+	userid := uint(userid_int)
+	is_favorite := false
+	for _, user := range product.Users {
+		if user.ID == userid {
+			is_favorite = true
+		}
+	}
 	return c.Status(200).JSON(fiber.Map{
 		"ID":             product.ID,
 		"title":          product.Title,
@@ -47,7 +52,7 @@ func Product(c *fiber.Ctx) error {
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
 		"images":         product.Images,
-		"is_favorite":    user.Email != "",
+		"is_favorite":    is_favorite,
 	})
 }
 

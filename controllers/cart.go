@@ -13,6 +13,12 @@ import (
 	"gorm.io/datatypes"
 )
 
+type CartData struct {
+	ID       int  `json:"id"`
+	Quantity int  `json:"quantity"`
+	Selected bool `json:"selected"`
+}
+
 func Cart(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)
@@ -20,17 +26,12 @@ func Cart(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
 	}
 
-	type Cart struct {
-		ID       int  `json:"id"`
-		Quantity int  `json:"quantity"`
-		Selected bool `json:"selected"`
-	}
 	user := models.User{}
 	products := []models.Product{}
 
 	database.Db.First(&user, userid)
 
-	var cartData []Cart
+	var cartData []CartData
 	err := json.Unmarshal(user.Cart, &cartData)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
@@ -46,7 +47,7 @@ func Cart(c *fiber.Ctx) error {
 	}
 	database.Db.Find(&products, ids)
 
-	cartDataByID := make(map[int]Cart)
+	cartDataByID := make(map[int]CartData)
 	for _, item := range cartData {
 		cartDataByID[item.ID] = item
 	}
@@ -55,7 +56,7 @@ func Cart(c *fiber.Ctx) error {
 	for _, product := range products {
 		cartItem, ok := cartDataByID[int(product.ID)]
 		if !ok {
-			cartItem = Cart{ID: int(product.ID), Quantity: 0, Selected: false}
+			cartItem = CartData{ID: int(product.ID), Quantity: 0, Selected: false}
 		}
 		found_products = append(found_products, fiber.Map{
 			"id":             product.ID,
@@ -78,13 +79,8 @@ func Cart(c *fiber.Ctx) error {
 }
 
 func UnregisteredCart(c *fiber.Ctx) error {
-	type Cart struct {
-		ID       int  `json:"id"`
-		Quantity int  `json:"quantity"`
-		Selected bool `json:"selected"`
-	}
 	products := []models.Product{}
-	var cartData []Cart
+	var cartData []CartData
 
 	cookie, urlerr := url.QueryUnescape(c.Cookies("cart"))
 	if urlerr != nil {
@@ -106,7 +102,7 @@ func UnregisteredCart(c *fiber.Ctx) error {
 	}
 	database.Db.Find(&products, ids)
 
-	cartDataByID := make(map[int]Cart)
+	cartDataByID := make(map[int]CartData)
 	for _, item := range cartData {
 		cartDataByID[item.ID] = item
 	}
@@ -115,7 +111,7 @@ func UnregisteredCart(c *fiber.Ctx) error {
 	for _, product := range products {
 		cartItem, ok := cartDataByID[int(product.ID)]
 		if !ok {
-			cartItem = Cart{ID: int(product.ID), Quantity: 0, Selected: false}
+			cartItem = CartData{ID: int(product.ID), Quantity: 0, Selected: false}
 		}
 		found_products = append(found_products, fiber.Map{
 			"id":             product.ID,
@@ -154,6 +150,46 @@ func UpdateCart(c *fiber.Ctx) error {
 	}
 
 	database.Db.Model(&models.User{}).Where("id = ?", userid).Update("cart", ci.Cart)
+
+	return c.JSON("ok")
+}
+
+func AddProductToCart(c *fiber.Ctx) error {
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, uint(userid)) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	user := models.User{}
+	database.Db.First(&user, userid)
+
+	var cartData []CartData
+	err := json.Unmarshal(user.Cart, &cartData)
+	if err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	}
+	id, _ := c.ParamsInt("id")
+
+	for index, item := range cartData {
+		if item.ID == id {
+			cartData[index].Quantity = item.Quantity + 1
+			cart, _ := json.Marshal(cartData)
+			database.Db.Model(&models.User{}).Where("id = ?", userid).Update("cart", datatypes.JSON([]byte(cart)))
+			return c.JSON("ok")
+		}
+	}
+
+	var newCartData = CartData{
+		ID:       id,
+		Quantity: 1,
+		Selected: true,
+	}
+	cartData = append(cartData, newCartData)
+
+	cart, _ := json.Marshal(cartData)
+	database.Db.Model(&models.User{}).Where("id = ?", userid).Update("cart", datatypes.JSON([]byte(cart)))
 
 	return c.JSON("ok")
 }
