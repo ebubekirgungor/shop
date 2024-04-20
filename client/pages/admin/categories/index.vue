@@ -25,15 +25,49 @@
             class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="create_update"
           >
-            <input
-              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
-              type="text"
-              placeholder="Title"
-              v-model="category_title"
-              required
-            />
+            <div class="flex flex-col gap-y-4 w-full">
+              <input
+                class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+                type="text"
+                placeholder="Title"
+                v-model="category_title"
+                required
+              />
+              <div class="flex gap-x-4">
+                <input
+                  class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+                  type="text"
+                  placeholder="Filter name"
+                  v-model="new_filter_input"
+                />
+                <button
+                  class="transition duration-200 ease-in-out w-20 bg-gray-200 rounded-md hover:bg-gray-300 disabled:pointer-events-none"
+                  type="button"
+                  @click="
+                    category_filters.push(new_filter_input);
+                    new_filter_input = '';
+                  "
+                  :disabled="!new_filter_input"
+                >
+                  Add
+                </button>
+              </div>
+              <div class="flex flex-wrap gap-2">
+                <div
+                  v-for="(filter, i) in category_filters"
+                  class="w-min flex items-center pl-2 h-8 bg-gray-200 rounded-md"
+                >
+                  {{ filter }}
+                  <button
+                    type="button"
+                    class="size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center"
+                    @click="category_filters.splice(i, 1)"
+                  ></button>
+                </div>
+              </div>
+            </div>
             <label
-              v-if="category_image_url == ''"
+              v-if="!category_image_url"
               class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 size-52 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
             >
               <input
@@ -64,7 +98,7 @@
               :disabled="
               is_add ? 
               !category_title || !!categories.find((category: Category) => category.title == category_title) || !category_image_url : 
-              !category_title || !category_image_url || (!!categories.find((category: Category) => category.title == category_title) && category_image_url.startsWith('/images'))
+              !category_title || !category_image_url || (!!categories.find((category: Category) => category.title == category_title) && JSON.stringify(category_filters) == JSON.stringify(category_filters_copy) && category_image_url.startsWith('/images'))
               "
               type="submit"
               class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
@@ -176,6 +210,7 @@ interface Category {
   ID: number | null;
   title: string;
   url: string;
+  filters: string[];
   image: string;
 }
 const is_add = ref(true);
@@ -184,6 +219,9 @@ const delete_dialog = ref(false);
 const delete_category_id = ref<number | null>(null);
 let category_image: File | null;
 const category_title = ref("");
+const new_filter_input = ref("");
+const category_filters = ref<string[]>([]);
+const category_filters_copy = ref<string[]>([]);
 const category_image_url = ref("");
 const update_category_id = ref<number>();
 const categories = ref<Category[]>([]);
@@ -205,12 +243,16 @@ const open_edit_dialog = (category: Category) => {
   is_add.value = false;
   update_category_id.value = category.ID!;
   category_title.value = category.title;
+  category_filters.value = [...category.filters];
+  category_filters_copy.value = [...category.filters];
   category_image_url.value = "/images/categories/" + category.image;
   create_update_dialog.value = true;
 };
 const close_create_update_dialog = () => {
   create_update_dialog.value = false;
   category_title.value = "";
+  category_filters.value = [];
+  category_filters_copy.value = [];
   category_image = null;
   category_image_url.value = "";
 };
@@ -227,6 +269,7 @@ const create_update = async () => {
     "url",
     category_title.value.toLowerCase().replaceAll(" ", "-")
   );
+  form_data.append("filters", JSON.stringify(category_filters.value));
   if (category_image) {
     form_data.append("image", category_image!.name);
     form_data.append("file", category_image!);

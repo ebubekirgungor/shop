@@ -28,6 +28,28 @@ func Favorites(c *fiber.Ctx) error {
 	})
 }
 
+func FavoritesIds(c *fiber.Ctx) error {
+	userid, _ := strconv.Atoi(c.Cookies("userid"))
+	token := c.Locals("user").(*jwt.Token)
+
+	if !validToken(token, uint(userid)) {
+		return c.Status(500).JSON(fiber.Map{"error": "Invalid token id"})
+	}
+
+	user := models.User{}
+	database.Db.Preload("Favorites").First(&user, userid)
+	if user.Email == "" {
+		return c.Status(404).JSON(fiber.Map{"error": "No user found with email"})
+	}
+
+	var ids []uint
+	for _, product := range user.Favorites {
+		ids = append(ids, product.ID)
+	}
+
+	return c.Status(200).JSON(ids)
+}
+
 func AddFavorite(c *fiber.Ctx) error {
 	userid, _ := strconv.Atoi(c.Cookies("userid"))
 	token := c.Locals("user").(*jwt.Token)

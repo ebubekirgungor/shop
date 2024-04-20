@@ -31,6 +31,7 @@ func SetupRoutes(app *fiber.App) {
 
 	favorites := api.Group("/favorites")
 	favorites.Get("/", middleware.Protected(), controllers.Favorites)
+	favorites.Get("/ids/", middleware.Protected(), controllers.FavoritesIds)
 	favorites.Post("/:id", middleware.Protected(), controllers.AddFavorite)
 	favorites.Delete("/:id", middleware.Protected(), controllers.DeleteFavorite)
 

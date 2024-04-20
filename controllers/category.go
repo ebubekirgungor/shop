@@ -10,6 +10,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/datatypes"
 )
 
 func AllCategories(c *fiber.Ctx) error {
@@ -23,19 +24,10 @@ func Category(c *fiber.Ctx) error {
 		Name  string `json:"name"`
 		Order uint   `json:"order"`
 	}
-	userid_int, _ := strconv.Atoi(c.Cookies("userid"))
-	userid := uint(userid_int)
 	category := models.Category{}
-	database.Db.Preload("Products.Users").First(&category, "url = ?", c.Params("url"))
+	database.Db.Preload("Products").First(&category, "url = ?", c.Params("url"))
 	var all_products []fiber.Map
 	for _, product := range category.Products {
-
-		is_favorite := false
-		for _, user := range product.Users {
-			if user.ID == userid {
-				is_favorite = true
-			}
-		}
 		var images []Image
 		err := json.Unmarshal(product.Images, &images)
 		if err != nil {
@@ -52,7 +44,6 @@ func Category(c *fiber.Ctx) error {
 			"image":          image,
 			"list_price":     product.ListPrice,
 			"stock_quantity": product.StockQuantity,
-			"is_favorite":    is_favorite,
 		})
 	}
 	if all_products == nil {
@@ -91,6 +82,7 @@ func AddCategory(c *fiber.Ctx) error {
 
 	category.Title = c.FormValue("title")
 	category.Url = c.FormValue("url")
+	category.Filters = datatypes.JSON([]byte(c.FormValue("filters")))
 	category.Image = c.FormValue("image")
 	database.Db.Create(&category)
 
@@ -130,6 +122,7 @@ func UpdateCategory(c *fiber.Ctx) error {
 	}
 	category.Title = c.FormValue("title")
 	category.Url = c.FormValue("url")
+	category.Filters = datatypes.JSON([]byte(c.FormValue("filters")))
 	database.Db.Save(&category)
 
 	return c.Status(200).JSON(category)

@@ -32,10 +32,11 @@ type Address struct {
 
 type Category struct {
 	gorm.Model
-	Title    string    `gorm:"uniqueIndex;not null" json:"title"`
-	Url      string    `gorm:"uniqueIndex;not null" json:"url"`
-	Image    string    `json:"image"`
-	Products []Product `json:"products"`
+	Title    string         `gorm:"uniqueIndex;not null" json:"title"`
+	Url      string         `gorm:"uniqueIndex;not null" json:"url"`
+	Image    string         `json:"image"`
+	Filters  datatypes.JSON `gorm:"not null" json:"filters"`
+	Products []Product      `json:"products"`
 }
 
 type Product struct {
@@ -54,10 +55,10 @@ type Product struct {
 type DeliveryStatus uint8
 
 const (
-	Delivered  DeliveryStatus = 0
-	InProgress DeliveryStatus = 1
-	Returned   DeliveryStatus = 2
-	Canceled   DeliveryStatus = 3
+	Delivered DeliveryStatus = iota
+	InProgress
+	Returned
+	Canceled
 )
 
 type Order struct {

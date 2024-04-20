@@ -1,5 +1,8 @@
 <template>
-  <main class="flex justify-center m-4">
+  <main class="flex justify-center gap-x-4 m-4">
+    <div
+      class="flex flex-col gap-y-5 p-6 min-w-64 h-fit bg-white rounded-xl shadow-md"
+    ></div>
     <div
       class="flex w-[clamp(32rem,65rem,65rem)] h-auto bg-white rounded-xl shadow-md"
     >
@@ -74,11 +77,23 @@ interface Product {
 }
 const products = ref<Product[]>([]);
 const cart = ref<Cart[]>([]);
+const favorites_ids = ref<number[]>([]);
 onMounted(() => {
   nextTick(async () => {
+    await useFetch(config.apiBase + "/favorites/ids", {
+      headers: {
+        Authorization: config.apiKey,
+      },
+      onResponse({ response }) {
+        favorites_ids.value = response._data;
+      },
+    });
     await useFetch(config.apiBase + "/categories/" + route.params.category, {
       onResponse({ response }) {
         products.value = response._data;
+        products.value.map((product: Product) => {
+          product.is_favorite = favorites_ids.value.includes(product.id);
+        });
       },
     });
     if (role.value != undefined) {
