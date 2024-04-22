@@ -328,7 +328,15 @@ onMounted(() => {
 const create_update = async () => {
   const form_values = {
     title: form.value.title,
-    url: form.value.title.toLowerCase().replaceAll(" ", "-"),
+    url: form.value.title
+      .toLowerCase()
+      .replaceAll(" ", "-")
+      .replaceAll("ç", "c")
+      .replaceAll("ğ", "g")
+      .replaceAll("ı", "i")
+      .replaceAll("ö", "o")
+      .replaceAll("ş", "s")
+      .replaceAll("ü", "u"),
     category_id: form.value.category_id,
     list_price: form.value.list_price,
     stock_quantity: form.value.stock_quantity,

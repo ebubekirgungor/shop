@@ -267,7 +267,15 @@ const create_update = async () => {
   form_data.append("title", category_title.value);
   form_data.append(
     "url",
-    category_title.value.toLowerCase().replaceAll(" ", "-")
+    category_title.value
+      .toLowerCase()
+      .replaceAll(" ", "-")
+      .replaceAll("ç", "c")
+      .replaceAll("ğ", "g")
+      .replaceAll("ı", "i")
+      .replaceAll("ö", "o")
+      .replaceAll("ş", "s")
+      .replaceAll("ü", "u")
   );
   form_data.append("filters", JSON.stringify(category_filters.value));
   if (category_image) {
