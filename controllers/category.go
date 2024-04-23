@@ -44,6 +44,7 @@ func Category(c *fiber.Ctx) error {
 			"image":          image,
 			"list_price":     product.ListPrice,
 			"stock_quantity": product.StockQuantity,
+			"filters":        product.Filters,
 		})
 	}
 	if all_products == nil {

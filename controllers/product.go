@@ -51,6 +51,7 @@ func Product(c *fiber.Ctx) error {
 		"category_id":    product.Category.ID,
 		"list_price":     product.ListPrice,
 		"stock_quantity": product.StockQuantity,
+		"filters":        product.Filters,
 		"images":         product.Images,
 		"is_favorite":    is_favorite,
 	})
@@ -97,6 +98,7 @@ func AddProduct(c *fiber.Ctx) error {
 	product.ListPrice = float32(listprice)
 	StockQuantity, _ := strconv.ParseUint(c.FormValue("stock_quantity"), 10, 32)
 	product.StockQuantity = uint16(StockQuantity)
+	product.Filters = datatypes.JSON([]byte(c.FormValue("filters")))
 	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
 	database.Db.Create(&product)
@@ -148,6 +150,7 @@ func UpdateProduct(c *fiber.Ctx) error {
 	product.ListPrice = float32(listprice)
 	StockQuantity, _ := strconv.ParseUint(c.FormValue("stock_quantity"), 10, 32)
 	product.StockQuantity = uint16(StockQuantity)
+	product.Filters = datatypes.JSON([]byte(c.FormValue("filters")))
 	product.Images = datatypes.JSON([]byte(c.FormValue("images")))
 
 	database.Db.Save(&product)

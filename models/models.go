@@ -48,6 +48,7 @@ type Product struct {
 	Category      Category
 	ListPrice     float32        `gorm:"not null" json:"list_price"`
 	StockQuantity uint16         `gorm:"not null" json:"stock_quantity"`
+	Filters       datatypes.JSON `gorm:"not null" json:"filters"`
 	Images        datatypes.JSON `gorm:"not null" json:"images"`
 	Users         []*User        `gorm:"many2many:user_products;"`
 }

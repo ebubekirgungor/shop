@@ -2,60 +2,9 @@
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <transition name="background" mode="out-in">
       <div
-        v-if="category_dialog || image_gallery || delete_dialog"
+        v-if="image_gallery || delete_dialog"
         class="bg-black/40 inset-x-0 inset-y-0 size-full fixed z-[2]"
       ></div>
-    </transition>
-    <transition name="modal" mode="out-in">
-      <div
-        v-if="category_dialog"
-        class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-[3]"
-      >
-        <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[28rem] h-auto rounded-xl"
-        >
-          <button
-            @click="category_dialog = false"
-            class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
-          ></button>
-          <h1 class="text-center text-xl grow">Create new category</h1>
-          <form
-            class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-8"
-            @submit.prevent="create_category"
-          >
-            <input
-              :class="input"
-              type="text"
-              placeholder="Title"
-              v-model="category_new"
-              required
-            />
-            <label
-              v-if="category_image_url == ''"
-              class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 size-52 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
-            >
-              <input
-                @change="category_image_upload"
-                class="hidden"
-                type="file"
-                accept=".jpg,.jpeg,.png"
-              />
-              <div
-                class="size-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
-              ></div>
-              <h1>Click to upload</h1>
-            </label>
-            <img v-else class="size-52" :src="category_image_url" />
-            <button
-              :disabled="!category_new || !!categories.find((category: Category) => category.title == category_new)"
-              type="submit"
-              :class="button"
-            >
-              Create
-            </button>
-          </form>
-        </div>
-      </div>
     </transition>
     <transition name="modal" mode="out-in">
       <div
@@ -117,25 +66,6 @@
         >Title<input :class="input" type="text" v-model="form.title"
       /></label>
       <label :class="label"
-        >Category
-        <div class="flex gap-x-4">
-          <select
-            :class="input + ' w-full cursor-pointer'"
-            v-model="form.category_id"
-          >
-            <option value="" selected>Select category</option>
-            <option v-for="c in categories" :value="c.ID">{{ c.title }}</option>
-          </select>
-          <button
-            type="button"
-            @click="category_dialog = true"
-            :class="add_category_button"
-          >
-            Add New
-          </button>
-        </div>
-      </label>
-      <label :class="label"
         >List Price<input
           :class="input"
           step=".01"
@@ -149,6 +79,30 @@
           type="number"
           min="0"
           v-model="form.stock_quantity"
+      /></label>
+      <label :class="label"
+        >Category
+        <div class="flex gap-x-4">
+          <select
+            :class="input + ' w-full cursor-pointer'"
+            v-model="form.category_id"
+            @change="category_change"
+          >
+            <option value="" selected>Select category</option>
+            <option v-for="c in categories" :value="c.ID">{{ c.title }}</option>
+          </select>
+          <button
+            type="button"
+            @click="navigateTo('/admin/categories')"
+            :class="add_category_button"
+          >
+            Add New
+          </button>
+        </div>
+      </label>
+      <label v-for="filter in form.filters" :class="label">
+        {{ filter.name }}
+        <input :class="input" type="text" v-model="filter.value"
       /></label>
       <div :class="label + ' col-span-2'">
         <label>Images</label>
@@ -193,8 +147,14 @@
             ? form.title == '' ||
               form.category_id == '' ||
               !form.list_price ||
-              form.stock_quantity.toString() == ''
-            : JSON.stringify(form) == JSON.stringify(form_old) &&
+              form.stock_quantity.toString() == '' ||
+              form.filters.some((filter: Filter) => filter.value === '')
+            : form.title == '' ||
+              form.category_id == '' ||
+              !form.list_price ||
+              form.stock_quantity.toString() == '' ||
+              form.filters.some((filter: Filter) => filter.value === '') ||
+              JSON.stringify(form) == JSON.stringify(form_old) &&
               JSON.stringify(images) == JSON.stringify(images_old)
         "
         type="submit"
@@ -219,11 +179,16 @@ definePageMeta({
 interface Category {
   ID: number;
   title: string;
+  filters: string[];
 }
 interface Image {
   order: number | null;
   name: string;
   url: string;
+}
+interface Filter {
+  name: string;
+  value: string;
 }
 interface Product {
   ID?: number | null;
@@ -231,6 +196,7 @@ interface Product {
   category_id: string;
   list_price: number | null;
   stock_quantity: string;
+  filters: Filter[];
   images?: Image[];
 }
 const is_add = route.params.product == "add";
@@ -242,8 +208,6 @@ const open_delete_dialog = (event: Event, order: Image["order"]) => {
 const delete_image_order = ref<Product["ID"]>(null);
 const delete_dialog = ref(false);
 const categories = ref<Category[]>([]);
-const category_dialog = ref(false);
-const category_new = ref("");
 const image_gallery = ref(false);
 const form = ref<Product>({
   ID: null,
@@ -251,6 +215,7 @@ const form = ref<Product>({
   category_id: "",
   list_price: null,
   stock_quantity: "",
+  filters: [],
 });
 let form_old = <Product>{
   ID: null,
@@ -258,10 +223,9 @@ let form_old = <Product>{
   category_id: "",
   list_price: null,
   stock_quantity: "",
+  filters: [],
 };
 let images_to_upload: File[] = [];
-let category_image: File;
-let category_image_url = ref("");
 const images = ref<Image[]>([]);
 let images_old: Image[] = [];
 const image_current = ref("");
@@ -280,12 +244,6 @@ const upload = (event: Event) => {
       images_to_upload.push(file);
     });
 };
-const category_image_upload = (event: Event) => {
-  category_image = (event.target as any).files[0];
-  category_image_url.value = URL.createObjectURL(
-    (event.target as any).files[0]
-  );
-};
 const open_gallery = (image: Image["url"]) => {
   image_gallery.value = true;
   image_current.value = image;
@@ -302,6 +260,7 @@ const data_to_form = (response: Product) => {
   });
   images.value = images_array;
   form_old = { ...form.value };
+  form_old.filters = JSON.parse(JSON.stringify(response.filters));
   images_old = [...images.value];
 };
 onMounted(() => {
@@ -319,12 +278,25 @@ onMounted(() => {
         {
           onResponse({ response }) {
             data_to_form(response._data);
+            if (form.value.filters.length == 0) category_change();
           },
         }
       );
     }
   });
 });
+const category_change = async () => {
+  const filters_temp: Filter[] = [];
+  categories.value
+    .find((category) => category.ID == parseInt(form.value.category_id))
+    ?.filters.map((filter) =>
+      filters_temp.push({
+        name: filter,
+        value: "",
+      })
+    );
+  form.value.filters = filters_temp;
+};
 const create_update = async () => {
   const form_values = {
     title: form.value.title,
@@ -340,6 +312,7 @@ const create_update = async () => {
     category_id: form.value.category_id,
     list_price: form.value.list_price,
     stock_quantity: form.value.stock_quantity,
+    filters: JSON.stringify(form.value.filters),
     images: JSON.stringify(images.value.map(({ url, ...rest }: Image) => rest)),
   };
   const form_data = new FormData();
@@ -400,33 +373,6 @@ const remove = async () => {
   delete_image_order.value = null;
   toast.success("Image removed", {
     bodyClassName: "toast-font",
-  });
-};
-const create_category = async () => {
-  const form_data = new FormData();
-  form_data.append("file", category_image);
-  form_data.append("title", category_new.value);
-  form_data.append("image", category_image.name);
-  await useFetch(config.apiBase + "/categories", {
-    headers: {
-      Authorization: config.apiKey,
-    },
-    method: "post",
-    body: form_data,
-    onResponse({ response }) {
-      if (response._data.title) {
-        category_dialog.value = false;
-        categories.value.push(response._data);
-        category_new.value = "";
-        toast.success("Category created", {
-          bodyClassName: "toast-font",
-        });
-      } else {
-        toast.warning(response._data.error, {
-          bodyClassName: "toast-font",
-        });
-      }
-    },
   });
 };
 const input =
