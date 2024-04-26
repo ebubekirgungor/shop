@@ -17,7 +17,7 @@
           v-model="search"
         />
         <button
-          class="transition-visibility duration-300 ease-in-out opacity-0 invisible fixed flex flex-col w-[550px] h-auto scale-[1.01] p-4 bg-white shadow-2xl rounded-b-lg cursor-default z-10"
+          class="transition-visibility duration-300 ease-in-out opacity-0 invisible fixed flex flex-col w-[550px] h-auto mt-10 scale-[1.01] p-4 bg-white shadow-2xl rounded-b-lg cursor-default z-10"
           :class="{
             'active:visible active:opacity-100 focus:visible peer-focus:visible focus:opacity-100 peer-focus:opacity-100':
               search.length > 1 && products.length,

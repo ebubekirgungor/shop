@@ -1,8 +1,39 @@
 <template>
   <main class="flex justify-center gap-x-4 m-4">
     <div
-      class="flex flex-col gap-y-5 p-6 min-w-64 h-fit bg-white rounded-xl shadow-md"
-    ></div>
+      class="flex flex-col p-6 min-w-64 h-fit bg-white rounded-xl shadow-md divide-y"
+    >
+      <div v-for="(filter, key) in filters" class="flex flex-col">
+        <input type="checkbox" :id="key.toString()" class="peer hidden" />
+        <label
+          :for="key.toString()"
+          class="transition duration-200 ease-in-out flex justify-between items-center py-4 cursor-pointer hover:bg-gray-100 bg-no-repeat bg-right bg-[url(/icons/expand_more.svg)] peer-checked:bg-[url(/icons/expand_less.svg)]"
+          >{{ key }}
+        </label>
+        <div
+          class="transition-all duration-300 ease-in-out flex flex-col gap-y-2 bg-white max-h-0 peer-checked:max-h-[18rem] peer-checked:overflow-auto overflow-hidden"
+        >
+          <div class="flex flex-col gap-y-2 py-2">
+            <div v-for="value in filter" class="flex flex-col">
+              <div
+                class="transition duration-200 ease-in-out flex items-center gap-x-2 pl-1.5 rounded-lg cursor-pointer hover:bg-gray-100"
+              >
+                <input
+                  type="checkbox"
+                  :id="value.filter"
+                  v-model="value.selected"
+                  class="transition duration-200 ease-in-out size-[1.1rem] cursor-pointer rounded-md border-gray-300 text-gray-800 hover:border-gray-400 focus:ring-0 focus:ring-offset-0"
+                /><label
+                  :for="value.filter"
+                  class="flex items-center w-full h-7 cursor-pointer"
+                  >{{ value.filter }}</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     <div
       class="flex w-[clamp(32rem,65rem,65rem)] h-auto bg-white rounded-xl shadow-md"
     >
@@ -10,7 +41,7 @@
         class="w-full min-h-[27rem] grid grid-cols-auto_box gap-6 p-6 items-center"
       >
         <div
-          v-for="product in products"
+          v-for="product in filtered_products"
           class="flex flex-col w-[14.25rem] bg-white rounded-xl border"
         >
           <button
@@ -74,7 +105,16 @@ interface Product {
   list_price: number;
   stock_quantity: number;
   is_favorite: boolean;
+  filters: ProductFilter[];
 }
+interface ProductFilter {
+  name: string;
+  value: string;
+}
+interface Filters {
+  [index: string]: { filter: string; selected: boolean }[];
+}
+const filters = ref<Filters>({});
 const products = ref<Product[]>([]);
 const cart = ref<Cart[]>([]);
 const favorites_ids = ref<number[]>([]);
@@ -90,8 +130,17 @@ onMounted(() => {
     });
     await useFetch(config.apiBase + "/categories/" + route.params.category, {
       onResponse({ response }) {
-        products.value = response._data;
+        response._data.filters.map((filter: string) => {
+          filters.value[filter] = [];
+        });
+        products.value = response._data.products;
         products.value.map((product: Product) => {
+          product.filters.map((filter) => {
+            filters.value[filter.name].push({
+              filter: filter.value,
+              selected: false,
+            });
+          });
           product.is_favorite = favorites_ids.value.includes(product.id);
         });
       },
@@ -109,6 +158,19 @@ onMounted(() => {
       cart.value = cart_unregistered.value;
     }
   });
+});
+const filtered_products = computed(() => {
+  const selected_filters = Object.entries(filters.value)
+    .map((a) => a[1])
+    .reduce((a, b) => a.concat(b), [])
+    .filter((b) => b.selected);
+  return selected_filters.length != 0
+    ? products.value.filter((product: Product) =>
+        product.filters.find((p_filter) =>
+          selected_filters?.some((filter) => filter.filter == p_filter.value)
+        )
+      )
+    : products.value;
 });
 const add_to_cart = async (id: number) => {
   if (role.value != undefined) {

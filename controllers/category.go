@@ -50,7 +50,10 @@ func Category(c *fiber.Ctx) error {
 	if all_products == nil {
 		return c.Status(200).JSON([]string{})
 	}
-	return c.Status(200).JSON(all_products)
+	return c.Status(200).JSON(fiber.Map{
+		"filters":  category.Filters,
+		"products": all_products,
+	})
 }
 
 func AddCategory(c *fiber.Ctx) error {
