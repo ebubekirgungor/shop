@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"shop/database"
 	"shop/models"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -24,28 +25,63 @@ func Category(c *fiber.Ctx) error {
 		Name  string `json:"name"`
 		Order uint   `json:"order"`
 	}
+	type Filter struct {
+		Name  string `json:"name"`
+		Value string `json:"value"`
+	}
 	category := models.Category{}
 	database.Db.Preload("Products").First(&category, "url = ?", c.Params("url"))
 	var all_products []fiber.Map
-	for _, product := range category.Products {
-		var images []Image
-		err := json.Unmarshal(product.Images, &images)
-		if err != nil {
-			return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+	if len(c.Queries()) == 0 {
+		for _, product := range category.Products {
+			var images []Image
+			json.Unmarshal(product.Images, &images)
+			image := "product.png"
+			if len(images) != 0 {
+				image = images[0].Name
+			}
+			all_products = append(all_products, fiber.Map{
+				"id":             product.ID,
+				"title":          product.Title,
+				"url":            product.Url,
+				"image":          image,
+				"list_price":     product.ListPrice,
+				"stock_quantity": product.StockQuantity,
+				"filters":        product.Filters,
+			})
 		}
-		image := "product.png"
-		if len(images) != 0 {
-			image = images[0].Name
+	} else {
+		filters := make(map[string][]string)
+		for name, value := range c.Queries() {
+			filters[name] = strings.Split(value, ",")
 		}
-		all_products = append(all_products, fiber.Map{
-			"id":             product.ID,
-			"title":          product.Title,
-			"url":            product.Url,
-			"image":          image,
-			"list_price":     product.ListPrice,
-			"stock_quantity": product.StockQuantity,
-			"filters":        product.Filters,
-		})
+		for _, product := range category.Products {
+			var images []Image
+			json.Unmarshal(product.Images, &images)
+			var product_filters []Filter
+			json.Unmarshal(product.Filters, &product_filters)
+			image := "product.png"
+			if len(images) != 0 {
+				image = images[0].Name
+			}
+			var add = false
+			for _, filter := range product_filters {
+				if slices.Contains(filters[filter.Name], filter.Value) {
+					add = true
+				}
+			}
+			if add {
+				all_products = append(all_products, fiber.Map{
+					"id":             product.ID,
+					"title":          product.Title,
+					"url":            product.Url,
+					"image":          image,
+					"list_price":     product.ListPrice,
+					"stock_quantity": product.StockQuantity,
+					"filters":        product.Filters,
+				})
+			}
+		}
 	}
 	if all_products == nil {
 		return c.Status(200).JSON([]string{})
