@@ -16,7 +16,7 @@ import (
 
 func AllCategories(c *fiber.Ctx) error {
 	categories := []models.Category{}
-	database.Db.Find(&categories)
+	database.Db.Order("created_at").Find(&categories)
 	return c.Status(200).JSON(categories)
 }
 

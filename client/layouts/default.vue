@@ -1,31 +1,47 @@
 <template>
   <div class="min-h-[100dvh] font-poppins text-sm sm:bg-gray-50 select-none">
     <nav
-      class="bg-white h-24 flex flex-col sm:flex-row sm:border-b justify-center items-center gap-x-12"
+      class="bg-white h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
     >
-      <div class="flex w-80 -ml-16 mr-16">
+      <div class="flex items-center sm:w-80 sm:-ml-16 sm:mr-16">
         <NuxtLink
           to="/"
-          class="w-52 h-24 bg-cover bg-[url(/images/logo.png)]"
+          class="w-36 h-20 sm:w-52 sm:h-24 bg-center sm:bg-left bg-cover bg-[url(/images/logo.png)]"
         ></NuxtLink>
       </div>
-      <div class="flex justify-center">
+      <div class="flex sm:justify-center">
         <input
-          class="peer order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out w-[90%] sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] sm:focus:shadow-lg sm:focus:shadow-black/10 bg-gray-100 rounded-md text-sm"
+          class="sm:block peer order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] focus:shadow-lg focus:shadow-black/10 bg-gray-100 sm:rounded-md text-sm sm:will-change-transform"
+          :class="{ hidden: !mobile_search }"
           type="text"
           placeholder="Search products"
           v-model="search"
         />
         <button
-          class="transition-visibility duration-300 ease-in-out opacity-0 invisible fixed flex flex-col w-[550px] h-auto mt-10 scale-[1.01] p-4 bg-white shadow-2xl rounded-b-lg cursor-default z-10"
+          class="transition-visibility duration-300 ease-in-out sm:opacity-0 sm:invisible absolute hidden sm:flex flex-col divide-y sm:divide-y-0 sm:w-[550px] sm:h-auto sm:mt-10 sm:scale-[1.01] p-4 bg-white sm:shadow-2xl sm:rounded-b-lg cursor-default z-10"
           :class="{
             'active:visible active:opacity-100 focus:visible peer-focus:visible focus:opacity-100 peer-focus:opacity-100':
               search.length > 1 && products.length,
           }"
+          :style="mobile_search ? 'inset: 0px; display:flex;' : ''"
         >
+          <div
+            class="sm:hidden mb-4 flex items-center shadow w-full bg-gray-100"
+          >
+            <div
+              @click="mobile_search = false"
+              class="min-w-10 h-10 bg-[url(/icons/previous.svg)] bg-no-repeat bg-center contrast-0 rounded-l-md"
+            ></div>
+            <input
+              class="bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out w-full h-10 border-none focus:ring-0 bg-gray-100 rounded-r-md text-sm sm:will-change-transform"
+              type="text"
+              placeholder="Search products"
+              v-model="search"
+            />
+          </div>
           <NuxtLink
             :to="'/product/' + product.url"
-            class="transition duration-200 flex justify-between w-full px-4 py-3 rounded-full hover:bg-black/5"
+            class="transition duration-200 flex justify-between w-full px-4 py-3 sm:rounded-full hover:bg-black/5"
             v-for="product in products"
           >
             <div v-html="product.title"></div>
@@ -33,10 +49,16 @@
           </NuxtLink>
         </button>
       </div>
-      <div class="w-80">
+      <div class="sm:w-80">
         <div
           class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
         >
+          <button
+            @click="mobile_search = true"
+            :class="button + ' sm:hidden sm:hover:-translate-y-0.5'"
+          >
+            <div class="size-6 bg-[url(/icons/search_mobile.svg)]"></div>
+          </button>
           <div
             :class="
               'flex flex-col group items-center w-10 sm:w-20 h-16 ' +
@@ -101,6 +123,7 @@ const logout = async () => {
   });
 };
 const search = ref("");
+const mobile_search = ref(false);
 const products = ref<Product[]>([]);
 watch(search, async () => {
   if (search.value.length > 1) {
@@ -130,6 +153,6 @@ watch(products, () => {
   });
 });
 const button =
-  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent";
+  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent will-change-transform";
 const menu_item = "flex justify-center items-center w-full h-8";
 </script>

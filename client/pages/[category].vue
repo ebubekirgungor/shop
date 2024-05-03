@@ -22,7 +22,7 @@
                   type="checkbox"
                   :id="value.filter"
                   v-model="value.selected"
-                  @change="filter_product(value.filter)"
+                  @change="filter_product"
                   class="transition duration-200 ease-in-out size-[1.1rem] cursor-pointer rounded-md border-gray-300 text-gray-800 hover:border-gray-400 focus:ring-0 focus:ring-offset-0"
                 /><label
                   :for="value.filter"
@@ -156,7 +156,7 @@ onMounted(() => {
     }
   });
 });
-const filter_product = async (filter_name: string) => {
+const filter_product = async () => {
   const selected_filters: { [index: string]: string } = {};
   let selected_count = 0;
   filters.value.forEach((filter, key) => {
