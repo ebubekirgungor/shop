@@ -1,12 +1,12 @@
 <template>
-  <div class="min-h-[100dvh] font-poppins text-sm sm:bg-gray-50 select-none">
+  <div class="min-h-dvh font-poppins text-sm sm:bg-gray-50 select-none">
     <nav
-      class="bg-white h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
+      class="bg-white h-16 sm:h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
     >
-      <div class="flex items-center sm:w-80 sm:-ml-16 sm:mr-16">
+      <div class="flex items-center sm:w-80 sm:-ml-16 mr-8 sm:mr-16">
         <NuxtLink
           to="/"
-          class="w-36 h-20 sm:w-52 sm:h-24 bg-center sm:bg-left bg-cover bg-[url(/images/logo.png)]"
+          class="w-32 sm:w-52 h-16 sm:h-24 bg-center sm:bg-left bg-cover bg-[url(/images/logo.png)]"
         ></NuxtLink>
       </div>
       <div class="flex sm:justify-center">
@@ -18,12 +18,14 @@
           v-model="search"
         />
         <button
-          class="transition-visibility duration-300 ease-in-out sm:opacity-0 sm:invisible absolute hidden sm:flex flex-col divide-y sm:divide-y-0 sm:w-[550px] sm:h-auto sm:mt-10 sm:scale-[1.01] p-4 bg-white sm:shadow-2xl sm:rounded-b-lg cursor-default z-10"
+          class="overflow-y-auto transition-visibility duration-300 ease-in-out sm:opacity-0 sm:invisible absolute hidden sm:flex flex-col divide-y sm:divide-y-0 sm:w-[550px] sm:h-auto sm:mt-10 sm:scale-[1.01] p-4 bg-white sm:shadow-2xl sm:rounded-b-lg cursor-default z-10"
           :class="{
             'active:visible active:opacity-100 focus:visible peer-focus:visible focus:opacity-100 peer-focus:opacity-100':
               search.length > 1 && products.length,
           }"
-          :style="mobile_search ? 'inset: 0px; display:flex;' : ''"
+          :style="
+            mobile_search ? 'inset: 0px; display:flex; position:fixed;' : ''
+          "
         >
           <div
             class="sm:hidden mb-4 flex items-center shadow w-full bg-gray-100"
@@ -49,7 +51,7 @@
           </NuxtLink>
         </button>
       </div>
-      <div class="sm:w-80">
+      <div class="sm:w-80 flex flex-col justify-center">
         <div
           class="flex order-1 sm:order-2 gap-x-2 sm:gap-x-10 items-center self-end sm:self-auto mr-4"
         >
@@ -61,8 +63,8 @@
           </button>
           <div
             :class="
-              'flex flex-col group items-center w-10 sm:w-20 h-16 ' +
-              (role != undefined ? 'mt-10' : 'mt-6')
+              'flex flex-col group items-center w-10 sm:w-20 h-6 sm:h-16 ' +
+              (role != undefined ? 'sm:mt-10' : 'sm:mt-6')
             "
           >
             <NuxtLink
@@ -78,7 +80,7 @@
             </NuxtLink>
             <div
               v-if="role != undefined"
-              class="flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
+              class="hidden sm:flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
             >
               <NuxtLink v-if="role != 0" to="/admin" :class="menu_item"
                 >Admin</NuxtLink

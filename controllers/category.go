@@ -87,8 +87,9 @@ func Category(c *fiber.Ctx) error {
 		return c.Status(200).JSON([]string{})
 	}
 	return c.Status(200).JSON(fiber.Map{
-		"filters":  category.Filters,
-		"products": all_products,
+		"category_title": category.Title,
+		"filters":        category.Filters,
+		"products":       all_products,
 	})
 }
 
