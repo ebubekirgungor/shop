@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-dvh font-poppins text-sm sm:bg-gray-50 select-none">
+  <div class="min-h-dvh font-poppins text-sm sm:bg-gray-50 select-none overflow-hidden">
     <nav
       class="bg-white h-16 sm:h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
     >

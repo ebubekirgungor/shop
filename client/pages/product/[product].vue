@@ -1,45 +1,40 @@
 <template>
   <main class="flex justify-center m-4">
     <div
-      class="flex w-[clamp(60rem,70rem,70rem)] min-w-[60rem] h-auto bg-white rounded-xl shadow-md"
+      class="flex sm:w-[clamp(60rem,70rem,70rem)] sm:min-w-[60rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <div v-if="images.length > 0" class="flex flex-col gap-y-4 pb-4">
+      <div
+        v-if="images.length > 0"
+        class="flex flex-col gap-y-4 pb-4 min-w-screen sm:min-w-[35rem] relative overflow-hidden touch-pan-y"
+      >
         <div
-          class="overflow-hidden size-[35rem] relative mx-auto rounded-tl-xl"
+          class="transition-transform duration-500 ease-in-out flex w-screen h-[100vw] sm:size-[35rem]"
+          ref="slider"
+          @touchstart="touch_start"
+          @touchmove="touch_move"
         >
-          <div
-            v-for="(image, index) in images"
-            class="transition duration-300 ease-in-out absolute inset-0"
-            :class="{
-              '-translate-x-full': index < current_slide,
-              'translate-x-full': index > current_slide,
-            }"
-          >
+          <div v-for="image in images" style="flex: 0 0 100%">
             <img
               :src="image.url"
-              class="object-contain relative size-full"
-              alt="Product Image"
+              class="object-contain min-w-full min-h-[100vw] max-w-full max-h-[100vw] sm:min-w-[35rem] sm:min-h-[35rem] sm:max-w-[35rem] sm:max-h-[35rem]"
+              :alt="image.name"
             />
           </div>
-          <div class="flex justify-between items-center size-full p-4 absolute">
-            <button
-              :class="icon + 'bg-[url(/icons/previous.svg)]'"
-              @click="current_slide--"
-              :disabled="current_slide == 0"
-            ></button>
-            <button
-              :class="icon + 'bg-[url(/icons/next.svg)]'"
-              @click="current_slide++"
-              :disabled="current_slide == images.length - 1"
-            ></button>
-          </div>
         </div>
+        <button
+          @click="goto_slide(slide_index - 1)"
+          :class="icon + 'left-3 bg-[url(/icons/previous.svg)]'"
+        ></button>
+        <button
+          @click="goto_slide(slide_index + 1)"
+          :class="icon + 'right-3 bg-[url(/icons/next.svg)]'"
+        ></button>
         <div class="flex justify-center gap-x-4 mx-4">
           <button
             v-for="(image, index) in images"
-            class="flex justify-center transition duration-200 ease-in-out size-12 rounded-md"
-            :class="{ 'ring ring-3 ring-black': index == current_slide }"
-            @click="current_slide = index"
+            class="flex justify-center transition duration-200 ease-in-out size-12 bg-white rounded-md"
+            :class="{ 'ring ring-3 ring-black': index == slide_index }"
+            @click="goto_slide(index)"
           >
             <img
               class="h-full object-center object-cover rounded-md"
@@ -53,7 +48,7 @@
           class="size-[35rem] bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-0"
         ></div>
       </div>
-      <div class="flex flex-col w-full gap-y-6 p-6">
+      <div class="hidden sm:flex flex-col w-full gap-y-6 p-6">
         <div class="flex justify-between items-center">
           <div class="text-xl select-text">{{ product.title }}</div>
           <button
@@ -131,7 +126,6 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const route = useRoute();
-const router = useRouter();
 const role = useCookie<number>("role");
 interface Image {
   order: number;
@@ -145,9 +139,6 @@ interface Product {
   list_price: number;
   stock_quantity: string;
   is_favorite: boolean;
-}
-interface User {
-  cart: Cart;
 }
 interface Cart {
   id: number | null;
@@ -163,7 +154,10 @@ const product = ref<Product>({
   is_favorite: false,
 });
 const images = ref<Image[]>([]);
-const current_slide = ref(0);
+const startX = ref(0);
+const dragging = ref(false);
+const slide_index = ref(0);
+const slider = ref<any>();
 const quantity = ref(1);
 const cart_unregistered = useCookie<Cart[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
@@ -220,6 +214,32 @@ onMounted(() => {
       }
     }
   });
+});
+const goto_slide = async (index: number) => {
+  if (index < 0) {
+    slide_index.value = images.value.length - 1;
+  } else if (index >= images.value.length) {
+    slide_index.value = 0;
+  } else {
+    slide_index.value = index;
+  }
+};
+const touch_start = async (event: any) => {
+  dragging.value = true;
+  startX.value = event.touches[0].clientX;
+};
+const touch_move = async (event: any) => {
+  if (!dragging.value) return;
+  const currentX = event.touches[0].clientX;
+  const diffX = currentX - startX.value;
+  if (Math.abs(diffX) > 50) {
+    goto_slide(slide_index.value + (diffX > 0 ? -1 : 1));
+    dragging.value = false;
+  }
+};
+watch(slide_index, () => {
+  const transformValue = `translateX(-${slide_index.value * 100}%)`;
+  slider.value.style.transform = transformValue;
 });
 const add_to_cart = async () => {
   const existing_index = cart.value.findIndex(
@@ -290,7 +310,7 @@ const toggle_favorite = async () => {
   });
 };
 const icon =
-  "transition duration-300 ease-in-out bg-no-repeat bg-center size-10 bg-white rounded-full hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 ";
+  "transition duration-300 ease-in-out absolute top-[50vw] sm:top-[17.5rem] -translate-y-1/2 bg-no-repeat bg-center size-10 bg-gray-200 sm:bg-white rounded-full sm:hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 ";
 const button =
   "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none";
 </script>

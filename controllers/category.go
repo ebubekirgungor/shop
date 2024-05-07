@@ -42,6 +42,7 @@ func Category(c *fiber.Ctx) error {
 			}
 			all_products = append(all_products, fiber.Map{
 				"id":             product.ID,
+				"create_date":    product.CreatedAt,
 				"title":          product.Title,
 				"url":            product.Url,
 				"image":          image,
@@ -73,6 +74,7 @@ func Category(c *fiber.Ctx) error {
 			if add {
 				all_products = append(all_products, fiber.Map{
 					"id":             product.ID,
+					"create_date":    product.CreatedAt,
 					"title":          product.Title,
 					"url":            product.Url,
 					"image":          image,

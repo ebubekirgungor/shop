@@ -18,7 +18,7 @@
           <input type="checkbox" :id="key" class="peer hidden" />
           <label
             :for="key"
-            class="transition duration-200 ease-in-out flex justify-between items-center px-2 py-4 cursor-pointer hover:bg-gray-100 bg-no-repeat bg-right bg-[url(/icons/expand_more.svg)] peer-checked:bg-[url(/icons/expand_less.svg)]"
+            class="transition duration-200 ease-in-out flex justify-between items-center px-2 py-4 font-medium cursor-pointer hover:bg-gray-100 bg-no-repeat bg-right bg-[url(/icons/expand_more.svg)] peer-checked:bg-[url(/icons/expand_less.svg)]"
             >{{ key }}
           </label>
           <div
@@ -33,7 +33,7 @@
                     type="checkbox"
                     :id="value.filter"
                     v-model="value.selected"
-                    @change="filters_menu ? null : filter_product()"
+                    @change="filters_menu ? null : filter_products()"
                     class="transition duration-200 ease-in-out size-[1.1rem] cursor-pointer rounded-md border-gray-300 text-gray-800 hover:border-gray-400 focus:ring-0 focus:ring-offset-0"
                   /><label
                     :for="value.filter"
@@ -51,7 +51,7 @@
       >
         <button
           @click="
-            filter_product();
+            filter_products();
             filters_menu = false;
           "
           class="w-full h-12 text-white border bg-black rounded-full"
@@ -62,9 +62,47 @@
     </div>
     <div class="flex flex-col gap-y-4 w-[clamp(32rem,65rem,65rem)]">
       <div
-        class="flex justify-center sm:justify-start sm:p-6 text-xl h-auto bg-white rounded-xl sm:shadow-md"
+        class="flex justify-center sm:justify-between items-center sm:pl-6 sm:pr-4 sm:py-4 text-xl h-auto bg-white rounded-xl sm:shadow-md"
       >
         {{ category_title }}
+        <div>
+          <button
+            @click="sorts_menu = !sorts_menu"
+            class="hidden sm:flex justify-between items-center w-48 pl-3 pr-1 py-2 text-[15px] border rounded-md"
+          >
+            Sort
+            <div class="size-6 bg-[url(/icons/sort.svg)]"></div>
+          </button>
+          <div
+            class="absolute transition-visibility duration-300 ease-in-out z-10 hidden sm:block invisible opacity-0 sm:w-48 -mt-2 p-2 text-[16px] border rounded-md shadow-xl bg-white"
+            :class="{ 'sm:!block !visible !opacity-100 !mt-2': sorts_menu }"
+          >
+            <div
+              v-for="sort in sorts"
+              @click="sort_products(sort.value)"
+              class="transition duration-200 ease-in-out cursor-pointer px-3 py-2 rounded-xl hover:bg-gray-100"
+            >
+              {{ sort.name }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="transition-visibility duration-300 ease-in-out sm:!hidden invisible opacity-0 size-full fixed inset-0 bg-black/40 z-10"
+        :class="{ '!opacity-100 !visible': sorts_menu }"
+        @click="sorts_menu = false"
+      ></div>
+      <div
+        class="transition-all duration-300 ease-in-out sm:!hidden invisible !opacity-100 w-full max-h-0 fixed bottom-0 bg-white border p-2 divide-y z-10"
+        :class="{ '!visible !max-h-56': sorts_menu }"
+      >
+        <div
+          v-for="sort in sorts"
+          @click="sort_products(sort.value)"
+          class="p-4"
+        >
+          {{ sort.name }}
+        </div>
       </div>
       <div class="sm:hidden flex border-y divide-x text-md">
         <button
@@ -75,7 +113,7 @@
           Filters
         </button>
         <button
-          @click="filters_menu = true"
+          @click="sorts_menu = true"
           class="flex justify-center items-center gap-x-1 w-full p-2"
         >
           <div class="size-6 bg-[url(/icons/sort.svg)]"></div>
@@ -148,6 +186,7 @@ interface Cart {
 }
 interface Product {
   id: number;
+  create_date: Date;
   title: string;
   url: string;
   image: string;
@@ -160,7 +199,22 @@ interface ProductFilter {
   name: string;
   value: string;
 }
+const sorts = [
+  {
+    name: "Newests",
+    value: "newest",
+  },
+  {
+    name: "Lowest price",
+    value: "lowest",
+  },
+  {
+    name: "Highest price",
+    value: "highest",
+  },
+];
 const filters_menu = ref(false);
+const sorts_menu = ref(false);
 const filters = ref(new Map<string, { filter: string; selected: boolean }[]>());
 const category_title = ref("");
 const products = ref<Product[]>([]);
@@ -212,7 +266,7 @@ onMounted(() => {
     }
   });
 });
-const filter_product = async () => {
+const filter_products = async () => {
   const selected_filters: { [index: string]: string } = {};
   let selected_count = 0;
   filters.value.forEach((filter, key) => {
@@ -231,6 +285,19 @@ const filter_product = async () => {
       }
     },
   });
+};
+const sort_products = async (sort_value: string) => {
+  if (sort_value == "newest") {
+    products.value = products.value.sort(
+      (a, b) =>
+        new Date(b.create_date).getTime() - new Date(a.create_date).getTime()
+    );
+  } else if (sort_value == "lowest") {
+    products.value = products.value.sort((a, b) => a.list_price - b.list_price);
+  } else if (sort_value == "highest") {
+    products.value = products.value.sort((a, b) => b.list_price - a.list_price);
+  }
+  sorts_menu.value = false;
 };
 const add_to_cart = async (id: number) => {
   if (role.value != undefined) {
