@@ -11,7 +11,9 @@
         v-if="delete_dialog"
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-10"
       >
-        <div class="flex flex-col p-2 bg-white -mt-48 w-96 h-auto rounded-xl">
+        <div
+          class="flex flex-col p-2 bg-white sm:-mt-48 w-80 sm:w-96 h-auto rounded-xl"
+        >
           <button
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
@@ -34,13 +36,13 @@
       </div>
     </transition>
     <div
-      class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Favorites
     </div>
     <div
       v-if="favorites.length == 0"
-      class="flex flex-col justify-center items-center gap-y-8 min-w-[35rem] min-h-96 h-auto bg-white rounded-xl shadow-md"
+      class="flex flex-col justify-center items-center gap-y-8 sm:min-w-[35rem] min-h-96 h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <div
         class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/favorite.svg)] contrast-0"
@@ -49,31 +51,29 @@
     </div>
     <div
       v-else
-      class="flex p-6 min-w-[35rem] min-h-96 h-auto bg-white rounded-xl shadow-md"
+      class="flex p-2 sm:p-6 w-screen sm:w-auto sm:min-w-[35rem] sm:min-h-96 h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <div
-        class="w-full grid grid-cols-4 grid-cols-auto_box gap-6 items-center"
-      >
+      <div class="w-full flex flex-wrap gap-2 sm:gap-6 items-center">
         <div
           v-for="product in favorites"
-          class="flex flex-col w-56 h-[21rem] bg-white rounded-xl border"
+          class="flex flex-col w-[calc(50vw-12px)] sm:w-56 sm:h-[21rem] bg-white rounded-xl border"
         >
           <button
             @click="
               delete_dialog = true;
               delete_product_id = product.ID;
             "
-            class="absolute mt-2 ml-44 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full hover:bg-black/25"
+            class="absolute m-2 self-end transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full sm:hover:bg-black/25"
           ></button>
           <NuxtLink :to="'/product/' + product.url">
             <img
               v-if="product.images.length > 0"
-              class="size-56 object-contain rounded-t-xl"
+              class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-56 object-contain rounded-t-xl"
               :src="'/images/products/' + product.images[0].name"
             />
             <div
               v-else
-              class="size-56 bg-no-repeat bg-center bg-contain bg-[url(/images/products/product.png)]"
+              class="sm:size-56 bg-no-repeat bg-center bg-contain bg-[url(/images/products/product.png)]"
             ></div>
           </NuxtLink>
           <div class="flex flex-col gap-y-6 p-4">
