@@ -11,11 +11,11 @@
         v-if="image_gallery"
         class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
-        <div class="flex flex-col p-3 -mt-[15vh] w-[48rem] h-[28rem]">
+        <div class="flex flex-col p-3 sm:-mt-[15vh] sm:w-[48rem] sm:h-[28rem]">
           <img class="object-cover rounded-md h-full" :src="image_current" />
           <button
             @click="image_gallery = false"
-            class="absolute mt-2 ml-[44rem] transition duration-300 ease-in-out size-8 bg-white bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-white/60"
+            class="absolute mt-2 right-5 sm:right-auto sm:ml-[44rem] transition duration-300 ease-in-out size-8 bg-white bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-white/60"
           ></button>
         </div>
         <div class="flex gap-x-1">
@@ -36,7 +36,9 @@
         v-if="delete_dialog"
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
-        <div class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl">
+        <div
+          class="flex flex-col p-2 bg-white sm:-mt-48 w-80 h-auto rounded-xl"
+        >
           <button
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
@@ -54,13 +56,13 @@
       </div>
     </transition>
     <div
-      class="flex items-center gap-x-4 p-6 text-xl bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ is_add ? "Add product" : "Edit product" }}
     </div>
     <form
       @submit.prevent="create_update"
-      class="grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 min-w-[30rem] h-auto bg-white rounded-xl shadow-md"
+      class="flex flex-col sm:grid grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 items-center p-4 sm:p-6 w-screen sm:w-auto sm:min-w-[30rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <label :class="label"
         >Title<input :class="input" type="text" v-model="form.title"
@@ -104,27 +106,27 @@
         {{ filter.name }}
         <input :class="input" type="text" v-model="filter.value"
       /></label>
-      <div :class="label + ' col-span-2'">
-        <label>Images</label>
-        <div class="grid grid-cols-auto gap-4 mt-2">
+      <div :class="label + ' w-screen sm:w-auto p-2 sm:p-0 col-span-2'">
+        <label class="px-2 sm:px-0">Images</label>
+        <div class="flex flex-wrap gap-2 sm:gap-4 mt-2">
           <div
             v-for="image in images"
             @click="open_gallery(image.url)"
-            class="flex flex-col w-52 h-32 rounded-xl cursor-pointer"
+            class="flex flex-col w-[calc(50vw-12px)] h-[calc(50vw-12px)] sm:size-44 border rounded-xl cursor-pointer"
           >
             <button
               type="button"
               @click="open_delete_dialog($event, image.order)"
-              class="z-[1] self-end -mb-9 mr-2 size-7 bg-white bg-[url(/icons/delete.svg)] bg-no-repeat bg-center rounded-md"
+              class="absolute m-2 self-end transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-gray-200 sm:bg-black/10 rounded-full sm:hover:bg-black/25"
             ></button>
             <img
-              class="w-52 h-32 object-center object-cover rounded-xl"
+              class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-full object-center object-contain rounded-xl"
               :src="image.url"
             />
           </div>
-          <label class="w-52">
+          <label class="sm:w-44">
             <div
-              class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 w-52 h-32 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
+              class="transition duration-200 ease-in-out flex flex-col justify-center items-center gap-y-3 w-[calc(50vw-12px)] h-[calc(50vw-12px)] sm:size-44 bg-gray-50 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer hover:bg-gray-100"
             >
               <input
                 @change="upload"
@@ -381,7 +383,7 @@ const add_category_button =
   "transition duration-300 ease-in-out w-32 rounded-md bg-black/5 text-sm hover:bg-black/10";
 const button =
   "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const label = "flex flex-col gap-y-2";
+const label = "w-full flex flex-col gap-y-2";
 const gallery_button =
   "transition duration-300 ease-in-out size-3 rounded-full ";
 </script>
