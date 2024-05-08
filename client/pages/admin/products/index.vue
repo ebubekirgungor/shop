@@ -12,7 +12,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl z-3"
+          class="flex flex-col p-2 bg-white sm:-mt-48 w-80 h-auto rounded-xl z-3"
         >
           <button
             @click="delete_dialog = false"
@@ -31,7 +31,7 @@
       </div>
     </transition>
     <div
-      class="flex items-center gap-x-4 p-6 text-xl bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
       Products
       <NuxtLink
@@ -42,11 +42,11 @@
       </NuxtLink>
     </div>
     <div
-      class="flex flex-col justify-center p-5 min-w-[40rem] h-full min-h-[14rem] bg-white rounded-xl shadow-md"
+      class="flex flex-col justify-center sm:p-5 sm:min-w-[40rem] h-full sm:min-h-[14rem] bg-white sm:rounded-xl sm:shadow-md"
     >
       <div v-if="fetch_complete" class="flex flex-col gap-y-4">
         <input
-          class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
+          class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] sm:w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
           v-model="filter"
           type="text"
           placeholder="Search"
@@ -56,7 +56,7 @@
         >
           <thead>
             <tr class="bg-gray-200 whitespace-nowrap">
-              <th class="w-1/3 pl-4">
+              <th class="w-1/2 sm:w-1/3 pl-4">
                 <div @click="sort('title')" :class="th_button">
                   Title
                   <div
@@ -70,7 +70,7 @@
                   ></div>
                 </div>
               </th>
-              <th class="w-1/4">
+              <th class="w-1/2 sm:w-1/4">
                 <div @click="sort('category')" :class="th_button">
                   Category
                   <div
@@ -84,7 +84,7 @@
                   ></div>
                 </div>
               </th>
-              <th class="w-1/4">
+              <th class="hidden sm:table-cell w-1/4">
                 <div @click="sort('list_price')" :class="th_button">
                   List Price
                   <div
@@ -98,7 +98,7 @@
                   ></div>
                 </div>
               </th>
-              <th class="w-1/4">
+              <th class="hidden sm:table-cell w-1/4">
                 <div @click="sort('stock_quantity')" :class="th_button">
                   Stock Quantity
                   <div
@@ -126,8 +126,8 @@
                 }}</NuxtLink>
               </td>
               <td>{{ product.category }}</td>
-              <td>{{ product.list_price }}</td>
-              <td>{{ product.stock_quantity }}</td>
+              <td class="hidden sm:table-cell">{{ product.list_price }}</td>
+              <td class="hidden sm:table-cell">{{ product.stock_quantity }}</td>
               <td class="flex gap-x-1 pr-2 py-2 float-right">
                 <NuxtLink
                   :to="'/admin/products/' + product.url"
