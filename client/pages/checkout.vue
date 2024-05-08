@@ -1,27 +1,24 @@
 <template>
-  <main class="flex justify-center gap-x-4 m-4">
+  <main class="flex justify-center gap-x-4 mb-20 m-4">
     <div
-      class="flex flex-col gap-y-4 w-[clamp(48rem,65rem,65rem)] min-w-[48rem]"
+      class="flex flex-col gap-y-4 w-[clamp(48rem,65rem,65rem)] sm:min-w-[48rem]"
     >
       <div
-        class="flex items-center gap-x-4 p-6 text-xl h-[78px] bg-white rounded-xl shadow-md"
+        class="flex justify-center sm:justify-start items-center gap-x-4 p-6 text-xl h-[78px] bg-white sm:rounded-xl sm:shadow-md"
       >
         <button
           @click="step == 1 ? navigateTo('/cart') : (step = 1)"
-          class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] size-10 bg-black/5 rounded-full hover:bg-black/10"
+          class="absolute sm:relative left-4 sm:left-0 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] size-10 bg-black/5 rounded-full hover:bg-black/10"
         ></button>
         {{ step == 1 ? "Select address" : "Payment" }}
       </div>
-      <div class="flex p-6 h-auto bg-white rounded-xl shadow-md">
+      <div class="flex sm:p-6 h-auto bg-white sm:rounded-xl sm:shadow-md">
         <div v-if="step == 1" class="w-full">
-          <div
-            v-if="fetch_complete"
-            class="grid grid-cols-4 grid-cols-auto_box_checkout gap-6"
-          >
+          <div v-if="fetch_complete" class="flex flex-wrap gap-6">
             <div
               v-for="address in addresses"
               @click="selected_address = address"
-              class="transition duration-300 ease-in-out flex flex-col p-4 text-xl size-52 ring-1 ring-slate-300 rounded-xl gap-y-2 cursor-pointer"
+              class="transition duration-300 ease-in-out flex flex-col p-4 text-xl size-full sm:size-52 ring-1 ring-slate-300 rounded-xl gap-y-2 cursor-pointer"
               :class="{ 'ring-4': selected_address?.ID == address.ID }"
             >
               <div class="flex">
@@ -41,12 +38,12 @@
             ></div>
           </div>
         </div>
-        <div v-else class="flex gap-x-6 w-full">
+        <div v-else class="flex flex-col sm:flex-row gap-6 w-full">
           <div
-            class="flex flex-col justify-between p-6 bg-sky-950/95 rounded-xl w-[27rem] min-w-[27rem] h-60 text-white text-3xl font-[OCRA]"
+            class="flex flex-col justify-between p-6 bg-sky-950/95 rounded-xl sm:w-[27rem] sm:min-w-[27rem] h-48 sm:h-60 text-white text-2xl sm:text-3xl font-[OCRA]"
           >
             <div
-              class="-mt-1 size-16 bg-[url(/icons/chip.png)] bg-no-repeat bg-cover"
+              class="-mt-1 size-10 sm:size-16 bg-[url(/icons/chip.png)] bg-no-repeat bg-cover"
             ></div>
             <div class="flex flex-col gap-y-4">
               <span v-if="!card.number">**** **** **** ****</span
@@ -124,56 +121,65 @@
         </div>
       </div>
     </div>
+    <button
+      class="transition-margin duration-300 ease-in-out z-10 peer absolute left-1 bottom-0 focus:mb-20 sm:hidden min-w-7 h-20 bg-[url(/icons/expand_less.svg)] focus:bg-[url(/icons/expand_more.svg)] bg-center bg-contain bg-no-repeat"
+    ></button>
     <div
-      class="flex flex-col gap-y-5 p-6 min-w-64 h-fit bg-white rounded-xl shadow-md"
+      class="transition-height duration-300 ease-in-out peer-focus:h-40 fixed sm:relative bottom-0 w-full sm:w-auto h-20 sm:!h-fit flex sm:flex-col gap-x-2 gap-y-5 pl-2 p-4 sm:p-6 sm:min-w-64 bg-white sm:rounded-xl border-t sm:border-t-0 shadow-[0_0_15px_rgba(0,0,0,0.2)] sm:shadow-md"
     >
-      <div class="text-[17px]">Total amount</div>
-      <div class="flex gap-x-1 text-3xl">
-        {{
-          (
-            cart.reduce((total: number, product: Cart) => {
-              return (
-                total +
-                product.list_price *
-                  (product.cart.selected ? product.cart.quantity : 0)
-              );
-            }, 0) + shipping
-          ).toLocaleString("tr-TR", {
-            maximumFractionDigits: 2,
-          })
-        }}
-        <div class="text-[20px] mt-0.5">TL</div>
-      </div>
-      <div class="flex flex-col gap-y-1">
-        <div class="flex justify-between">
-          <div>Subtotal</div>
-          <div>
-            {{
-              cart
-                .reduce((total: number, product: Cart) => {
-                  return (
-                    total +
-                    product.list_price *
-                      (product.cart.selected ? product.cart.quantity : 0)
-                  );
-                }, 0)
-                .toLocaleString("tr-TR", {
-                  maximumFractionDigits: 2,
-                })
-            }}
-            TL
-          </div>
+      <div class="pl-8 sm:pl-0 w-full flex flex-col sm:gap-y-5">
+        <div class="sm:text-[17px]">Total amount</div>
+        <div class="flex gap-x-1 text-xl sm:text-3xl">
+          {{
+            (
+              cart.reduce((total: number, product: Cart) => {
+                return (
+                  total +
+                  product.list_price *
+                    (product.cart.selected ? product.cart.quantity : 0)
+                );
+              }, 0) + shipping
+            ).toLocaleString("tr-TR", {
+              maximumFractionDigits: 2,
+            })
+          }}
+          <div class="sm:text-[20px] sm:mt-0.5">TL</div>
         </div>
-        <div class="flex justify-between">
-          <div>Shipping</div>
-          <div>{{ shipping }} TL</div>
+      </div>
+      <div class="flex flex-col gap-y-5">
+        <div
+          class="w-full absolute sm:relative left-0 top-20 sm:top-0 bottom-0 p-4 sm:p-0 order-1 sm:order-none flex flex-col gap-y-1"
+        >
+          <div class="flex justify-between">
+            <div>Subtotal</div>
+            <div>
+              {{
+                cart
+                  .reduce((total: number, product: Cart) => {
+                    return (
+                      total +
+                      product.list_price *
+                        (product.cart.selected ? product.cart.quantity : 0)
+                    );
+                  }, 0)
+                  .toLocaleString("tr-TR", {
+                    maximumFractionDigits: 2,
+                  })
+              }}
+              TL
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div>Shipping</div>
+            <div>{{ shipping }} TL</div>
+          </div>
         </div>
       </div>
       <button
         v-if="step == 1"
         @click="step = 2"
         :disabled="!selected_address"
-        class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-xl bg-black text-white hover:bg-black/80 font-medium mt-4 disabled:bg-black/60 disabled:pointer-events-none"
+        class="transition duration-300 ease-in-out min-w-36 h-12 col-span-2 rounded-xl bg-black text-white sm:hover:bg-black/80 font-medium sm:mt-4 disabled:bg-black/60 disabled:pointer-events-none"
       >
         Continue
       </button>
@@ -194,7 +200,7 @@
           !card.cvv ||
           card.cvv.length < 3
         "
-        class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-xl bg-black text-white hover:bg-black/80 font-medium mt-4 disabled:bg-black/60 disabled:pointer-events-none"
+        class="transition duration-300 ease-in-out min-w-36 h-12 col-span-2 rounded-xl bg-black text-white sm:hover:bg-black/80 font-medium sm:mt-4 disabled:bg-black/60 disabled:pointer-events-none"
       >
         Place Order
       </button>
