@@ -1,24 +1,31 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex items-center gap-x-4 p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="flex flex-col justify-center mt-10 sm:mt-0 sm:flex-row items-center gap-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Orders
-      <button
-        v-for="status in status_names.filter(
-          (status) => status.status != DeliveryStatus.Delivered
-        )"
-        @click="status_filter = status.status"
-        class="transition duration-200 ease-in-out px-4 text-[15px] border-2 rounded-xl hover:bg-black/10 whitespace-nowrap"
-        :class="{ 'bg-black/10': status_filter == status.status }"
+      <div
+        class="w-screen flex gap-x-4 px-4 overflow-x-auto"
+        style="scrollbar-width: none"
       >
-        {{ status.name }}
-      </button>
+        <button
+          v-for="status in status_names.filter(
+            (status) => status.status != DeliveryStatus.Delivered
+          )"
+          @click="status_filter = status.status"
+          class="transition duration-200 ease-in-out h-8 px-4 text-[15px] border-2 rounded-xl sm:hover:bg-black/10 whitespace-nowrap"
+          :class="{ 'bg-black/10': status_filter == status.status }"
+        >
+          {{ status.name }}
+        </button>
+      </div>
     </div>
-    <div class="flex p-6 min-w-[35rem] bg-white rounded-xl shadow-md">
-      <div class="w-full flex flex-col gap-y-6">
+    <div
+      class="flex sm:p-6 sm:min-w-[35rem] bg-white sm:rounded-xl sm:shadow-md"
+    >
+      <div class="w-full flex flex-col gap-y-6 p-4 sm:p-0">
         <input
-          class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
+          class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] sm:w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
           v-model="search_filter"
           type="text"
           placeholder="Search"
@@ -35,29 +42,31 @@
         <div
           v-else
           v-for="order in filtered_orders"
-          class="flex flex-col gap-x-8 bg-white rounded-xl border"
+          class="flex flex-col sm:gap-x-8 bg-white rounded-xl border"
         >
-          <div class="flex justify-between p-5 bg-black/5 rounded-t-xl">
+          <div
+            class="flex flex-col sm:flex-row justify-between p-5 bg-black/5 rounded-t-xl"
+          >
             <div class="flex flex-col">
-              <div class="text-gray-600">Order date</div>
-              <div class="text-lg">
+              <div class="hidden sm:block text-gray-600">Order date</div>
+              <div class="sm:text-lg">
                 {{ new Date(order.date).toLocaleString("tr-TR", options) }}
               </div>
             </div>
-            <div class="flex flex-col">
+            <div class="hidden sm:flex flex-col">
               <div class="text-gray-600">Customer</div>
               <div class="text-lg">
                 {{ order.customer_name }}
               </div>
             </div>
             <div class="flex flex-col">
-              <div class="text-gray-600">Total amount</div>
+              <div class="hidden sm:block text-gray-600">Total amount</div>
               <div class="text-lg">
                 {{ order.price.toLocaleString("tr-TR") }}
                 TL
               </div>
             </div>
-            <div class="flex flex-col">
+            <div class="hidden sm:flex flex-col">
               <div class="text-gray-600">Total products</div>
               <div class="text-lg">
                 {{
@@ -69,7 +78,7 @@
             </div>
             <NuxtLink
               :to="'orders/' + order.id"
-              class="transition duration-300 ease-in-out flex justify-center items-center w-20 h-12 rounded-xl bg-black text-white hover:bg-black/80 font-medium"
+              class="absolute sm:relative right-0 mr-8 sm:mr-0 transition duration-300 ease-in-out flex justify-center items-center w-20 h-12 rounded-xl bg-black text-white hover:bg-black/80 font-medium"
               >Details</NuxtLink
             >
           </div>
@@ -77,17 +86,19 @@
             <div :class="status_names[order.delivery_status + 1].icon"></div>
             {{ status_names[order.delivery_status + 1].name }}
           </div>
-          <div class="grid grid-cols-auto_box_orders items-center p-5 gap-4">
+          <div
+            class="max-w-[calc(100vw-2rem)] flex overflow-x-auto sm:flex-wrap items-center p-5 gap-x-3 gap-y-6 sm:gap-6"
+          >
             <NuxtLink
               v-for="product in order.products"
               :to="'/product/' + product.url"
-              class="flex justify-center min-w-24 size-24 border border-gray-300 rounded-lg"
+              class="flex justify-center min-w-12 size-12 sm:min-w-24 sm:size-24 border border-gray-300 rounded-lg"
               ><img
                 class="object-center object-contain rounded-lg"
                 :src="'/images/products/' + product.image"
               />
               <span
-                class="absolute mt-20 ml-24 flex justify-center items-center size-7 rounded-full bg-gray-300 font-medium"
+                class="hidden absolute mt-10 ml-12 sm:mt-20 sm:ml-24 sm:flex justify-center items-center size-6 sm:size-7 rounded-full bg-gray-300 font-medium"
                 >{{ product.quantity }}</span
               ></NuxtLink
             >
@@ -99,8 +110,6 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useToast } from "vue-toastification";
-const toast = useToast();
 const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",

@@ -1,46 +1,46 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex items-center gap-x-4 p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="flex items-center mt-12 sm:mt-0 gap-x-4 sm:p-6 text-lg sm:text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <button
         @click="navigateTo('/account/orders')"
-        class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] size-10 bg-black/5 rounded-full hover:bg-black/10"
+        class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] ml-4 sm:ml-0 size-10 bg-black/5 rounded-full hover:bg-black/10"
       ></button>
       Order Detail
-      <div v-if="fetch_complete" class="text-[16px] text-gray-500">
+      <div v-if="fetch_complete" class="mr-2 sm:mr-0 text-[16px] text-gray-500">
         {{ new Date(order?.date!).toLocaleString("tr-TR", options) }}
       </div>
     </div>
     <div
-      class="min-w-[35rem] min-h-[43.75rem] h-auto bg-white rounded-xl shadow-md"
+      class="sm:min-w-[35rem] sm:min-h-[43.75rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <div v-if="fetch_complete" class="flex flex-col gap-y-4 p-6">
-        <div class="w-full flex flex-col border rounded-xl">
-          <div class="bg-black/5 text-lg p-4 rounded-t-xl">Items</div>
+      <div v-if="fetch_complete" class="flex flex-col gap-y-4 sm:p-6">
+        <div class="w-screen sm:w-full flex flex-col sm:border sm:rounded-xl">
+          <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Items</div>
           <div class="flex items-center px-5 pt-4 gap-x-4">
             <div :class="status_names[order?.delivery_status!].icon"></div>
             {{ status_names[order?.delivery_status!].name }}
           </div>
           <div
-            class="w-full grid grid-cols-4 grid-cols-auto_box gap-4 p-4 items-center"
+            class="w-full flex flex-wrap gap-2 sm:gap-4 p-2 sm:p-4 items-center"
           >
             <div
               v-for="product in order?.products"
-              class="flex flex-col w-56 h-[21rem] bg-white rounded-xl border"
+              class="flex flex-col w-[calc(50vw-12px)] sm:w-56 sm:h-[21rem] bg-white rounded-xl border"
             >
               <NuxtLink :to="'/product/' + product.url">
                 <img
-                  class="size-56 object-contain"
+                  class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-56 object-contain"
                   :src="'/images/products/' + product.image"
                 />
               </NuxtLink>
-              <div class="flex flex-col gap-y-6 p-4">
+              <div class="flex flex-col gap-y-6 p-2 sm:p-4">
                 <NuxtLink :to="'/product/' + product.url" class="text-md">{{
                   product.title
                 }}</NuxtLink>
                 <div class="flex items-center justify-between">
-                  <div class="text-2xl">
+                  <div class="text-lg sm:text-2xl">
                     {{ product.list_price.toLocaleString("tr-TR") }}
                     TL
                   </div>
@@ -52,9 +52,9 @@
             </div>
           </div>
         </div>
-        <div class="flex gap-x-4">
-          <div class="w-full h-min flex flex-col border rounded-xl">
-            <div class="bg-black/5 text-lg p-4 rounded-t-xl">Shipment</div>
+        <div class="flex flex-col sm:flex-row gap-x-4">
+          <div class="w-full h-min flex flex-col sm:border sm:rounded-xl">
+            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Shipment</div>
             <div class="flex flex-col p-4 gap-y-6">
               <div class="flex flex-col gap-y-1">
                 <div class="text-gray-500">Customer</div>
@@ -66,8 +66,8 @@
               </div>
             </div>
           </div>
-          <div class="w-full h-min flex flex-col border rounded-xl">
-            <div class="bg-black/5 text-lg p-4 rounded-t-xl">Payment</div>
+          <div class="w-full h-min flex flex-col sm:border sm:rounded-xl">
+            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Payment</div>
             <div class="flex flex-col p-4 divide-y">
               <div class="flex justify-between items-center h-8">
                 <div class="text-gray-500">Subtotal</div>

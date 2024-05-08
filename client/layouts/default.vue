@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-dvh font-poppins text-sm sm:bg-gray-50 select-none overflow-hidden">
+  <div
+    class="min-h-dvh font-poppins text-sm sm:bg-gray-50 select-none overflow-hidden"
+  >
     <nav
       class="bg-white h-16 sm:h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
     >
@@ -155,6 +157,6 @@ watch(products, () => {
   });
 });
 const button =
-  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full hover:bg-black/10 sm:hover:bg-transparent will-change-transform";
+  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform";
 const menu_item = "flex justify-center items-center w-full h-8";
 </script>

@@ -1,11 +1,15 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="mt-10 sm:mt-0 flex items-center py-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Personal Details
     </div>
-    <form v-if="fetch_complete" @submit.prevent="update" :class="form_div">
+    <form
+      v-if="fetch_complete"
+      @submit.prevent="update"
+      class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 sm:items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
+    >
       <label :class="label"
         >First Name<input :class="input" type="text" v-model="form.first_name"
       /></label>
@@ -88,7 +92,10 @@
         Update
       </button>
     </form>
-    <div v-else :class="form_div + ' animate-pulse'">
+    <div
+      v-else
+      class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 sm:items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white rounded-xl shadow-md animate-pulse"
+    >
       <div :class="label">
         <div :class="skeleton_title"></div>
         <div :class="skeleton_input"></div>
