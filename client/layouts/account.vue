@@ -6,7 +6,7 @@
         class="sm:hidden absolute left-0 ml-5 size-8 bg-[url(/icons/menu.svg)] bg-cover bg-no-repeat"
       ></button>
       <nav
-        class="transition-all duration-500 ease-in-out right-[100vw] sm:right-0 z-10 top-0 fixed sm:relative flex flex-col bg-white sm:rounded-xl sm:shadow-md w-screen sm:w-auto min-w-64 h-screen sm:h-min gap-y-4 p-4"
+        class="transition-all duration-500 ease-in-out right-[100vw] sm:right-0 z-10 sm:z-0 top-0 fixed sm:relative flex flex-col bg-white sm:rounded-xl sm:shadow-md w-screen sm:w-auto min-w-64 h-screen sm:h-min gap-y-4 p-4"
         :class="{ '!right-[0vw]': nav_menu }"
       >
         <button

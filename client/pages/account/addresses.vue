@@ -12,15 +12,15 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-[10vh] w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
+          class="flex flex-col justify-center sm:justify-start sm:p-3 bg-white sm:-mt-[10vh] w-screen sm:w-[25vw] sm:min-w-[28rem] h-screen sm:h-auto rounded-xl"
         >
           <button
             @click="add_dialog = false"
-            class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
+            class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl grow">Add new address</h1>
+          <h1 class="text-center text-xl sm:grow">Add new address</h1>
           <form
-            class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
+            class="flex flex-col gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
             @submit.prevent="create"
           >
             <input
@@ -62,15 +62,15 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-[10vh] w-[25vw] min-w-[28rem] h-auto rounded-xl z-3"
+          class="flex flex-col justify-center sm:justify-start sm:p-3 bg-white sm:-mt-[10vh] w-screen sm:w-[25vw] sm:min-w-[28rem] h-screen sm:h-auto rounded-xl"
         >
           <button
             @click="edit_dialog = false"
-            class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
+            class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl grow">Edit address</h1>
+          <h1 class="text-center text-xl sm:grow">Edit address</h1>
           <form
-            class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
+            class="flex flex-col gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
             @submit.prevent="update"
           >
             <input type="hidden" v-model="edit_address.ID" required />
@@ -113,7 +113,7 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed"
       >
         <div
-          class="flex flex-col p-2 bg-white -mt-48 w-80 h-auto rounded-xl z-3"
+          class="flex flex-col p-2 bg-white sm:-mt-48 w-80 h-auto rounded-xl z-3"
         >
           <button
             @click="delete_dialog = false"
@@ -132,16 +132,16 @@
       </div>
     </transition>
     <div
-      class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Addresses
     </div>
     <div
-      class="flex p-6 min-w-[35rem] min-h-[17rem] bg-white rounded-xl shadow-md"
+      class="flex sm:p-6 sm:min-w-[35rem] sm:min-h-[17rem] bg-white sm:rounded-xl sm:shadow-md"
     >
       <div
         v-if="fetch_complete"
-        class="w-full grid grid-cols-4 grid-cols-auto_box gap-6"
+        class="w-full flex flex-col sm:flex-row flex-wrap gap-6"
       >
         <div
           @click="add_dialog = true"
@@ -351,7 +351,7 @@ const remove = async () => {
     },
   });
 };
-const box = "flex flex-col p-4 shadow-md text-xl size-56 rounded-xl";
+const box = "flex flex-col p-4 shadow-md text-xl sm:size-56 rounded-xl";
 const input =
   "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const button =

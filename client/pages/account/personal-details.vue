@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="mt-10 sm:mt-0 flex items-center py-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-10 sm:mt-0 flex justify-center sm:justify-start items-center py-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Personal Details
     </div>
