@@ -1,13 +1,13 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex items-center p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Change Password
     </div>
     <form
       @submit.prevent="update"
-      class="flex flex-col items-center justify-center p-6 gap-y-5 min-w-[25rem] h-auto bg-white rounded-xl shadow-md"
+      class="flex flex-col items-center justify-center p-6 gap-y-5 sm:min-w-[25rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <input
         :class="input"
@@ -33,7 +33,7 @@
           !form.new_password ||
           form.new_password != form.new_password2
         "
-        class="transition duration-300 ease-in-out w-80 h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
+        class="transition duration-300 ease-in-out w-full sm:w-80 h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
         type="submit"
       >
         Change Password

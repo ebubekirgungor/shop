@@ -132,7 +132,7 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Addresses
     </div>
