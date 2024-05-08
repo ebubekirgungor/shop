@@ -1,7 +1,7 @@
 <template>
   <main class="flex justify-center m-4">
     <div
-      class="flex sm:w-[clamp(60rem,70rem,70rem)] sm:min-w-[60rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="flex flex-col sm:flex-row sm:w-[clamp(60rem,70rem,70rem)] sm:min-w-[60rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <div
         v-if="images.length > 0"
@@ -22,22 +22,30 @@
           </div>
         </div>
         <button
+          v-if="images.length > 1"
           @click="goto_slide(slide_index - 1)"
           :class="icon + 'left-3 bg-[url(/icons/previous.svg)]'"
         ></button>
         <button
+          v-if="images.length > 1"
           @click="goto_slide(slide_index + 1)"
           :class="icon + 'right-3 bg-[url(/icons/next.svg)]'"
         ></button>
-        <div class="flex justify-center gap-x-4 mx-4">
+        <div
+          v-if="images.length > 1"
+          class="flex justify-center gap-x-2 sm:gap-x-4 mx-4"
+        >
           <button
             v-for="(image, index) in images"
-            class="flex justify-center transition duration-200 ease-in-out size-12 bg-white rounded-md"
-            :class="{ 'ring ring-3 ring-black': index == slide_index }"
+            class="flex justify-center transition duration-200 ease-in-out size-3 sm:size-12 border border-gray-400 sm:border-0 bg-white rounded-full sm:rounded-md"
+            :class="{
+              '!bg-gray-400 sm:!bg-white sm:ring sm:ring-3 sm:ring-black':
+                index == slide_index,
+            }"
             @click="goto_slide(index)"
           >
             <img
-              class="h-full object-center object-cover rounded-md"
+              class="hidden sm:block h-full object-center object-cover rounded-md"
               :src="image.url"
             />
           </button>
@@ -116,6 +124,50 @@
             Add to Cart
           </button>
         </div>
+      </div>
+      <div class="sm:hidden mb-20 p-4 flex justify-between items-center">
+        <div class="text-xl select-text">{{ product.title }}</div>
+        <button
+          v-if="role != undefined"
+          @click="toggle_favorite"
+          class="transition duration-200 ease-in-out flex justify-center items-center size-12 bg-black/5 rounded-full hover:bg-black/10"
+        >
+          <div
+            class="bg-no-repeat bg-center size-7 bg-contain"
+            :class="
+              product.is_favorite
+                ? 'bg-[url(/icons/favorite_filled.svg)]'
+                : 'bg-[url(/icons/favorite.svg)] contrast-0'
+            "
+          ></div>
+          <div
+            v-if="animate"
+            class="absolute bg-no-repeat bg-center size-7 bg-contain animate-ping"
+            :class="
+              product.is_favorite
+                ? 'bg-[url(/icons/favorite_filled.svg)]'
+                : 'bg-[url(/icons/favorite.svg)] contrast-0'
+            "
+          ></div>
+        </button>
+      </div>
+      <div
+        class="sm:hidden flex justify-between items-center gap-x-16 fixed bottom-0 w-full h-20 p-4 bg-white border-t shadow-[0_0_15px_rgba(0,0,0,0.2)]"
+      >
+        <div class="flex gap-x-2 text-xl">
+          {{ product.list_price.toLocaleString("tr-TR") }}
+          <div>TL</div>
+        </div>
+        <button
+          :class="button"
+          :disabled="
+            parseInt(product.stock_quantity) == 0 ||
+            product_cart_quantity >= product.stock_quantity
+          "
+          @click="add_to_cart()"
+        >
+          Add to Cart
+        </button>
       </div>
     </div>
   </main>
@@ -312,5 +364,5 @@ const toggle_favorite = async () => {
 const icon =
   "transition duration-300 ease-in-out absolute top-[50vw] sm:top-[17.5rem] -translate-y-1/2 bg-no-repeat bg-center size-10 bg-gray-200 sm:bg-white rounded-full sm:hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 ";
 const button =
-  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none";
+  "transition duration-300 ease-in-out w-full h-full sm:h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none";
 </script>
