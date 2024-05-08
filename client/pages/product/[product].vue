@@ -51,9 +51,9 @@
           </button>
         </div>
       </div>
-      <div v-else class="bg-gray-200 rounded-l-xl">
+      <div v-else class="bg-gray-200 sm:rounded-l-xl">
         <div
-          class="size-[35rem] bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-0"
+          class="size-[100vw] sm:size-[35rem] bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-0"
         ></div>
       </div>
       <div class="hidden sm:flex flex-col w-full gap-y-6 p-6">

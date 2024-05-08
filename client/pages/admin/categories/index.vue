@@ -12,17 +12,17 @@
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-[3]"
       >
         <div
-          class="flex flex-col p-3 bg-white -mt-48 w-[28rem] h-auto rounded-xl"
+          class="flex flex-col justify-center sm:justify-start sm:p-3 bg-white sm:-mt-48 w-full sm:w-[28rem] h-screen sm:h-auto sm:rounded-xl"
         >
           <button
             @click="close_create_update_dialog"
-            class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
+            class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl grow">
+          <h1 class="text-center text-xl sm:grow">
             {{ is_add ? "Create new category" : "Edit category" }}
           </h1>
           <form
-            class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-8"
+            class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
             @submit.prevent="create_update"
           >
             <div class="flex flex-col gap-y-4 w-full">
@@ -114,7 +114,9 @@
         v-if="delete_dialog"
         class="flex justify-center items-center inset-x-0 inset-y-0 size-full fixed z-10"
       >
-        <div class="flex flex-col p-2 bg-white -mt-48 w-96 h-auto rounded-xl">
+        <div
+          class="flex flex-col p-2 bg-white sm:-mt-48 w-80 sm:w-96 h-auto rounded-xl"
+        >
           <button
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
@@ -137,7 +139,7 @@
       </div>
     </transition>
     <div
-      class="flex items-center gap-x-4 p-6 text-xl h-auto bg-white rounded-xl shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       Categories
       <button
@@ -163,14 +165,12 @@
     </div>
     <div
       v-else
-      class="flex p-6 min-w-[35rem] h-auto bg-white rounded-xl shadow-md"
+      class="flex p-2 sm:p-6 sm:min-w-[35rem] w-screen sm:w-auto h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <div
-        class="w-full grid grid-cols-4 grid-cols-auto_box gap-6 items-center"
-      >
+      <div class="w-full flex flex-wrap gap-2 sm:gap-6 items-center">
         <div
           v-for="category in categories"
-          class="flex flex-col w-56 bg-white rounded-xl border"
+          class="flex flex-col w-[calc(50vw-12px)] sm:w-56 bg-white rounded-xl border"
         >
           <div class="flex self-end gap-x-2 p-2 absolute">
             <button
@@ -186,7 +186,7 @@
             ></button>
           </div>
           <img
-            class="size-56 object-contain rounded-t-xl"
+            class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-56 object-contain rounded-t-xl"
             :src="'/images/categories/' + category.image"
           />
           <NuxtLink :to="'/' + category.url" class="p-5 text-lg">{{
