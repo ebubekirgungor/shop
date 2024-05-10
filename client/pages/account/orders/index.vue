@@ -1,11 +1,11 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex flex-col justify-center mt-10 sm:mt-0 sm:flex-row items-center gap-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="flex flex-col sm:flex-row justify-center sm:justify-start items-center mt-12 sm:mt-0 gap-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Orders
+      {{ $t("orders") }}
       <div
-        class="w-screen flex gap-x-4 px-4 overflow-x-auto"
+        class="w-screen sm:w-auto flex gap-x-4 px-4 overflow-x-auto"
         style="scrollbar-width: none"
       >
         <button
@@ -16,7 +16,7 @@
           class="transition duration-200 ease-in-out h-8 px-4 text-[15px] border-2 rounded-xl sm:hover:bg-black/10 whitespace-nowrap"
           :class="{ 'bg-black/10': status_filter == status.status }"
         >
-          {{ status.name }}
+          {{ $t(status.name) }}
         </button>
       </div>
     </div>
@@ -28,7 +28,7 @@
           class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] sm:w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
           v-model="search_filter"
           type="text"
-          placeholder="Search"
+          :placeholder="$t('search')"
         />
         <div
           v-if="filtered_orders.length == 0"
@@ -37,7 +37,9 @@
           <div
             class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/order.svg)] contrast-0"
           ></div>
-          <div class="text-xl text-gray-500">You don't have an order yet</div>
+          <div class="text-xl text-gray-500">
+            {{ $t("dont_have_order_yet") }}
+          </div>
         </div>
         <div
           v-else
@@ -48,26 +50,30 @@
             class="flex flex-col sm:flex-row justify-between p-5 bg-black/5 rounded-t-xl"
           >
             <div class="flex flex-col">
-              <div class="hidden sm:block text-gray-600">Order date</div>
+              <div class="hidden sm:block text-gray-600">
+                {{ $t("order_date") }}
+              </div>
               <div class="sm:text-lg">
                 {{ new Date(order.date).toLocaleString("tr-TR", options) }}
               </div>
             </div>
             <div class="hidden sm:flex flex-col">
-              <div class="text-gray-600">Customer</div>
+              <div class="text-gray-600">{{ $t("customer") }}</div>
               <div class="text-lg">
                 {{ order.customer_name }}
               </div>
             </div>
             <div class="flex flex-col">
-              <div class="hidden sm:block text-gray-600">Total amount</div>
+              <div class="hidden sm:block text-gray-600">
+                {{ $t("total_amount") }}
+              </div>
               <div class="text-lg">
                 {{ order.price.toLocaleString("tr-TR") }}
                 TL
               </div>
             </div>
             <div class="hidden sm:flex flex-col">
-              <div class="text-gray-600">Total products</div>
+              <div class="text-gray-600">{{ $t("total_products") }}</div>
               <div class="text-lg">
                 {{
                   order.products.reduce((total: number, product: Product) => {
@@ -79,12 +85,12 @@
             <NuxtLink
               :to="'orders/' + order.id"
               class="absolute sm:relative right-0 mr-8 sm:mr-0 transition duration-300 ease-in-out flex justify-center items-center w-20 h-12 rounded-xl bg-black text-white hover:bg-black/80 font-medium"
-              >Details</NuxtLink
+              >{{ $t("details") }}</NuxtLink
             >
           </div>
           <div class="flex items-center px-5 pt-4 gap-x-4">
             <div :class="status_names[order.delivery_status + 1].icon"></div>
-            {{ status_names[order.delivery_status + 1].name }}
+            {{ $t(status_names[order.delivery_status + 1].name + "_status") }}
           </div>
           <div
             class="max-w-[calc(100vw-2rem)] flex overflow-x-auto sm:flex-wrap items-center p-5 gap-x-3 gap-y-6 sm:gap-6"
@@ -137,27 +143,27 @@ enum DeliveryStatus {
 }
 const status_names = [
   {
-    name: "All",
+    name: "all",
     icon: "",
     status: null,
   },
   {
-    name: "Delivered",
+    name: "delivered",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/check.svg)]",
     status: DeliveryStatus.Delivered,
   },
   {
-    name: "In Progress",
+    name: "in_progress",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/progress.svg)]",
     status: DeliveryStatus.InProgress,
   },
   {
-    name: "Returned",
+    name: "returned",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/return.svg)]",
     status: DeliveryStatus.Returned,
   },
   {
-    name: "Canceled",
+    name: "canceled",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/close.svg)]",
     status: DeliveryStatus.Canceled,
   },

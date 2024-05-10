@@ -3,7 +3,7 @@
     <div
       class="mt-10 sm:mt-0 flex justify-center sm:justify-start items-center py-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Personal Details
+      {{ $t("personal_details") }}
     </div>
     <form
       v-if="fetch_complete"
@@ -11,13 +11,16 @@
       class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 sm:items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <label :class="label"
-        >First Name<input :class="input" type="text" v-model="form.first_name"
+        >{{ $t("first_name")
+        }}<input :class="input" type="text" v-model="form.first_name"
       /></label>
       <label :class="label"
-        >Last Name<input :class="input" type="text" v-model="form.last_name"
+        >{{ $t("last_name")
+        }}<input :class="input" type="text" v-model="form.last_name"
       /></label>
       <label :class="label"
-        >Phone<input
+        >{{ $t("phone")
+        }}<input
           :class="input"
           type="tel"
           minlength="14"
@@ -26,25 +29,26 @@
           @input="phone_format"
       /></label>
       <label :class="label"
-        >E-mail<input
+        >{{ $t("email")
+        }}<input
           disabled
           :class="input + ' bg-gray-300 cursor-not-allowed'"
           :placeholder="form.email"
           type="text"
       /></label>
       <label :class="label">
-        Birthdate
+        {{ $t("birthdate") }}
         <div class="flex gap-x-[7%]">
           <select :class="input + input_select" v-model="form.birthdate.day">
-            <option value="">Day</option>
+            <option value="">{{ $t("day") }}</option>
             <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + input_select" v-model="form.birthdate.month">
-            <option value="">Month</option>
+            <option value="">{{ $t("month") }}</option>
             <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
           </select>
           <select :class="input + input_select" v-model="form.birthdate.year">
-            <option value="">Year</option>
+            <option value="">{{ $t("year") }}</option>
             <option
               v-for="i in Array.from(
                 { length: new Date().getFullYear() - 1919 },
@@ -58,7 +62,7 @@
         </div>
       </label>
       <div :class="label">
-        Gender
+        {{ $t("gender") }}
         <div class="flex gap-x-[7%]">
           <label class="flex items-center gap-x-3 cursor-pointer">
             <input
@@ -69,7 +73,7 @@
               id="male"
               value="m"
             />
-            Male
+            {{ $t("male") }}
           </label>
           <label class="flex items-center gap-x-3 cursor-pointer">
             <input
@@ -80,7 +84,7 @@
               id="female"
               value="f"
             />
-            Female
+            {{ $t("female") }}
           </label>
         </div>
       </div>
@@ -89,7 +93,7 @@
         type="submit"
         class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
       >
-        Update
+        {{ $t("update") }}
       </button>
     </form>
     <div
@@ -142,6 +146,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -224,7 +229,7 @@ const update = async () => {
     },
     onResponse({ response }) {
       if (response._data.ID) {
-        toast.success("User updated", {
+        toast.success(t("user_updated"), {
           bodyClassName: "toast-font",
         });
         data_to_form(response._data);
@@ -244,8 +249,6 @@ const phone_format = () => {
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
-const form_div =
-  "grid grid-cols-2 gap-x-[7%] gap-y-8 items-center p-6 min-w-[40rem] h-auto bg-white rounded-xl shadow-md";
 const input =
   "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 const input_select = " w-full cursor-pointer";

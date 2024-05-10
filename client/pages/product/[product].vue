@@ -121,7 +121,7 @@
             "
             @click="add_to_cart()"
           >
-            Add to Cart
+            {{ $t("add_to_cart_capital") }}
           </button>
         </div>
       </div>
@@ -166,7 +166,7 @@
           "
           @click="add_to_cart()"
         >
-          Add to Cart
+          {{ $t("add_to_cart_capital") }}
         </button>
       </div>
     </div>
@@ -177,6 +177,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 const route = useRoute();
 const role = useCookie<number>("role");
 interface Image {
@@ -319,7 +320,7 @@ const add_to_cart = async () => {
       },
       onResponse({ response }) {
         if (response._data == "ok") {
-          toast.success("Added to cart", {
+          toast.success(t("added_to_cart"), {
             bodyClassName: "toast-font",
           });
           product_cart_quantity.value >= product.value.stock_quantity
@@ -334,7 +335,7 @@ const add_to_cart = async () => {
     });
   } else {
     cart_unregistered.value = cart.value;
-    toast.success("Added to cart", {
+    toast.success(t("added_to_cart"), {
       bodyClassName: "toast-font",
     });
     product_cart_quantity.value >= product.value.stock_quantity

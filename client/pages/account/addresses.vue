@@ -18,7 +18,9 @@
             @click="add_dialog = false"
             class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl sm:grow">Add new address</h1>
+          <h1 class="text-center text-xl sm:grow">
+            {{ $t("add_new_address") }}
+          </h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
             @submit.prevent="create"
@@ -26,14 +28,14 @@
             <input
               :class="input"
               type="text"
-              placeholder="Title"
+              :placeholder="$t('title')"
               v-model="new_address.title"
               required
             />
             <input
               :class="input"
               type="text"
-              placeholder="Customer name"
+              :placeholder="$t('customer_name')"
               v-model="new_address.customer_name"
               required
             />
@@ -41,7 +43,7 @@
               rows="10"
               :class="input"
               type="text"
-              placeholder="Address"
+              :placeholder="$t('address')"
               v-model="new_address.address"
               required
             ></textarea>
@@ -50,7 +52,7 @@
               type="submit"
               :class="button"
             >
-              Create
+              {{ $t("create") }}
             </button>
           </form>
         </div>
@@ -68,7 +70,7 @@
             @click="edit_dialog = false"
             class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl sm:grow">Edit address</h1>
+          <h1 class="text-center text-xl sm:grow">{{ $t("edit_address") }}</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
             @submit.prevent="update"
@@ -77,14 +79,14 @@
             <input
               :class="input"
               type="text"
-              placeholder="Title"
+              :placeholder="$t('title')"
               v-model="edit_address.title"
               required
             />
             <input
               :class="input"
               type="text"
-              placeholder="Customer name"
+              :placeholder="$t('customer_name')"
               v-model="edit_address.customer_name"
               required
             />
@@ -92,7 +94,7 @@
               rows="10"
               :class="input"
               type="text"
-              placeholder="Address"
+              :placeholder="$t('address')"
               v-model="edit_address.address"
               required
             ></textarea>
@@ -101,7 +103,7 @@
               type="submit"
               :class="button"
             >
-              Update
+              {{ $t("update") }}
             </button>
           </form>
         </div>
@@ -119,14 +121,14 @@
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl">Delete address</h1>
+          <h1 class="text-center text-xl">{{ $t("delete_address") }}</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_address_id" required />
-            <div class="text-center">Are you sure?</div>
-            <button type="submit" :class="button">Delete</button>
+            <div class="text-center">{{ $t("are_you_sure") }}</div>
+            <button type="submit" :class="button">{{ $t("delete") }}</button>
           </form>
         </div>
       </div>
@@ -134,7 +136,7 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Addresses
+      {{ $t("addresses") }}
     </div>
     <div
       class="flex sm:p-6 sm:min-w-[35rem] sm:min-h-[17rem] bg-white sm:rounded-xl sm:shadow-md"
@@ -192,6 +194,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -277,7 +280,7 @@ const create = async () => {
           customer_name: "",
           address: "",
         };
-        toast.success("Address created", {
+        toast.success(t("address_created"), {
           bodyClassName: "toast-font",
         });
       } else {
@@ -313,7 +316,7 @@ const update = async () => {
           customer_name: "",
           address: "",
         };
-        toast.success("Address updated", {
+        toast.success(t("address_updated"), {
           bodyClassName: "toast-font",
         });
       } else {
@@ -340,7 +343,7 @@ const remove = async () => {
         );
         delete_dialog.value = false;
         delete_address_id.value = null;
-        toast.success("Address removed", {
+        toast.success(t("address_removed"), {
           bodyClassName: "toast-font",
         });
       } else {

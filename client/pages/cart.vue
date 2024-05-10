@@ -3,11 +3,11 @@
     <div
       class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/cart.svg)] contrast-0"
     ></div>
-    <div class="text-3xl text-gray-600">Your cart is empty</div>
+    <div class="text-3xl text-gray-600">{{ $t("your_cart_is_empty") }}</div>
     <NuxtLink
       to="/"
       class="transition duration-200 ease-in-out flex justify-center items-center w-52 h-10 rounded-full text-lg border-2 border-black sm:hover:bg-black/10"
-      >Return to shopping</NuxtLink
+      >{{ $t("return_to_shopping") }}</NuxtLink
     >
   </div>
   <main v-else class="flex justify-center gap-x-4 mb-20 sm:m-4">
@@ -17,9 +17,11 @@
       <div
         class="flex justify-center sm:justify-start gap-x-2 p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
       >
-        Cart
+        {{ $t("cart") }}
         <div class="text-[16px] text-gray-500 mt-0.5">
-          ({{ items_count + (items_count == 1 ? " item" : " items") }})
+          ({{
+            items_count + (items_count == 1 ? $t("item_per") : $t("items_per"))
+          }})
         </div>
       </div>
       <div class="flex h-auto bg-white sm:rounded-xl sm:shadow-md">
@@ -127,7 +129,7 @@
     >
       <div class="pl-8 sm:pl-0 w-full flex flex-col sm:gap-y-5">
         <div class="sm:text-[17px]">
-          Selected items ({{
+          {{ $t("selected_items") }} ({{
             cart.reduce((total: number, product: Cart) => {
               return (
                 total + (product.cart.selected ? product.cart.quantity : 0)
@@ -157,7 +159,7 @@
           class="w-full absolute sm:relative left-0 top-20 sm:top-0 bottom-0 p-4 sm:p-0 order-1 sm:order-none flex flex-col gap-y-1"
         >
           <div class="flex justify-between">
-            <div>Subtotal</div>
+            <div>{{ $t("subtotal") }}</div>
             <div>
               {{
                 cart
@@ -176,7 +178,7 @@
             </div>
           </div>
           <div class="flex justify-between">
-            <div>Shipping</div>
+            <div>{{ $t("shipping") }}</div>
             <div>{{ shipping }} TL</div>
           </div>
         </div>
@@ -188,7 +190,7 @@
           }, 0) == 0"
           class="transition duration-300 ease-in-out min-w-36 min-h-12 col-span-2 rounded-xl bg-black text-white sm:hover:bg-black/80 font-medium sm:mt-4 disabled:bg-black/60 disabled:pointer-events-none"
         >
-          Checkout
+          {{ $t("checkout") }}
         </button>
       </div>
     </div>

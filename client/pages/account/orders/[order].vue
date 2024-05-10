@@ -7,7 +7,7 @@
         @click="navigateTo('/account/orders')"
         class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] ml-4 sm:ml-0 size-10 bg-black/5 rounded-full hover:bg-black/10"
       ></button>
-      Order Detail
+      {{ $t("order_detail") }}
       <div v-if="fetch_complete" class="mr-2 sm:mr-0 text-[16px] text-gray-500">
         {{ new Date(order?.date!).toLocaleString("tr-TR", options) }}
       </div>
@@ -17,10 +17,12 @@
     >
       <div v-if="fetch_complete" class="flex flex-col gap-y-4 sm:p-6">
         <div class="w-screen sm:w-full flex flex-col sm:border sm:rounded-xl">
-          <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Items</div>
+          <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">
+            {{ $t("items") }}
+          </div>
           <div class="flex items-center px-5 pt-4 gap-x-4">
             <div :class="status_names[order?.delivery_status!].icon"></div>
-            {{ status_names[order?.delivery_status!].name }}
+            {{ $t(status_names[order?.delivery_status!].name + "_status") }}
           </div>
           <div
             class="w-full flex flex-wrap gap-2 sm:gap-4 p-2 sm:p-4 items-center"
@@ -45,7 +47,7 @@
                     TL
                   </div>
                   <div class="text-gray-500">
-                    Quantity: {{ product.quantity }}
+                    {{ $t("quantity") }}: {{ product.quantity }}
                   </div>
                 </div>
               </div>
@@ -54,23 +56,27 @@
         </div>
         <div class="flex flex-col sm:flex-row gap-x-4">
           <div class="w-full h-min flex flex-col sm:border sm:rounded-xl">
-            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Shipment</div>
+            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">
+              {{ $t("shipment") }}
+            </div>
             <div class="flex flex-col p-4 gap-y-6">
               <div class="flex flex-col gap-y-1">
-                <div class="text-gray-500">Customer</div>
+                <div class="text-gray-500">{{ $t("customer") }}</div>
                 {{ order?.customer_name }}
               </div>
               <div class="flex flex-col gap-y-1">
-                <div class="text-gray-500">Address</div>
+                <div class="text-gray-500">{{ $t("address") }}</div>
                 <div class="whitespace-pre">{{ order?.delivery_address }}</div>
               </div>
             </div>
           </div>
           <div class="w-full h-min flex flex-col sm:border sm:rounded-xl">
-            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">Payment</div>
+            <div class="bg-black/5 text-lg p-4 sm:rounded-t-xl">
+              {{ $t("payment") }}
+            </div>
             <div class="flex flex-col p-4 divide-y">
               <div class="flex justify-between items-center h-8">
-                <div class="text-gray-500">Subtotal</div>
+                <div class="text-gray-500">{{ $t("subtotal") }}</div>
                 {{
                   order?.products
                     .reduce((total: number, product: Product) => {
@@ -83,11 +89,11 @@
                 TL
               </div>
               <div class="flex justify-between items-center h-8">
-                <div class="text-gray-500">Shipping cost</div>
+                <div class="text-gray-500">{{ $t("shipping_cost") }}</div>
                 {{ shipping }} TL
               </div>
               <div class="flex justify-between items-center h-8">
-                <div class="font-medium">Total charge</div>
+                <div class="font-medium">{{ $t("total_charge") }}</div>
                 {{ order?.price.toLocaleString("tr-TR") }} TL
               </div>
             </div>
@@ -104,9 +110,7 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
-import { useToast } from "vue-toastification";
 const route = useRoute();
-const toast = useToast();
 const config = useRuntimeConfig().public;
 definePageMeta({
   middleware: "auth",
@@ -136,19 +140,19 @@ enum DeliveryStatus {
 }
 const status_names = [
   {
-    name: "Delivered",
+    name: "delivered",
     icon: "bg-center bg-no-repeat size-6 bg-[url(/icons/check.svg)]",
   },
   {
-    name: "In Progress",
+    name: "in_progress",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/progress.svg)]",
   },
   {
-    name: "Returned",
+    name: "returned",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/return.svg)]",
   },
   {
-    name: "Canceled",
+    name: "canceled",
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/close.svg)]",
   },
 ];

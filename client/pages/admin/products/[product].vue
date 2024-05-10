@@ -43,14 +43,14 @@
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl">Delete image</h1>
+          <h1 class="text-center text-xl">{{ $t("delete_image") }}</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_image_order" required />
-            <div class="text-center">Are you sure?</div>
-            <button type="submit" :class="button">Delete</button>
+            <div class="text-center">{{ $t("are_you_sure") }}</div>
+            <button type="submit" :class="button">{{ $t("delete") }}</button>
           </form>
         </div>
       </div>
@@ -58,17 +58,19 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
-      {{ is_add ? "Add product" : "Edit product" }}
+      {{ is_add ? $t("add_product") : $t("edit_product") }}
     </div>
     <form
       @submit.prevent="create_update"
       class="flex flex-col sm:grid grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 items-center p-4 sm:p-6 w-screen sm:w-auto sm:min-w-[30rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <label :class="label"
-        >Title<input :class="input" type="text" v-model="form.title"
+        >{{ $t("title")
+        }}<input :class="input" type="text" v-model="form.title"
       /></label>
       <label :class="label"
-        >List Price<input
+        >{{ $t("list_price")
+        }}<input
           :class="input"
           step=".01"
           type="number"
@@ -76,21 +78,22 @@
           v-model="form.list_price"
       /></label>
       <label :class="label"
-        >Stock Quantity<input
+        >{{ $t("stock_quantity")
+        }}<input
           :class="input"
           type="number"
           min="0"
           v-model="form.stock_quantity"
       /></label>
       <label :class="label"
-        >Category
+        >{{ $t("category") }}
         <div class="flex gap-x-4">
           <select
             :class="input + ' w-full cursor-pointer'"
             v-model="form.category_id"
             @change="category_change"
           >
-            <option value="" selected>Select category</option>
+            <option value="" selected>{{ $t("select_category") }}</option>
             <option v-for="c in categories" :value="c.ID">{{ c.title }}</option>
           </select>
           <button
@@ -98,7 +101,7 @@
             @click="navigateTo('/admin/categories')"
             :class="add_category_button"
           >
-            Add New
+            {{ $t("add_new") }}
           </button>
         </div>
       </label>
@@ -107,7 +110,7 @@
         <input :class="input" type="text" v-model="filter.value"
       /></label>
       <div :class="label + ' w-screen sm:w-auto p-2 sm:p-0 col-span-2'">
-        <label class="px-2 sm:px-0">Images</label>
+        <label class="px-2 sm:px-0">{{ $t("images") }}</label>
         <div class="flex flex-wrap gap-2 sm:gap-4 mt-2">
           <div
             v-for="image in images"
@@ -138,7 +141,7 @@
               <div
                 class="size-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
               ></div>
-              <h1>Click to upload</h1>
+              <h1>{{ $t("click_to_upload") }}</h1>
             </div>
           </label>
         </div>
@@ -162,7 +165,7 @@
         type="submit"
         :class="button"
       >
-        {{ is_add ? "Create" : "Update" }}
+        {{ is_add ? $t("create") : $t("update") }}
       </button>
     </form>
   </main>
@@ -172,6 +175,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 definePageMeta({
@@ -339,7 +343,7 @@ const create_update = async () => {
       body: form_data,
       onResponse({ response }) {
         if (response._data.ID) {
-          toast.success("Product " + (is_add ? "created" : "updated"), {
+          toast.success(is_add ? t("product_created") : t("product_updated"), {
             bodyClassName: "toast-font",
           });
           is_add
@@ -373,7 +377,7 @@ const remove = async () => {
   }
   delete_dialog.value = false;
   delete_image_order.value = null;
-  toast.success("Image removed", {
+  toast.success(t("image_removed"), {
     bodyClassName: "toast-font",
   });
 };

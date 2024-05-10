@@ -2,13 +2,13 @@
   <main
     class="sm:bg-gray-50 flex flex-col items-center justify-center gap-y-4 m-4"
   >
-    <h1 class="mt-4 text-xl">Create new account</h1>
+    <h1 class="mt-4 text-xl">{{ $t("create_new_account") }}</h1>
     <div
       class="flex justify-center bg-white sm:pt-8 sm:pb-4 sm:w-[25rem] sm:h-[31rem] sm:border sm:rounded-xl"
     >
       <form v-if="step == 1" @submit.prevent="check_email" :class="form_step">
         <div :class="form_field">
-          <label for="email">E-mail</label>
+          <label for="email">{{ $t("email") }}</label>
           <input
             :class="input"
             v-model="form.email"
@@ -18,7 +18,7 @@
           />
         </div>
         <div :class="form_field">
-          <label for="first_name">First Name</label>
+          <label for="first_name">{{ $t("first_name") }}</label>
           <input
             :class="input"
             v-model="form.first_name"
@@ -28,7 +28,7 @@
           />
         </div>
         <div :class="form_field + ' grow'">
-          <label for="last_name">Last Name</label>
+          <label for="last_name">{{ $t("last_name") }}</label>
           <input
             :class="input"
             v-model="form.last_name"
@@ -45,20 +45,20 @@
             "
             :class="button"
           >
-            Next
+            {{ $t("next") }}
           </button>
-          <h1 class="grow text-center hidden sm:block">or</h1>
+          <h1 class="grow text-center hidden sm:block">{{ $t("or") }}</h1>
           <NuxtLink
             to="/login"
             class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-200"
           >
-            Sign In
+            {{ $t("sign_in") }}
           </NuxtLink>
         </div>
       </form>
       <form v-else @submit.prevent="register" :class="form_step">
         <div :class="form_field">
-          <label for="phone">Phone</label>
+          <label for="phone">{{ $t("phone") }}</label>
           <input
             :class="input"
             v-model="form.phone"
@@ -71,14 +71,14 @@
           />
         </div>
         <div :class="form_field">
-          <label for="phone">Birthdate</label>
+          <label for="phone">{{ $t("birthdate") }}</label>
           <div class="flex gap-x-2">
             <select
               :class="input + ' w-full'"
               v-model="form.birthdate.day"
               required
             >
-              <option value="">Day</option>
+              <option value="">{{ $t("day") }}</option>
               <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
             </select>
             <select
@@ -86,7 +86,7 @@
               v-model="form.birthdate.month"
               required
             >
-              <option value="">Month</option>
+              <option value="">{{ $t("month") }}</option>
               <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
             </select>
             <select
@@ -94,7 +94,7 @@
               v-model="form.birthdate.year"
               required
             >
-              <option value="">Year</option>
+              <option value="">{{ $t("year") }}</option>
               <option
                 v-for="i in Array.from(
                   { length: new Date().getFullYear() - 1919 },
@@ -108,7 +108,7 @@
           </div>
         </div>
         <div :class="form_field">
-          <label for="phone">Gender</label>
+          <label for="phone">{{ $t("gender") }}</label>
           <div class="flex gap-x-8">
             <label class="flex items-center gap-x-3 cursor-pointer">
               <input
@@ -120,7 +120,7 @@
                 value="m"
                 required
               />
-              Male
+              {{ $t("male") }}
             </label>
             <label class="flex items-center gap-x-3 cursor-pointer">
               <input
@@ -131,12 +131,12 @@
                 id="female"
                 value="f"
               />
-              Female
+              {{ $t("female") }}
             </label>
           </div>
         </div>
         <div :class="form_field + ' grow'">
-          <label for="password">Password</label>
+          <label for="password">{{ $t("password") }}</label>
           <div class="flex items-center">
             <input
               :class="input"
@@ -169,7 +169,7 @@
           "
           :class="button"
         >
-          Create Account
+          {{ $t("create_account") }}
         </button>
       </form>
     </div>
@@ -180,6 +180,7 @@ definePageMeta({
   middleware: "auth",
 });
 import { useToast, POSITION } from "vue-toastification";
+const { t } = useI18n();
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const step = ref(1);
@@ -205,7 +206,7 @@ const check_email = async () => {
     },
     onResponse({ response }) {
       if (response._data) {
-        toast.warning("User with given e-mail is already exists", {
+        toast.warning(t("user_with_email_exists"), {
           bodyClassName: "toast-font",
           position: POSITION.TOP_CENTER,
         });
@@ -232,7 +233,7 @@ const register = async () => {
       if (response._data.status == "success") {
         navigateTo("/login");
       } else {
-        toast.error("Server error", {
+        toast.error(t("server_error"), {
           bodyClassName: "toast-font",
           position: POSITION.TOP_CENTER,
         });

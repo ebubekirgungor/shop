@@ -10,7 +10,7 @@
           @click="step == 1 ? navigateTo('/cart') : (step = 1)"
           class="absolute sm:relative left-4 sm:left-0 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] size-10 bg-black/5 rounded-full hover:bg-black/10"
         ></button>
-        {{ step == 1 ? "Select address" : "Payment" }}
+        {{ step == 1 ? $t("select_address") : $t("payment") }}
       </div>
       <div class="flex sm:p-6 h-auto bg-white sm:rounded-xl sm:shadow-md">
         <div v-if="step == 1" class="w-full">
@@ -51,9 +51,8 @@
               <div class="flex justify-between text-[19px]">
                 <div class="font-[Consolas]">{{ card.name }}</div>
                 <div>
-                  <span v-if="!card.month">MM</span>{{ card.month }}/<span
-                    v-if="!card.year"
-                    >YY</span
+                  <span v-if="!card.month">{{ $t("MM") }}</span
+                  >{{ card.month }}/<span v-if="!card.year">YY</span
                   >{{ card.year }}
                 </div>
               </div>
@@ -61,7 +60,7 @@
           </div>
           <div class="flex flex-col gap-y-3 w-full">
             <div class="flex flex-col gap-y-2">
-              <label for="number">Card number</label>
+              <label for="number">{{ $t("card_number") }}</label>
               <input
                 id="number"
                 :class="input + '!w-auto !text-left'"
@@ -73,7 +72,7 @@
               />
             </div>
             <div class="flex flex-col gap-y-2">
-              <label for="holder">Card holder</label>
+              <label for="holder">{{ $t("card_holder") }}</label>
               <input
                 id="holder"
                 :class="input + '!w-auto !text-left'"
@@ -84,14 +83,14 @@
             </div>
             <div class="flex justify-between">
               <div class="flex flex-col gap-y-2">
-                <label>Expiration date</label>
+                <label>{{ $t("expiration_date") }}</label>
                 <div class="flex gap-x-4">
                   <input
                     :class="input"
                     type="text"
                     v-model="card.month"
                     maxlength="2"
-                    placeholder="MM"
+                    :placeholder="$t('MM')"
                     @input="card.month = exp_cvv_format(card.month)"
                   />
                   <input
@@ -128,7 +127,7 @@
       class="transition-height duration-300 ease-in-out peer-focus:h-40 fixed sm:relative bottom-0 w-full sm:w-auto h-20 sm:!h-fit flex sm:flex-col gap-x-2 gap-y-5 pl-2 p-4 sm:p-6 sm:min-w-64 bg-white sm:rounded-xl border-t sm:border-t-0 shadow-[0_0_15px_rgba(0,0,0,0.2)] sm:shadow-md"
     >
       <div class="pl-8 sm:pl-0 w-full flex flex-col sm:gap-y-5">
-        <div class="sm:text-[17px]">Total amount</div>
+        <div class="sm:text-[17px]">{{ $t("total_amount") }}</div>
         <div class="flex gap-x-1 text-xl sm:text-3xl">
           {{
             (
@@ -151,7 +150,7 @@
           class="w-full absolute sm:relative left-0 top-20 sm:top-0 bottom-0 p-4 sm:p-0 order-1 sm:order-none flex flex-col gap-y-1"
         >
           <div class="flex justify-between">
-            <div>Subtotal</div>
+            <div>{{ $t("subtotal") }}</div>
             <div>
               {{
                 cart
@@ -170,7 +169,7 @@
             </div>
           </div>
           <div class="flex justify-between">
-            <div>Shipping</div>
+            <div>{{ $t("shipping") }}</div>
             <div>{{ shipping }} TL</div>
           </div>
         </div>
@@ -181,7 +180,7 @@
         :disabled="!selected_address"
         class="transition duration-300 ease-in-out min-w-36 h-12 col-span-2 rounded-xl bg-black text-white sm:hover:bg-black/80 font-medium sm:mt-4 disabled:bg-black/60 disabled:pointer-events-none"
       >
-        Continue
+        {{ $t("continue") }}
       </button>
       <button
         v-else
@@ -202,7 +201,7 @@
         "
         class="transition duration-300 ease-in-out min-w-36 h-12 col-span-2 rounded-xl bg-black text-white sm:hover:bg-black/80 font-medium sm:mt-4 disabled:bg-black/60 disabled:pointer-events-none"
       >
-        Place Order
+        {{ $t("place_order") }}
       </button>
     </div>
   </main>
@@ -212,6 +211,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 const role = useCookie("role");
 interface Image {
   order: number;
@@ -297,7 +297,7 @@ const order = async () => {
     },
     onResponse({ response }) {
       if (response._data.ID) {
-        toast.success("Order placed", {
+        toast.success(t("order_placed"), {
           bodyClassName: "toast-font",
         });
       }

@@ -3,12 +3,12 @@
     <div
       class="mt-12 sm:mt-0 flex items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Payment Methods
+      {{ $t("payment_methods") }}
     </div>
     <div
       class="flex items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Payment Methods
+      {{ $t("payment_methods") }}
     </div>
   </main>
 </template>

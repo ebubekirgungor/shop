@@ -16,7 +16,7 @@
           class="sm:block peer order-2 sm:order-1 bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out sm:w-[550px] h-10 border-none shadow focus:ring-0 sm:focus:scale-[1.01] focus:shadow-lg focus:shadow-black/10 bg-gray-100 sm:rounded-md text-sm sm:will-change-transform"
           :class="{ hidden: !mobile_search }"
           type="text"
-          placeholder="Search products"
+          :placeholder="$t('search_products')"
           v-model="search"
         />
         <button
@@ -39,7 +39,7 @@
             <input
               class="bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:99%_60%] transition duration-300 ease-in-out w-full h-10 border-none focus:ring-0 bg-gray-100 rounded-r-md text-sm sm:will-change-transform"
               type="text"
-              placeholder="Search products"
+              :placeholder="$t('search_products')"
               v-model="search"
             />
           </div>
@@ -76,18 +76,20 @@
               "
             >
               <div class="size-6 bg-[url(/icons/account.svg)]"></div>
-              <span class="mt-0.5 hidden sm:block">{{
-                role != undefined ? "Account" : "Login"
+              <span class="mt-0.5 hidden sm:block whitespace-nowrap">{{
+                role != undefined ? $t("account") : $t("login")
               }}</span>
             </NuxtLink>
             <div
               v-if="role != undefined"
               class="hidden sm:flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
             >
-              <NuxtLink v-if="role != 0" to="/admin" :class="menu_item"
-                >Admin</NuxtLink
-              >
-              <button @click="logout()" :class="menu_item">Logout</button>
+              <NuxtLink v-if="role != 0" to="/admin" :class="menu_item">{{
+                $t("admin")
+              }}</NuxtLink>
+              <button @click="logout()" :class="menu_item">
+                {{ $t("logout") }}
+              </button>
             </div>
           </div>
           <NuxtLink
@@ -95,11 +97,11 @@
             :class="button + ' sm:hover:-translate-y-0.5'"
           >
             <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
-            <span class="mt-0.5 hidden sm:block">Favorites</span>
+            <span class="mt-0.5 hidden sm:block">{{ $t("favorites") }}</span>
           </NuxtLink>
           <NuxtLink to="/cart" :class="button + ' sm:hover:-translate-y-0.5'">
             <div class="size-6 bg-[url(/icons/cart.svg)]"></div>
-            <span class="mt-0.5 hidden sm:block">Cart</span>
+            <span class="mt-0.5 hidden sm:block">{{ $t("cart") }}</span>
           </NuxtLink>
         </div>
       </div>

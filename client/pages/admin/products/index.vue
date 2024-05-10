@@ -18,14 +18,14 @@
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl">Delete product</h1>
+          <h1 class="text-center text-xl">{{ $t("delete_product") }}</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_product_id" required />
-            <div class="text-center">Are you sure?</div>
-            <button type="submit" :class="button">Delete</button>
+            <div class="text-center">{{ $t("are_you_sure") }}</div>
+            <button type="submit" :class="button">{{ $t("delete") }}</button>
           </form>
         </div>
       </div>
@@ -33,12 +33,12 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
-      Products
+      {{ $t("products") }}
       <NuxtLink
         to="/admin/products/add"
         class="flex justify-center items-center transition duration-300 ease-in-out w-16 h-7 border border-black rounded-full hover:bg-black/10 text-sm"
       >
-        Add
+        {{ $t("add") }}
       </NuxtLink>
     </div>
     <div
@@ -49,7 +49,7 @@
           class="transition duration-300 ease-in-out bg-[url(/icons/search.svg)] bg-no-repeat bg-[position:98%_60%] sm:w-64 rounded-md border-0 bg-gray-100 text-sm focus:ring-2 focus:ring-slate-300"
           v-model="filter"
           type="text"
-          placeholder="Search"
+          :placeholder="$t('search')"
         />
         <table
           class="w-full table-fixed text-left overflow-hidden bg-gray-100 shadow-lg rounded-md"
@@ -58,7 +58,7 @@
             <tr class="bg-gray-200 whitespace-nowrap">
               <th class="w-1/2 sm:w-1/3 pl-4">
                 <div @click="sort('title')" :class="th_button">
-                  Title
+                  {{ $t("title") }}
                   <div
                     :class="
                       arrow_active != 'title'
@@ -72,7 +72,7 @@
               </th>
               <th class="w-1/2 sm:w-1/4">
                 <div @click="sort('category')" :class="th_button">
-                  Category
+                  {{ $t("category") }}
                   <div
                     :class="
                       arrow_active != 'category'
@@ -86,7 +86,7 @@
               </th>
               <th class="hidden sm:table-cell w-1/4">
                 <div @click="sort('list_price')" :class="th_button">
-                  List Price
+                  {{ $t("list_price") }}
                   <div
                     :class="
                       arrow_active != 'list_price'
@@ -100,7 +100,7 @@
               </th>
               <th class="hidden sm:table-cell w-1/4">
                 <div @click="sort('stock_quantity')" :class="th_button">
-                  Stock Quantity
+                  {{ $t("stock_quantity") }}
                   <div
                     :class="
                       arrow_active != 'stock_quantity'
@@ -143,12 +143,15 @@
               v-if="displayed_products.length == 0"
               class="bg-gray-50 text-center"
             >
-              <td colspan="5" class="p-4 border-y">Product not found</td>
+              <td colspan="5" class="p-4 border-y">
+                {{ $t("product_not_found") }}
+              </td>
             </tr>
           </tbody>
           <tfoot>
             <td colspan="5">
               <div class="flex justify-end items-center gap-x-2 p-2">
+                <div>{{ $t("items_per_page") }}:</div>
                 <select
                   class="transition duration-300 ease-in-out rounded-md border-0 bg-gray-200 text-sm focus:ring-2 focus:ring-slate-300 cursor-pointer"
                   v-model="items_per_page"
@@ -161,7 +164,6 @@
                     {{ option }}
                   </option>
                 </select>
-                <div class="mr-4">items per page</div>
                 <button
                   @click="current_page = 1"
                   :disabled="current_page == 1"
@@ -200,6 +202,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -291,7 +294,7 @@ const remove = async () => {
         );
         delete_dialog.value = false;
         delete_product_id.value = null;
-        toast.success("Product removed", {
+        toast.success(t("product_removed"), {
           bodyClassName: "toast-font",
         });
       } else {

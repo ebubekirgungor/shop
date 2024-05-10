@@ -11,7 +11,7 @@
           @click="filters_menu = false"
           class="absolute size-7 bg-[url(/icons/close.svg)] bg-cover bg-no-repeat"
         ></button>
-        <div class="w-full text-lg text-center">Filters</div>
+        <div class="w-full text-lg text-center">{{ $t("filters") }}</div>
       </div>
       <div class="mt-16 sm:mt-0 flex flex-col p-3 sm:p-0 divide-y">
         <div v-for="[key, values] in filters" class="flex flex-col">
@@ -56,7 +56,7 @@
           "
           class="w-full h-12 text-white border bg-black rounded-full"
         >
-          Show results
+          {{ $t("show_results") }}
         </button>
       </div>
     </div>
@@ -70,7 +70,7 @@
             @click="sorts_menu = !sorts_menu"
             class="hidden sm:flex justify-between items-center w-48 pl-3 pr-1 py-2 text-[15px] border rounded-md"
           >
-            Sort
+            {{ $t("sort") }}
             <div class="size-6 bg-[url(/icons/sort.svg)]"></div>
           </button>
           <div
@@ -110,14 +110,14 @@
           class="flex justify-center items-center gap-x-1 w-full p-2"
         >
           <div class="size-6 bg-[url(/icons/filter.svg)]"></div>
-          Filters
+          {{ $t("filters") }}
         </button>
         <button
           @click="sorts_menu = true"
           class="flex justify-center items-center gap-x-1 w-full p-2"
         >
           <div class="size-6 bg-[url(/icons/sort.svg)]"></div>
-          Sort
+          {{ $t("sort") }}
         </button>
       </div>
       <div class="flex m-2 sm:m-0 h-fit bg-white sm:rounded-xl sm:shadow-md">
@@ -162,7 +162,9 @@
                 class="transition duration-300 ease-in-out w-full h-10 font-medium border-2 rounded-full hover:bg-gray-200 disabled:text-gray-400 disabled:bg-gray-100 disabled:border-0 disabled:pointer-events-none"
               >
                 {{
-                  product.stock_quantity == 0 ? "Out of stock" : "Add to cart"
+                  product.stock_quantity == 0
+                    ? $t("out_of_stock")
+                    : $t("add_to_cart")
                 }}
               </button>
             </div>
@@ -175,6 +177,7 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 const route = useRoute();
 const role = useCookie<number>("role");
 const cart_unregistered = useCookie<Cart[]>("cart");
@@ -201,15 +204,15 @@ interface ProductFilter {
 }
 const sorts = [
   {
-    name: "Newests",
+    name: t("newests"),
     value: "newest",
   },
   {
-    name: "Lowest price",
+    name: t("lowest_price"),
     value: "lowest",
   },
   {
-    name: "Highest price",
+    name: t("highest_price"),
     value: "highest",
   },
 ];

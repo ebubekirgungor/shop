@@ -3,7 +3,7 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Change Password
+      {{ $t("change_password") }}
     </div>
     <form
       @submit.prevent="update"
@@ -12,19 +12,19 @@
       <input
         :class="input"
         type="password"
-        placeholder="Old Password"
+        :placeholder="$t('old_password')"
         v-model="form.old_password"
       />
       <input
         :class="input"
         type="password"
-        placeholder="New Password"
+        :placeholder="$t('new_password')"
         v-model="form.new_password"
       />
       <input
         :class="input"
         type="password"
-        placeholder="Retype New Password"
+        :placeholder="$t('retype_new_password')"
         v-model="form.new_password2"
       />
       <button
@@ -36,7 +36,7 @@
         class="transition duration-300 ease-in-out w-full sm:w-80 h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
         type="submit"
       >
-        Change Password
+        {{ $t("change_password") }}
       </button>
     </form>
   </main>
@@ -45,6 +45,7 @@
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -66,7 +67,7 @@ const update = async () => {
     },
     onResponse({ response }) {
       if (response._data.ID) {
-        toast.success("Password changed", {
+        toast.success(t("password_changed"), {
           bodyClassName: "toast-font",
         });
       } else {

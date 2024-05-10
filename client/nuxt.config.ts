@@ -29,5 +29,8 @@ export default defineNuxtConfig({
       Poppins: [400, 500, 700],
     },
   },
-  modules: ["@nuxtjs/google-fonts"],
+  modules: ["@nuxtjs/google-fonts", "@nuxtjs/i18n"],
+  i18n: {
+    vueI18n: "./i18n.config.ts",
+  },
 });

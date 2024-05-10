@@ -18,18 +18,20 @@
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl">Delete product from favorites</h1>
+          <h1 class="text-center text-xl">
+            {{ $t("remove_product_from_favorites") }}
+          </h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_product_id" required />
-            <div class="text-center">Are you sure?</div>
+            <div class="text-center">{{ $t("are_you_sure") }}</div>
             <button
               type="submit"
               class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
             >
-              Delete
+              {{ $t("delete") }}
             </button>
           </form>
         </div>
@@ -38,7 +40,7 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Favorites
+      {{ $t("favorites") }}
     </div>
     <div
       v-if="favorites.length == 0"
@@ -47,7 +49,9 @@
       <div
         class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/favorite.svg)] contrast-0"
       ></div>
-      <div class="text-xl text-gray-500">Your favorites list is empty</div>
+      <div class="text-xl text-gray-500">
+        {{ $t("your_favorites_list_is_empty") }}
+      </div>
     </div>
     <div
       v-else
@@ -95,6 +99,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "account",
@@ -146,7 +151,7 @@ const remove = async () => {
         );
         delete_dialog.value = false;
         delete_product_id.value = null;
-        toast.success("Product removed", {
+        toast.success(t("product_removed"), {
           bodyClassName: "toast-font",
         });
       } else {

@@ -19,7 +19,7 @@
             class="absolute sm:relative top-0 mt-4 mr-4 sm:m-0 self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-cover sm:bg-auto bg-center rounded-full hover:bg-black/10"
           ></button>
           <h1 class="text-center text-xl sm:grow">
-            {{ is_add ? "Create new category" : "Edit category" }}
+            {{ is_add ? $t("create_new_category") : $t("edit_category") }}
           </h1>
           <form
             class="flex flex-col items-center gap-y-6 mt-8 mb-4 mx-4 sm:mx-8"
@@ -29,7 +29,7 @@
               <input
                 class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
                 type="text"
-                placeholder="Title"
+                :placeholder="$t('title')"
                 v-model="category_title"
                 required
               />
@@ -37,7 +37,7 @@
                 <input
                   class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
                   type="text"
-                  placeholder="Filter name"
+                  :placeholder="$t('filter_name')"
                   v-model="new_filter_input"
                 />
                 <button
@@ -49,7 +49,7 @@
                   "
                   :disabled="!new_filter_input"
                 >
-                  Add
+                  {{ $t("add") }}
                 </button>
               </div>
               <div class="flex flex-wrap gap-2">
@@ -79,7 +79,7 @@
               <div
                 class="size-12 bg-[url(/icons/upload.svg)] bg-no-repeat bg-cover"
               ></div>
-              <h1>Click to upload</h1>
+              <h1>{{ $t("click_to_upload") }}</h1>
             </label>
             <div v-else class="flex justify-end">
               <button
@@ -103,7 +103,7 @@
               type="submit"
               class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
             >
-              {{ is_add ? "Create" : "Update" }}
+              {{ is_add ? $t("create") : $t("update") }}
             </button>
           </form>
         </div>
@@ -121,18 +121,18 @@
             @click="delete_dialog = false"
             class="self-end transition duration-300 ease-in-out size-8 bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-black/10"
           ></button>
-          <h1 class="text-center text-xl">Delete category</h1>
+          <h1 class="text-center text-xl">{{ $t("delete_category") }}</h1>
           <form
             class="flex flex-col gap-y-6 mt-8 mb-4 mx-8"
             @submit.prevent="remove"
           >
             <input type="hidden" v-model="delete_category_id" required />
-            <div class="text-center">Are you sure?</div>
+            <div class="text-center">{{ $t("are_you_sure") }}</div>
             <button
               type="submit"
               class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
             >
-              Delete
+              {{ $t("delete") }}
             </button>
           </form>
         </div>
@@ -141,7 +141,7 @@
     <div
       class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      Categories
+      {{ $t("categories") }}
       <button
         @click="
           is_add = true;
@@ -149,7 +149,7 @@
         "
         class="transition duration-300 ease-in-out w-16 h-7 border border-black rounded-full hover:bg-black/10 text-sm"
       >
-        Add
+        {{ $t("add") }}
       </button>
     </div>
     <div
@@ -160,7 +160,7 @@
         class="size-36 bg-no-repeat bg-center bg-contain bg-[url(/icons/category.svg)] contrast-0"
       ></div>
       <div class="text-xl text-gray-500">
-        You have not created a category yet
+        {{ $t("have_not_created_category_yet") }}
       </div>
     </div>
     <div
@@ -202,6 +202,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const { t } = useI18n();
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -307,7 +308,7 @@ const create_update = async () => {
           }
           category_title.value = "";
           toast.success(
-            is_add.value ? "Category created" : "Category updated",
+            is_add.value ? t("category_created") : t("category_updated"),
             {
               bodyClassName: "toast-font",
             }
@@ -337,7 +338,7 @@ const remove = async () => {
         );
         delete_dialog.value = false;
         delete_category_id.value = null;
-        toast.success("Category removed", {
+        toast.success(t("category_removed"), {
           bodyClassName: "toast-font",
         });
       } else {
