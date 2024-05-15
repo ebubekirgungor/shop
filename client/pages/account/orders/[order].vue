@@ -31,16 +31,18 @@
               v-for="product in order?.products"
               class="flex flex-col w-[calc(50vw-12px)] sm:w-56 sm:h-[21rem] bg-white rounded-xl border"
             >
-              <NuxtLink :to="'/product/' + product.url">
+              <NuxtLink :to="$t('product_url') + product.url">
                 <img
                   class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-56 object-contain"
                   :src="'/images/products/' + product.image"
                 />
               </NuxtLink>
               <div class="flex flex-col gap-y-6 p-2 sm:p-4">
-                <NuxtLink :to="'/product/' + product.url" class="text-md">{{
-                  product.title
-                }}</NuxtLink>
+                <NuxtLink
+                  :to="$t('product_url') + product.url"
+                  class="text-md"
+                  >{{ product.title }}</NuxtLink
+                >
                 <div class="flex items-center justify-between">
                   <div class="text-lg sm:text-2xl">
                     {{ product.list_price.toLocaleString("tr-TR") }}

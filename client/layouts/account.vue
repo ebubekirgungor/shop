@@ -76,15 +76,12 @@
           <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
           <span>{{ $t("favorites") }}</span>
         </NuxtLinkLocale>
-        <div class="sm:hidden group absolute right-0 top-0 w-36 m-4">
+        <div class="sm:hidden group absolute right-0 top-0 m-4">
           <div
-            class="w-full flex justify-between items-center border rounded-md p-2 cursor-pointer"
-          >
-            {{ $t("language") }}
-            <div class="size-6 bg-[url(/icons/translate.svg)]"></div>
-          </div>
+            class="size-12 border rounded-full cursor-pointer bg-[url(/icons/translate.svg)] bg-no-repeat bg-center"
+          ></div>
           <div
-            class="transition-visibility duration-300 flex flex-col gap-2 p-2 w-full group-hover:mt-4 group-hover:visible group-hover:opacity-100 invisible opacity-0 bg-white border rounded-md shadow-xl"
+            class="transition-visibility duration-300 absolute right-0 flex flex-col items-center gap-2 p-2 w-28 group-hover:mt-4 group-hover:visible group-hover:opacity-100 invisible opacity-0 bg-white border rounded-md shadow-xl"
           >
             <NuxtLink
               v-for="locale in locales"

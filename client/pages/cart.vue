@@ -55,7 +55,7 @@
                 ></div>
               </div>
               <NuxtLink
-                :to="'/product/' + product.url"
+                :to="$t('product_url') + product.url"
                 class="hidden sm:block font-medium w-48"
               >
                 {{ product.title }}
@@ -65,7 +65,7 @@
               class="flex flex-col sm:flex-row justify-between sm:items-center w-96"
             >
               <NuxtLink
-                :to="'/product/' + product.url"
+                :to="$t('product_url') + product.url"
                 class="sm:hidden font-medium w-48"
               >
                 {{ product.title }}

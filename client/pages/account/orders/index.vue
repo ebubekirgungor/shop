@@ -97,7 +97,7 @@
           >
             <NuxtLink
               v-for="product in order.products"
-              :to="'/product/' + product.url"
+              :to="$t('product_url') + product.url"
               class="flex justify-center min-w-12 size-12 sm:min-w-24 sm:size-24 border border-gray-300 rounded-lg"
               ><img
                 class="object-center object-contain rounded-lg"

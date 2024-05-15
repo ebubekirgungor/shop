@@ -69,7 +69,7 @@
             "
             class="absolute m-2 self-end transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-black/10 rounded-full sm:hover:bg-black/25"
           ></button>
-          <NuxtLink :to="'/product/' + product.url">
+          <NuxtLink :to="$t('product_url') + product.url">
             <img
               v-if="product.images.length > 0"
               class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-56 object-contain rounded-t-xl"
@@ -81,7 +81,7 @@
             ></div>
           </NuxtLink>
           <div class="flex flex-col gap-y-6 p-4">
-            <NuxtLink :to="'/product/' + product.url" class="text-md">{{
+            <NuxtLink :to="$t('product_url') + product.url" class="text-md">{{
               product.title
             }}</NuxtLink>
             <div class="text-2xl">

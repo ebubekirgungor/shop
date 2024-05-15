@@ -121,7 +121,7 @@
               class="border-y odd:bg-gray-50"
             >
               <td class="p-4">
-                <NuxtLink :to="'/product/' + product.url">{{
+                <NuxtLink :to="$t('product_url') + product.url">{{
                   product.title
                 }}</NuxtLink>
               </td>
