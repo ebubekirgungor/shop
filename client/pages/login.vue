@@ -64,12 +64,12 @@
             {{ $t("sign_in") }}
           </button>
           <h1 class="grow text-center hidden sm:block">{{ $t("or") }}</h1>
-          <NuxtLink
-            to="/register"
+          <NuxtLinkLocale
+            to="register"
             class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-200"
           >
             {{ $t("create_account") }}
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </form>
     </div>
@@ -81,6 +81,7 @@ definePageMeta({
 });
 import { useToast, POSITION } from "vue-toastification";
 const { t } = useI18n();
+const localePath = useLocalePath();
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const showpassword = "size-6 absolute ml-[265px] ";
@@ -100,7 +101,7 @@ const login = async () => {
     },
     onResponse({ response }) {
       if (response._data.status == "success") {
-        navigateTo("/account");
+        navigateTo(localePath("account"));
       } else {
         toast.error(
           response._data.message == "login"

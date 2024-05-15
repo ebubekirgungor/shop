@@ -178,6 +178,7 @@ const config = useRuntimeConfig().public;
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
+const role = useCookie<number>("role");
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -205,7 +206,7 @@ interface Product {
   filters: Filter[];
   images?: Image[];
 }
-const is_add = route.params.product == "add";
+const is_add = route.params.product == t("add_url");
 const open_delete_dialog = (event: Event, order: Image["order"]) => {
   event.stopPropagation();
   delete_image_order.value = order;
@@ -271,23 +272,25 @@ const data_to_form = (response: Product) => {
 };
 onMounted(() => {
   nextTick(async () => {
-    await useFetch(config.apiBase + "/categories", {
-      onResponse({ response }) {
-        categories.value = response._data;
-      },
-    });
-    if (!is_add) {
-      await useFetch(
-        config.apiBase +
-          "/products/" +
-          route.params.product.toString().match(/-(\d+)$/)![1],
-        {
-          onResponse({ response }) {
-            data_to_form(response._data);
-            if (form.value.filters.length == 0) category_change();
-          },
-        }
-      );
+    if (role.value === 1) {
+      await useFetch(config.apiBase + "/categories", {
+        onResponse({ response }) {
+          categories.value = response._data;
+        },
+      });
+      if (!is_add) {
+        await useFetch(
+          config.apiBase +
+            "/products/" +
+            route.params.product.toString().match(/-(\d+)$/)![1],
+          {
+            onResponse({ response }) {
+              data_to_form(response._data);
+              if (form.value.filters.length == 0) category_change();
+            },
+          }
+        );
+      }
     }
   });
 });

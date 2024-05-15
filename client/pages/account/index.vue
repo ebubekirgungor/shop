@@ -1,6 +1,7 @@
 <script setup>
+const localePath = useLocalePath();
 definePageMeta({
   middleware: "auth",
 });
-navigateTo("/account/orders");
+navigateTo(localePath("account-orders"));
 </script>

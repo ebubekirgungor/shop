@@ -17,22 +17,22 @@
           @click="nav_menu = false"
           class="sm:hidden ml-3 mt-3 size-7 bg-[url(/icons/previous.svg)] bg-cover bg-no-repeat"
         ></button>
-        <NuxtLink
-          :class="$route.path.includes('products') ? link + active : link"
-          to="/admin/products"
+        <NuxtLinkLocale
+          :class="$route.name!.toString().startsWith('admin-products') ? link + active : link"
+          to="admin-products"
           @click="nav_menu = false"
         >
           <div class="size-6 bg-[url(/icons/product.svg)]"></div>
           <span>{{ $t("products") }}</span>
-        </NuxtLink>
-        <NuxtLink
-          :class="$route.path.includes('categories') ? link + active : link"
-          to="/admin/categories"
+        </NuxtLinkLocale>
+        <NuxtLinkLocale
+          :class="$route.name!.toString().startsWith('admin-categories') ? link + active : link"
+          to="admin-categories"
           @click="nav_menu = false"
         >
           <div class="size-6 bg-[url(/icons/category.svg)]"></div>
           <span>{{ $t("categories") }}</span>
-        </NuxtLink>
+        </NuxtLinkLocale>
       </nav>
       <slot />
     </main>
@@ -40,6 +40,7 @@
 </template>
 <script setup lang="ts">
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 const role = useCookie<number | null>("role");
 const nav_menu = ref(false);
 const logout = async () => {
@@ -47,7 +48,7 @@ const logout = async () => {
   await useFetch(config.apiBase + "/auth/logout", {
     onResponse({ response }) {
       if (response._data.status == "success") {
-        navigateTo("/");
+        navigateTo(localePath("/"));
       }
     },
   });

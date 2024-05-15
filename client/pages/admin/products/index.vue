@@ -35,7 +35,7 @@
     >
       {{ $t("products") }}
       <NuxtLink
-        to="/admin/products/add"
+        :to="localePath('admin-products') + '/' + $t('add_url')"
         class="flex justify-center items-center transition duration-300 ease-in-out w-16 h-7 border border-black rounded-full hover:bg-black/10 text-sm"
       >
         {{ $t("add") }}
@@ -130,7 +130,7 @@
               <td class="hidden sm:table-cell">{{ product.stock_quantity }}</td>
               <td class="flex gap-x-1 pr-2 py-2 float-right">
                 <NuxtLink
-                  :to="'/admin/products/' + product.url"
+                  :to="localePath('admin-products') + '/' + product.url"
                   :class="icon + 'bg-[url(/icons/edit.svg)]'"
                 ></NuxtLink>
                 <button
@@ -203,6 +203,8 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+const localePath = useLocalePath();
+const role = useCookie<number>("role");
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -232,14 +234,16 @@ const sort_direction = ref(0);
 const arrow_active = ref("");
 onMounted(() => {
   nextTick(async () => {
-    await useFetch(config.apiBase + "/products", {
-      onResponse({ response }) {
-        if (response._data) {
-          products.value = response._data;
-          fetch_complete.value = true;
-        }
-      },
-    });
+    if (role.value === 1) {
+      await useFetch(config.apiBase + "/products", {
+        onResponse({ response }) {
+          if (response._data) {
+            products.value = response._data;
+            fetch_complete.value = true;
+          }
+        },
+      });
+    }
   });
 });
 const filtered_products = computed(() => {

@@ -142,7 +142,13 @@
                 "
               ></div>
             </button>
-            <NuxtLink :to="'/product/' + product.url">
+            <NuxtLink
+              :to="
+                locale == 'tr'
+                  ? 'urun/' + product.url
+                  : 'product/' + product.url
+              "
+            >
               <img
                 class="min-w-[calc(50vw-14px)] sm:min-w-full min-h-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-[14.25rem] sm:min-h-[14.25rem] object-contain rounded-t-xl"
                 :src="'/images/products/' + product.image"
@@ -177,7 +183,7 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const role = useCookie<number>("role");
 const cart_unregistered = useCookie<Cart[]>("cart");

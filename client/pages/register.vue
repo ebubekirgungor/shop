@@ -48,12 +48,12 @@
             {{ $t("next") }}
           </button>
           <h1 class="grow text-center hidden sm:block">{{ $t("or") }}</h1>
-          <NuxtLink
-            to="/login"
+          <NuxtLinkLocale
+            to="login"
             class="flex justify-center items-center my-4 w-full transition duration-300 ease-in-out h-12 rounded-full border border-gray-200 bg-white hover:bg-gray-200"
           >
             {{ $t("sign_in") }}
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </form>
       <form v-else @submit.prevent="register" :class="form_step">
@@ -181,6 +181,7 @@ definePageMeta({
 });
 import { useToast, POSITION } from "vue-toastification";
 const { t } = useI18n();
+const localePath = useLocalePath();
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const step = ref(1);
@@ -231,7 +232,7 @@ const register = async () => {
     },
     onResponse({ response }) {
       if (response._data.status == "success") {
-        navigateTo("/login");
+        navigateTo(localePath("login"));
       } else {
         toast.error(t("server_error"), {
           bodyClassName: "toast-font",

@@ -4,7 +4,7 @@
       class="flex items-center mt-12 sm:mt-0 gap-x-4 sm:p-6 text-lg sm:text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <button
-        @click="navigateTo('/account/orders')"
+        @click="navigateTo(localePath('account-orders'))"
         class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] ml-4 sm:ml-0 size-10 bg-black/5 rounded-full hover:bg-black/10"
       ></button>
       {{ $t("order_detail") }}
@@ -112,6 +112,7 @@
 import { nextTick } from "vue";
 const route = useRoute();
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 definePageMeta({
   middleware: "auth",
   layout: "account",

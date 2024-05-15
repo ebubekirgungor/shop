@@ -6,10 +6,10 @@
       class="bg-white h-16 sm:h-24 flex sm:border-b justify-end sm:justify-center sm:items-center sm:gap-x-12"
     >
       <div class="flex items-center sm:w-80 sm:-ml-16 mr-8 sm:mr-16">
-        <NuxtLink
-          to="/"
+        <NuxtLinkLocale
+          to="index"
           class="w-32 sm:w-52 h-16 sm:h-24 bg-center sm:bg-left bg-cover bg-[url(/images/logo.png)]"
-        ></NuxtLink>
+        ></NuxtLinkLocale>
       </div>
       <div class="flex sm:justify-center">
         <input
@@ -44,7 +44,7 @@
             />
           </div>
           <NuxtLink
-            :to="'/product/' + product.url"
+            :to="$t('product_url') + product.url"
             class="transition duration-200 flex justify-between w-full px-4 py-3 sm:rounded-full hover:bg-black/5"
             v-for="product in products"
           >
@@ -69,8 +69,8 @@
               (role != undefined ? 'sm:mt-10' : 'sm:mt-6')
             "
           >
-            <NuxtLink
-              :to="role != undefined ? '/account/orders' : '/login'"
+            <NuxtLinkLocale
+              :to="role != undefined ? 'account-orders' : 'login'"
               :class="
                 button + (role != undefined ? '' : ' sm:hover:-translate-y-0.5')
               "
@@ -79,29 +79,52 @@
               <span class="mt-0.5 hidden sm:block whitespace-nowrap">{{
                 role != undefined ? $t("account") : $t("login")
               }}</span>
-            </NuxtLink>
+            </NuxtLinkLocale>
             <div
               v-if="role != undefined"
               class="hidden sm:flex flex-col gap-y-2 justify-center items-center transition-visibility duration-300 ease-in-out delay-0 group-hover:delay-500 w-[100px] h-auto invisible group-hover:visible opacity-0 group-hover:opacity-100 bg-white border rounded-lg shadow-xl group-hover:mt-4 -ml-8 sm:ml-0 p-3 z-10"
             >
-              <NuxtLink v-if="role != 0" to="/admin" :class="menu_item">{{
+              <NuxtLinkLocale v-if="role != 0" to="admin" :class="menu_item">{{
                 $t("admin")
-              }}</NuxtLink>
+              }}</NuxtLinkLocale>
               <button @click="logout()" :class="menu_item">
                 {{ $t("logout") }}
               </button>
             </div>
           </div>
-          <NuxtLink
-            to="/account/favorites"
+          <NuxtLinkLocale
+            to="account-favorites"
             :class="button + ' sm:hover:-translate-y-0.5'"
           >
             <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
             <span class="mt-0.5 hidden sm:block">{{ $t("favorites") }}</span>
-          </NuxtLink>
-          <NuxtLink to="/cart" :class="button + ' sm:hover:-translate-y-0.5'">
+          </NuxtLinkLocale>
+          <NuxtLinkLocale
+            to="cart"
+            :class="button + ' sm:hover:-translate-y-0.5'"
+          >
             <div class="size-6 bg-[url(/icons/cart.svg)]"></div>
             <span class="mt-0.5 hidden sm:block">{{ $t("cart") }}</span>
+          </NuxtLinkLocale>
+        </div>
+      </div>
+      <div class="hidden sm:block group absolute right-6 w-36">
+        <div
+          class="w-full flex justify-between items-center border rounded-md p-2 cursor-pointer"
+        >
+          {{ $t("language") }}
+          <div class="size-6 bg-[url(/icons/translate.svg)]"></div>
+        </div>
+        <div
+          class="transition-visibility duration-300 flex flex-col gap-2 p-2 w-full absolute group-hover:mt-3 group-hover:visible group-hover:opacity-100 invisible opacity-0 bg-white border rounded-md shadow-xl"
+        >
+          <NuxtLink
+            v-for="locale in locales"
+            :key="locale.code"
+            :to="switchLocalePath(locale.code)"
+            class="p-2"
+          >
+            {{ locale.name }}
           </NuxtLink>
         </div>
       </div>
@@ -113,6 +136,9 @@
 <script setup lang="ts">
 const config = useRuntimeConfig().public;
 const role = useCookie<number | null>("role");
+const { locales } = useI18n();
+const switchLocalePath = useSwitchLocalePath();
+const localePath = useLocalePath();
 interface Product {
   category: string;
   title: string;
@@ -123,7 +149,7 @@ const logout = async () => {
   await useFetch(config.apiBase + "/auth/logout", {
     onResponse({ response }) {
       if (response._data.status == "success") {
-        navigateTo("/");
+        navigateTo(localePath("/"));
       }
     },
   });

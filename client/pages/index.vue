@@ -3,7 +3,7 @@
     <div class="w-[80rem] flex flex-wrap gap-6 p-6">
       <NuxtLink
         v-for="category in categories"
-        :to="category.url"
+        :to="locale == 'tr' ? category.url : locale + '/' + category.url"
         class="min-h-[19rem] max-h-[19rem] sm:size-72 border rounded-xl bg-white"
       >
         <img
@@ -16,6 +16,7 @@
 </template>
 <script setup lang="ts">
 import { nextTick } from "vue";
+const { locale } = useI18n();
 const config = useRuntimeConfig().public;
 interface Category {
   title: string;

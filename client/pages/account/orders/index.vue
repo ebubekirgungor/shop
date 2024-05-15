@@ -83,7 +83,7 @@
               </div>
             </div>
             <NuxtLink
-              :to="'orders/' + order.id"
+              :to="localePath('account-orders') + '/' + order.id"
               class="absolute sm:relative right-0 mr-8 sm:mr-0 transition duration-300 ease-in-out flex justify-center items-center w-20 h-12 rounded-xl bg-black text-white hover:bg-black/80 font-medium"
               >{{ $t("details") }}</NuxtLink
             >
@@ -117,6 +117,7 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 definePageMeta({
   middleware: "auth",
   layout: "account",

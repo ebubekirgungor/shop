@@ -199,6 +199,7 @@
 <script setup lang="ts">
 import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 const role = useCookie("role");
 interface Image {
   order: number;
@@ -284,6 +285,6 @@ const remove_from_cart = async (product_id: number) => {
   update_cart_unregistered();
 };
 const checkout = async () => {
-  if (await update_cart()) navigateTo("/checkout");
+  if (await update_cart()) navigateTo(localePath("checkout"));
 };
 </script>

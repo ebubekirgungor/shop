@@ -203,6 +203,7 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+const role = useCookie<number>("role");
 definePageMeta({
   middleware: "auth",
   layout: "admin",
@@ -228,16 +229,18 @@ const update_category_id = ref<number>();
 const categories = ref<Category[]>([]);
 onMounted(() => {
   nextTick(async () => {
-    await useFetch(config.apiBase + "/categories", {
-      headers: {
-        Authorization: config.apiKey,
-      },
-      onResponse({ response }) {
-        if (response._data) {
-          categories.value = response._data;
-        }
-      },
-    });
+    if (role.value === 1) {
+      await useFetch(config.apiBase + "/categories", {
+        headers: {
+          Authorization: config.apiKey,
+        },
+        onResponse({ response }) {
+          if (response._data) {
+            categories.value = response._data;
+          }
+        },
+      });
+    }
   });
 });
 const open_edit_dialog = (category: Category) => {
