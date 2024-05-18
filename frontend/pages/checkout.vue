@@ -7,7 +7,7 @@
         class="flex justify-center sm:justify-start items-center gap-x-4 p-6 text-xl h-[78px] bg-white sm:rounded-xl sm:shadow-md"
       >
         <button
-          @click="step == 1 ? navigateTo('/cart') : (step = 1)"
+          @click="step == 1 ? navigateTo(localePath('cart')) : (step = 1)"
           class="absolute sm:relative left-4 sm:left-0 transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] size-10 bg-black/5 rounded-full hover:bg-black/10"
         ></button>
         {{ step == 1 ? $t("select_address") : $t("payment") }}
@@ -211,6 +211,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 const { t } = useI18n();
 const role = useCookie("role");
 interface Image {

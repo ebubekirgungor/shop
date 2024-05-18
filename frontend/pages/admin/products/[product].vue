@@ -98,7 +98,7 @@
           </select>
           <button
             type="button"
-            @click="navigateTo('/admin/categories')"
+            @click="navigateTo(localePath('admin-categories'))"
             :class="add_category_button"
           >
             {{ $t("add_new") }}
@@ -175,6 +175,7 @@ import { nextTick } from "vue";
 import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
+const localePath = useLocalePath();
 const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
@@ -350,11 +351,13 @@ const create_update = async () => {
             bodyClassName: "toast-font",
           });
           is_add
-            ? router.push("/admin/products/" + response._data.url)
+            ? router.push(
+                localePath("admin-products") + "/" + response._data.url
+              )
             : history.replaceState(
                 {},
                 "",
-                "/admin/products/" + response._data.url
+                localePath("admin-products") + "/" + response._data.url
               );
           images_to_upload = [];
           data_to_form(response._data);

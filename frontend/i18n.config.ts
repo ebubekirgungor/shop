@@ -3,7 +3,6 @@ export default defineI18nConfig(() => ({
   locale: "tr",
   messages: {
     tr: {
-      language: "Dil",
       search_products: "Ürün ara",
       product_url: "/urun/",
       account: "Hesap",
@@ -140,7 +139,6 @@ export default defineI18nConfig(() => ({
       image_removed: "Resim kaldırıldı",
     },
     en: {
-      language: "Language",
       search_products: "Search products",
       product_url: "/en/product/",
       account: "Account",

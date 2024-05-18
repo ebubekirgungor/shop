@@ -18,22 +18,22 @@
 # vendor/
 
 # Go workspace file
-go.work
+backend/go.work
 
-# Client
-client/.output
-client/.data
-client/.nuxt
-client/.nitro
-client/.cache
-client/dist
-client/node_modules
+# Frontend
+frontend/.output
+frontend/.data
+frontend/.nuxt
+frontend/.nitro
+frontend/.cache
+frontend/dist
+frontend/node_modules
 
 # .env
 .env
 
 # Static
-images/
+backend/images/
 
 # Certs
 certs/

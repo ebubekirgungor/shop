@@ -2,8 +2,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   devServer: {
     https: {
-      key: "../certs/RootCA.key",
-      cert: "../certs/RootCA.pem",
+      key: "./certs/RootCA.key",
+      cert: "./certs/RootCA.pem",
     },
   },
   runtimeConfig: {
@@ -30,6 +30,7 @@ export default defineNuxtConfig({
     },
   },
   modules: ["@nuxtjs/google-fonts", "@nuxtjs/i18n"],
+  build: { transpile: ["vue-toastification"] },
   i18n: {
     vueI18n: "./i18n.config.ts",
     locales: [

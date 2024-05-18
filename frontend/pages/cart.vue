@@ -41,13 +41,13 @@
               />
               <img
                 v-if="product.images.length > 0"
-                @click="navigateTo('product/' + product.url)"
+                @click="navigateTo($t('product_url') + product.url)"
                 class="min-w-24 size-24 border border-gray-300 rounded-lg object-contain cursor-pointer"
                 :src="'/images/products/' + product.images[0].name"
               />
               <div
                 v-else
-                @click="navigateTo('product/' + product.url)"
+                @click="navigateTo($t('product_url') + product.url)"
                 class="size-24 border border-gray-300 rounded-lg"
               >
                 <div

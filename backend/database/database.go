@@ -15,7 +15,8 @@ import (
 var Db *gorm.DB
 
 func ConnectDb() {
-	dsn := fmt.Sprintf("host=localhost user=postgres password=%s dbname=%s port=%s sslmode=disable",
+	dsn := fmt.Sprintf("host=%s user=postgres password=%s dbname=%s port=%s sslmode=disable",
+		config.Config("DATABASE_HOST"),
 		config.Config("DATABASE_PASSWORD"),
 		config.Config("DATABASE_NAME"),
 		config.Config("DATABASE_PORT"))

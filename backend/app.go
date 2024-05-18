@@ -30,5 +30,6 @@ func main() {
 		http2.ConfigureServer(s, http2.ServerConfig{})
 	}
 
-	log.Fatal(s.ListenAndServeTLS(":8080", "certs/RootCA.crt", "certs/RootCA.key"))
+	//log.Fatal(s.ListenAndServeTLS(":8080", "./certs/RootCA.crt", "./certs/RootCA.key"))
+	log.Fatal(s.ListenAndServe(":8080"))
 }
