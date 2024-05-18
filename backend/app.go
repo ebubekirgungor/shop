@@ -30,5 +30,5 @@ func main() {
 		http2.ConfigureServer(s, http2.ServerConfig{})
 	}
 
-	log.Fatal(s.ListenAndServeTLS(":8080", "/etc/letsencrypt/live/go-nuxt.shop/fullchain.pem", "/etc/letsencrypt/live/go-nuxt.shop/privkey.pem"))
+	log.Fatal(s.ListenAndServeTLS(":8080", "./go-nuxt.shop/fullchain1.pem", "./go-nuxt.shop/privkey1.pem"))
 }
