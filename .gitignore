@@ -33,7 +33,8 @@ frontend/node_modules
 # .env
 
 # Static
-backend/images/
+backend/images/categories
+backend/images/products
 
 # Certs
 certs/
