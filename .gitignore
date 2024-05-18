@@ -30,7 +30,7 @@ frontend/dist
 frontend/node_modules
 
 # .env
-.env
+# .env
 
 # Static
 backend/images/
