@@ -8,8 +8,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE,
-      apiKey: process.env.API_KEY,
+      apiBase: process.env.NUXT_PUBLIC_API_BASE,
+      apiKey: process.env.NUXT_PUBLIC_API_KEY,
     },
   },
   app: {
