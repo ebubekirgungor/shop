@@ -24,12 +24,12 @@
         <button
           v-if="images.length > 1"
           @click="goto_slide(slide_index - 1)"
-          :class="icon + 'left-3 bg-[url(/icons/previous.svg)]'"
+          class="transition duration-300 ease-in-out absolute top-[50vw] sm:top-[17.5rem] -translate-y-1/2 bg-no-repeat bg-center size-10 bg-gray-200 sm:bg-white rounded-full sm:hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 left-3 bg-[url(/icons/previous.svg)]"
         ></button>
         <button
           v-if="images.length > 1"
           @click="goto_slide(slide_index + 1)"
-          :class="icon + 'right-3 bg-[url(/icons/next.svg)]'"
+          class="transition duration-300 ease-in-out absolute top-[50vw] sm:top-[17.5rem] -translate-y-1/2 bg-no-repeat bg-center size-10 bg-gray-200 sm:bg-white rounded-full sm:hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 right-3 bg-[url(/icons/next.svg)]"
         ></button>
         <div
           v-if="images.length > 1"
@@ -114,7 +114,7 @@
             </button>
           </div>
           <button
-            :class="button"
+            class="transition duration-300 ease-in-out w-full h-full sm:h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none"
             :disabled="
               parseInt(product.stock_quantity) == 0 ||
               product_cart_quantity >= product.stock_quantity
@@ -159,7 +159,7 @@
           <div>TL</div>
         </div>
         <button
-          :class="button"
+          class="transition duration-300 ease-in-out w-full h-full sm:h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none"
           :disabled="
             parseInt(product.stock_quantity) == 0 ||
             product_cart_quantity >= product.stock_quantity
@@ -362,8 +362,4 @@ const toggle_favorite = async () => {
     },
   });
 };
-const icon =
-  "transition duration-300 ease-in-out absolute top-[50vw] sm:top-[17.5rem] -translate-y-1/2 bg-no-repeat bg-center size-10 bg-gray-200 sm:bg-white rounded-full sm:hover:bg-gray-200 disabled:pointer-events-none disabled:opacity-0 ";
-const button =
-  "transition duration-300 ease-in-out w-full h-full sm:h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 font-medium disabled:bg-black/60 disabled:pointer-events-none";
 </script>

@@ -6,31 +6,35 @@
     <div
       class="flex justify-center bg-white sm:pt-8 sm:pb-4 sm:w-[25rem] sm:h-[31rem] sm:border sm:rounded-xl"
     >
-      <form v-if="step == 1" @submit.prevent="check_email" :class="form_step">
-        <div :class="form_field">
+      <form
+        v-if="step == 1"
+        @submit.prevent="check_email"
+        class="flex flex-col gap-y-6 w-[300px]"
+      >
+        <div class="flex flex-col gap-y-1">
           <label for="email">{{ $t("email") }}</label>
           <input
-            :class="input"
+            class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
             v-model="form.email"
             name="email"
             type="email"
             required
           />
         </div>
-        <div :class="form_field">
+        <div class="flex flex-col gap-y-1">
           <label for="first_name">{{ $t("first_name") }}</label>
           <input
-            :class="input"
+            class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
             v-model="form.first_name"
             name="first_name"
             type="text"
             required
           />
         </div>
-        <div :class="form_field + ' grow'">
+        <div class="flex flex-col gap-y-1 grow">
           <label for="last_name">{{ $t("last_name") }}</label>
           <input
-            :class="input"
+            class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
             v-model="form.last_name"
             name="last_name"
             type="text"
@@ -43,7 +47,7 @@
             :disabled="
               form.email == '' || form.first_name == '' || form.last_name == ''
             "
-            :class="button"
+            class="sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
           >
             {{ $t("next") }}
           </button>
@@ -56,11 +60,15 @@
           </NuxtLinkLocale>
         </div>
       </form>
-      <form v-else @submit.prevent="register" :class="form_step">
-        <div :class="form_field">
+      <form
+        v-else
+        @submit.prevent="register"
+        class="flex flex-col gap-y-6 w-[300px]"
+      >
+        <div class="flex flex-col gap-y-1">
           <label for="phone">{{ $t("phone") }}</label>
           <input
-            :class="input"
+            class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
             v-model="form.phone"
             name="phone"
             minlength="14"
@@ -70,11 +78,11 @@
             required
           />
         </div>
-        <div :class="form_field">
+        <div class="flex flex-col gap-y-1">
           <label for="phone">{{ $t("birthdate") }}</label>
           <div class="flex gap-x-2">
             <select
-              :class="input + ' w-full'"
+              class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent w-full"
               v-model="form.birthdate.day"
               required
             >
@@ -82,7 +90,7 @@
               <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
             </select>
             <select
-              :class="input + ' w-full'"
+              class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent w-full"
               v-model="form.birthdate.month"
               required
             >
@@ -90,7 +98,7 @@
               <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
             </select>
             <select
-              :class="input + ' w-full'"
+              class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent w-full"
               v-model="form.birthdate.year"
               required
             >
@@ -107,12 +115,12 @@
             </select>
           </div>
         </div>
-        <div :class="form_field">
+        <div class="flex flex-col gap-y-1">
           <label for="phone">{{ $t("gender") }}</label>
           <div class="flex gap-x-8">
             <label class="flex items-center gap-x-3 cursor-pointer">
               <input
-                :class="radio"
+                class="transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0"
                 type="radio"
                 v-model="form.gender"
                 name="gender"
@@ -124,7 +132,7 @@
             </label>
             <label class="flex items-center gap-x-3 cursor-pointer">
               <input
-                :class="radio"
+                class="transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0"
                 type="radio"
                 v-model="form.gender"
                 name="gender"
@@ -135,11 +143,11 @@
             </label>
           </div>
         </div>
-        <div :class="form_field + ' grow'">
+        <div class="flex flex-col gap-y-1 grow">
           <label for="password">{{ $t("password") }}</label>
           <div class="flex items-center">
             <input
-              :class="input"
+              class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
               v-model="form.password"
               name="password"
               :type="eye ? 'text' : 'password'"
@@ -151,8 +159,8 @@
               type="button"
               :class="
                 eye
-                  ? showpassword + 'bg-[url(/icons/eye.svg)]'
-                  : showpassword + 'bg-[url(/icons/eye_off.svg)]'
+                  ? 'size-6 absolute ml-[265px] bg-[url(/icons/eye.svg)]'
+                  : 'size-6 absolute ml-[265px] bg-[url(/icons/eye_off.svg)]'
               "
             ></button>
           </div>
@@ -167,7 +175,7 @@
             form.gender == '' ||
             form.password == ''
           "
-          :class="button"
+          class="sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
         >
           {{ $t("create_account") }}
         </button>
@@ -250,13 +258,4 @@ const phone_format = () => {
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
-const form_step = "flex flex-col gap-y-6 w-[300px]";
-const form_field = "flex flex-col gap-y-1";
-const button =
-  "sm:mb-4 w-full transition duration-300 ease-in-out h-12 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const showpassword = "size-6 absolute ml-[265px] ";
-const input =
-  "transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent";
-const radio =
-  "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
 </script>

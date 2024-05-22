@@ -25,7 +25,12 @@
           >
             <input type="hidden" v-model="delete_product_id" required />
             <div class="text-center">{{ $t("are_you_sure") }}</div>
-            <button type="submit" :class="button">{{ $t("delete") }}</button>
+            <button
+              type="submit"
+              class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
+            >
+              {{ $t("delete") }}
+            </button>
           </form>
         </div>
       </div>
@@ -57,57 +62,69 @@
           <thead>
             <tr class="bg-gray-200 whitespace-nowrap">
               <th class="w-1/2 sm:w-1/3 pl-4">
-                <div @click="sort('title')" :class="th_button">
+                <div
+                  @click="sort('title')"
+                  class="flex gap-x-1 items-center h-12 cursor-pointer group"
+                >
                   {{ $t("title") }}
                   <div
                     :class="
                       arrow_active != 'title'
-                        ? th_icon + 'contrast-0'
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 contrast-0'
                         : sort_direction == -1
-                        ? th_icon + 'rotate-180'
-                        : th_icon
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 rotate-180'
+                        : 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100'
                     "
                   ></div>
                 </div>
               </th>
               <th class="w-1/2 sm:w-1/4">
-                <div @click="sort('category')" :class="th_button">
+                <div
+                  @click="sort('category')"
+                  class="flex gap-x-1 items-center h-12 cursor-pointer group"
+                >
                   {{ $t("category") }}
                   <div
                     :class="
                       arrow_active != 'category'
-                        ? th_icon + 'contrast-0'
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 contrast-0'
                         : sort_direction == -1
-                        ? th_icon + 'rotate-180'
-                        : th_icon
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 rotate-180'
+                        : 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100'
                     "
                   ></div>
                 </div>
               </th>
               <th class="hidden sm:table-cell w-1/4">
-                <div @click="sort('list_price')" :class="th_button">
+                <div
+                  @click="sort('list_price')"
+                  class="flex gap-x-1 items-center h-12 cursor-pointer group"
+                >
                   {{ $t("list_price") }}
                   <div
                     :class="
                       arrow_active != 'list_price'
-                        ? th_icon + 'contrast-0'
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 contrast-0'
                         : sort_direction == -1
-                        ? th_icon + 'rotate-180'
-                        : th_icon
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 rotate-180'
+                        : 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100'
                     "
                   ></div>
                 </div>
               </th>
               <th class="hidden sm:table-cell w-1/4">
-                <div @click="sort('stock_quantity')" :class="th_button">
+                <div
+                  @click="sort('stock_quantity')"
+                  class="flex gap-x-1 items-center h-12 cursor-pointer group"
+                >
                   {{ $t("stock_quantity") }}
                   <div
                     :class="
                       arrow_active != 'stock_quantity'
-                        ? th_icon + 'contrast-0'
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 contrast-0'
                         : sort_direction == -1
-                        ? th_icon + 'rotate-180'
-                        : th_icon
+                        ? 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 rotate-180'
+                        : 'transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100'
                     "
                   ></div>
                 </div>
@@ -131,11 +148,11 @@
               <td class="flex gap-x-1 pr-2 py-2 float-right">
                 <NuxtLink
                   :to="localePath('admin-products') + '/' + product.url"
-                  :class="icon + 'bg-[url(/icons/edit.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/edit.svg)]"
                 ></NuxtLink>
                 <button
                   @click="open_delete_dialog(product.id)"
-                  :class="icon + 'bg-[url(/icons/delete.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/delete.svg)]"
                 ></button>
               </td>
             </tr>
@@ -167,22 +184,22 @@
                 <button
                   @click="current_page = 1"
                   :disabled="current_page == 1"
-                  :class="icon + 'bg-[url(/icons/first.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/first.svg)]"
                 ></button>
                 <button
                   @click="current_page > 1 ? current_page-- : ''"
                   :disabled="current_page == 1"
-                  :class="icon + 'bg-[url(/icons/previous.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/previous.svg)]"
                 ></button>
                 <button
                   @click="current_page < total_pages ? current_page++ : ''"
                   :disabled="current_page == total_pages || total_pages == 0"
-                  :class="icon + 'bg-[url(/icons/next.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/next.svg)]"
                 ></button>
                 <button
                   @click="current_page = total_pages"
                   :disabled="current_page == total_pages || total_pages == 0"
-                  :class="icon + 'bg-[url(/icons/last.svg)]'"
+                  class="transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 bg-[url(/icons/last.svg)]"
                 ></button>
               </div>
             </td>
@@ -309,13 +326,6 @@ const remove = async () => {
     },
   });
 };
-const button =
-  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const icon =
-  "transition duration-300 ease-in-out size-9 bg-no-repeat bg-center rounded-full hover:bg-black/10 disabled:pointer-events-none disabled:contrast-0 ";
-const th_button = "flex gap-x-1 items-center h-12 cursor-pointer group";
-const th_icon =
-  "transition duration-200 ease-in-out size-6 bg-no-repeat bg-center bg-[url(/icons/arrow.svg)] opacity-0 group-hover:opacity-100 ";
 </script>
 <style>
 td {

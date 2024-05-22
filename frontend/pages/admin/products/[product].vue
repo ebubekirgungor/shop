@@ -24,8 +24,8 @@
             @click="image_current = image.url"
             :class="
               image_current == image.url
-                ? gallery_button + 'bg-white'
-                : gallery_button + 'bg-gray-300'
+                ? 'transition duration-300 ease-in-out size-3 rounded-full bg-white'
+                : 'transition duration-300 ease-in-out size-3 rounded-full bg-gray-300'
             "
           ></button>
         </div>
@@ -50,7 +50,12 @@
           >
             <input type="hidden" v-model="delete_image_order" required />
             <div class="text-center">{{ $t("are_you_sure") }}</div>
-            <button type="submit" :class="button">{{ $t("delete") }}</button>
+            <button
+              type="submit"
+              class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
+            >
+              {{ $t("delete") }}
+            </button>
           </form>
         </div>
       </div>
@@ -64,32 +69,35 @@
       @submit.prevent="create_update"
       class="flex flex-col sm:grid grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 items-center p-4 sm:p-6 w-screen sm:w-auto sm:min-w-[30rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <label :class="label"
+      <label class="w-full flex flex-col gap-y-2"
         >{{ $t("title")
-        }}<input :class="input" type="text" v-model="form.title"
+        }}<input
+          class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+          type="text"
+          v-model="form.title"
       /></label>
-      <label :class="label"
+      <label class="w-full flex flex-col gap-y-2"
         >{{ $t("list_price")
         }}<input
-          :class="input"
+          class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
           step=".01"
           type="number"
           min="1"
           v-model="form.list_price"
       /></label>
-      <label :class="label"
+      <label class="w-full flex flex-col gap-y-2"
         >{{ $t("stock_quantity")
         }}<input
-          :class="input"
+          class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
           type="number"
           min="0"
           v-model="form.stock_quantity"
       /></label>
-      <label :class="label"
+      <label class="w-full flex flex-col gap-y-2"
         >{{ $t("category") }}
         <div class="flex gap-x-4">
           <select
-            :class="input + ' w-full cursor-pointer'"
+            class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 w-full cursor-pointer"
             v-model="form.category_id"
             @change="category_change"
           >
@@ -99,17 +107,25 @@
           <button
             type="button"
             @click="navigateTo(localePath('admin-categories'))"
-            :class="add_category_button"
+            class="transition duration-300 ease-in-out w-32 rounded-md bg-black/5 text-sm hover:bg-black/10"
           >
             {{ $t("add_new") }}
           </button>
         </div>
       </label>
-      <label v-for="filter in form.filters" :class="label">
+      <label
+        v-for="filter in form.filters"
+        class="w-full flex flex-col gap-y-2"
+      >
         {{ filter.name }}
-        <input :class="input" type="text" v-model="filter.value"
+        <input
+          class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+          type="text"
+          v-model="filter.value"
       /></label>
-      <div :class="label + ' w-screen sm:w-auto p-2 sm:p-0 col-span-2'">
+      <div
+        class="w-full flex flex-col gap-y-2 w-screen sm:w-auto p-2 sm:p-0 col-span-2"
+      >
         <label class="px-2 sm:px-0">{{ $t("images") }}</label>
         <div class="flex flex-wrap gap-2 sm:gap-4 mt-2">
           <div
@@ -163,7 +179,7 @@
               JSON.stringify(images) == JSON.stringify(images_old)
         "
         type="submit"
-        :class="button"
+        class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
       >
         {{ is_add ? $t("create") : $t("update") }}
       </button>
@@ -387,13 +403,4 @@ const remove = async () => {
     bodyClassName: "toast-font",
   });
 };
-const input =
-  "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
-const add_category_button =
-  "transition duration-300 ease-in-out w-32 rounded-md bg-black/5 text-sm hover:bg-black/10";
-const button =
-  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
-const label = "w-full flex flex-col gap-y-2";
-const gallery_button =
-  "transition duration-300 ease-in-out size-3 rounded-full ";
 </script>

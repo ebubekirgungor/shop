@@ -33,8 +33,9 @@ frontend/node_modules
 .env
 
 # Static
-backend/images/categories
-backend/images/products
+backend/images/categories/*
+backend/images/products/*
 
-# Certs
+# Local development
 certs/
+backend/app-local.go

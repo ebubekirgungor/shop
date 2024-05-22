@@ -10,7 +10,7 @@
         <div class="flex flex-col gap-y-1">
           <label for="email">{{ $t("email") }}</label>
           <input
-            :class="input"
+            class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
             v-model="form.email"
             name="email"
             type="email"
@@ -21,7 +21,7 @@
           <label for="password">{{ $t("password") }}</label>
           <div class="flex items-center">
             <input
-              :class="input"
+              class="transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent"
               v-model="form.password"
               name="password"
               :type="eye ? 'text' : 'password'"
@@ -116,6 +116,4 @@ const login = async () => {
     },
   });
 };
-const input =
-  "transition duration-200 ease-in-out w-full h-11 border-slate-300 bg-gray-50 rounded-md text-sm focus:ring-slate-300 focus:ring-2 focus:border-transparent";
 </script>

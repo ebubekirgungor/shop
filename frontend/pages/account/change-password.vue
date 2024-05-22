@@ -10,19 +10,19 @@
       class="flex flex-col items-center justify-center p-6 gap-y-5 sm:min-w-[25rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <input
-        :class="input"
+        class="transition duration-300 ease-in-out w-80 rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
         type="password"
         :placeholder="$t('old_password')"
         v-model="form.old_password"
       />
       <input
-        :class="input"
+        class="transition duration-300 ease-in-out w-80 rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
         type="password"
         :placeholder="$t('new_password')"
         v-model="form.new_password"
       />
       <input
-        :class="input"
+        class="transition duration-300 ease-in-out w-80 rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
         type="password"
         :placeholder="$t('retype_new_password')"
         v-model="form.new_password2"
@@ -78,6 +78,4 @@ const update = async () => {
     },
   });
 };
-const input =
-  "transition duration-300 ease-in-out w-80 rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
 </script>

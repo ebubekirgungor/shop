@@ -62,7 +62,7 @@
           >
             <button
               @click="mobile_search = true"
-              :class="button + ' sm:hidden sm:hover:-translate-y-0.5'"
+              class="transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform sm:hidden sm:hover:-translate-y-0.5"
             >
               <div class="size-6 bg-[url(/icons/search_mobile.svg)]"></div>
             </button>
@@ -75,7 +75,7 @@
               <NuxtLinkLocale
                 :to="role != undefined ? 'account-orders' : 'login'"
                 :class="
-                  button +
+                  'transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform' +
                   (role != undefined ? '' : ' sm:hover:-translate-y-0.5')
                 "
               >
@@ -91,24 +91,27 @@
                 <NuxtLinkLocale
                   v-if="role != 0"
                   to="admin"
-                  :class="menu_item"
+                  class="flex justify-center items-center w-full h-8"
                   >{{ $t("admin") }}</NuxtLinkLocale
                 >
-                <button @click="logout()" :class="menu_item">
+                <button
+                  @click="logout()"
+                  class="flex justify-center items-center w-full h-8"
+                >
                   {{ $t("logout") }}
                 </button>
               </div>
             </div>
             <NuxtLinkLocale
               to="account-favorites"
-              :class="button + ' sm:hover:-translate-y-0.5'"
+              class="transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform sm:hover:-translate-y-0.5"
             >
               <div class="size-6 bg-[url(/icons/favorite.svg)]"></div>
               <span class="mt-0.5 hidden sm:block">{{ $t("favorites") }}</span>
             </NuxtLinkLocale>
             <NuxtLinkLocale
               to="cart"
-              :class="button + ' sm:hover:-translate-y-0.5'"
+              class="transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform sm:hover:-translate-y-0.5"
             >
               <div class="size-6 bg-[url(/icons/cart.svg)]"></div>
               <span class="mt-0.5 hidden sm:block">{{ $t("cart") }}</span>
@@ -189,7 +192,4 @@ watch(products, () => {
     product.title = out;
   });
 });
-const button =
-  "transition duration-200 ease-in-out flex h-10 w-10 sm:w-auto justify-center items-center gap-x-2 rounded-full sm:hover:bg-black/10 sm:hover:bg-transparent will-change-transform";
-const menu_item = "flex justify-center items-center w-full h-8";
 </script>

@@ -63,7 +63,7 @@
               <label for="number">{{ $t("card_number") }}</label>
               <input
                 id="number"
-                :class="input + '!w-auto !text-left'"
+                class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10 !w-auto !text-left"
                 type="text"
                 v-model="card.number"
                 @input="card_number_format"
@@ -75,7 +75,7 @@
               <label for="holder">{{ $t("card_holder") }}</label>
               <input
                 id="holder"
-                :class="input + '!w-auto !text-left'"
+                class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10 !w-auto !text-left"
                 type="text"
                 v-model="card.name"
                 @input="card_name_format"
@@ -86,7 +86,7 @@
                 <label>{{ $t("expiration_date") }}</label>
                 <div class="flex gap-x-4">
                   <input
-                    :class="input"
+                    class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10"
                     type="text"
                     v-model="card.month"
                     maxlength="2"
@@ -94,7 +94,7 @@
                     @input="card.month = exp_cvv_format(card.month)"
                   />
                   <input
-                    :class="input"
+                    class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10"
                     type="text"
                     v-model="card.year"
                     maxlength="2"
@@ -107,7 +107,7 @@
                 <label for="cvv">CVV</label>
                 <input
                   id="cvv"
-                  :class="input + '!w-14'"
+                  class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10 !w-14"
                   type="text"
                   v-model="card.cvv"
                   maxlength="3"
@@ -318,8 +318,6 @@ const card_name_format = () => {
 const exp_cvv_format = (value: string) => {
   return value.replace(/[^0-9]/gi, "");
 };
-const input =
-  "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 text-center w-12 h-10 ";
 </script>
 <style>
 @font-face {

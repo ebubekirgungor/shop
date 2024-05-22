@@ -26,14 +26,14 @@
             @submit.prevent="create"
           >
             <input
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('title')"
               v-model="new_address.title"
               required
             />
             <input
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('customer_name')"
               v-model="new_address.customer_name"
@@ -41,7 +41,7 @@
             />
             <textarea
               rows="10"
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('address')"
               v-model="new_address.address"
@@ -50,7 +50,7 @@
             <button
               :disabled="!new_address.title || !new_address.address"
               type="submit"
-              :class="button"
+              class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
             >
               {{ $t("create") }}
             </button>
@@ -77,14 +77,14 @@
           >
             <input type="hidden" v-model="edit_address.ID" required />
             <input
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('title')"
               v-model="edit_address.title"
               required
             />
             <input
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('customer_name')"
               v-model="edit_address.customer_name"
@@ -92,7 +92,7 @@
             />
             <textarea
               rows="10"
-              :class="input"
+              class="transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
               type="text"
               :placeholder="$t('address')"
               v-model="edit_address.address"
@@ -101,7 +101,7 @@
             <button
               :disabled="!edit_address.title || !edit_address.address"
               type="submit"
-              :class="button"
+              class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
             >
               {{ $t("update") }}
             </button>
@@ -128,7 +128,12 @@
           >
             <input type="hidden" v-model="delete_address_id" required />
             <div class="text-center">{{ $t("are_you_sure") }}</div>
-            <button type="submit" :class="button">{{ $t("delete") }}</button>
+            <button
+              type="submit"
+              class="transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none"
+            >
+              {{ $t("delete") }}
+            </button>
           </form>
         </div>
       </div>
@@ -147,16 +152,16 @@
       >
         <div
           @click="add_dialog = true"
-          :class="
-            box +
-            ' transition duration-200 ease-in-out items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300'
-          "
+          class="flex flex-col p-4 shadow-md text-xl sm:size-56 rounded-xl transition duration-200 ease-in-out items-center justify-center cursor-pointer bg-gray-200 hover:bg-gray-300"
         >
           <div
             class="size-24 bg-[url(/icons/add.svg)] bg-no-repeat bg-cover"
           ></div>
         </div>
-        <div v-for="address in addresses" :class="box + ' bg-gray-50 gap-y-2'">
+        <div
+          v-for="address in addresses"
+          class="flex flex-col p-4 shadow-md text-xl sm:size-56 rounded-xl bg-gray-50 gap-y-2"
+        >
           <div class="flex">
             <div class="grow w-0 break-words font-medium">
               {{ address.title }}
@@ -354,9 +359,4 @@ const remove = async () => {
     },
   });
 };
-const box = "flex flex-col p-4 shadow-md text-xl sm:size-56 rounded-xl";
-const input =
-  "transition duration-300 ease-in-out w-full rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
-const button =
-  "transition duration-300 ease-in-out w-full h-12 col-span-2 rounded-full bg-black text-white hover:bg-black/80 disabled:bg-black/60 disabled:pointer-events-none";
 </script>

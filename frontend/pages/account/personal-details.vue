@@ -10,44 +10,59 @@
       @submit.prevent="update"
       class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 sm:items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
-      <label :class="label"
+      <label class="flex flex-col gap-y-2"
         >{{ $t("first_name")
-        }}<input :class="input" type="text" v-model="form.first_name"
+        }}<input
+          class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+          type="text"
+          v-model="form.first_name"
       /></label>
-      <label :class="label"
+      <label class="flex flex-col gap-y-2"
         >{{ $t("last_name")
-        }}<input :class="input" type="text" v-model="form.last_name"
+        }}<input
+          class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
+          type="text"
+          v-model="form.last_name"
       /></label>
-      <label :class="label"
+      <label class="flex flex-col gap-y-2"
         >{{ $t("phone")
         }}<input
-          :class="input"
+          class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300"
           type="tel"
           minlength="14"
           maxlength="14"
           v-model="form.phone"
           @input="phone_format"
       /></label>
-      <label :class="label"
+      <label class="flex flex-col gap-y-2"
         >{{ $t("email")
         }}<input
           disabled
-          :class="input + ' bg-gray-300 cursor-not-allowed'"
+          class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 bg-gray-300 cursor-not-allowed"
           :placeholder="form.email"
           type="text"
       /></label>
-      <label :class="label">
+      <label class="flex flex-col gap-y-2">
         {{ $t("birthdate") }}
         <div class="flex gap-x-[7%]">
-          <select :class="input + input_select" v-model="form.birthdate.day">
+          <select
+            class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 w-full cursor-pointer"
+            v-model="form.birthdate.day"
+          >
             <option value="">{{ $t("day") }}</option>
             <option v-for="i in 31" :value="i.toString()">{{ i }}</option>
           </select>
-          <select :class="input + input_select" v-model="form.birthdate.month">
+          <select
+            class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 w-full cursor-pointer"
+            v-model="form.birthdate.month"
+          >
             <option value="">{{ $t("month") }}</option>
             <option v-for="i in 12" :value="i.toString()">{{ i }}</option>
           </select>
-          <select :class="input + input_select" v-model="form.birthdate.year">
+          <select
+            class="transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300 w-full cursor-pointer"
+            v-model="form.birthdate.year"
+          >
             <option value="">{{ $t("year") }}</option>
             <option
               v-for="i in Array.from(
@@ -61,12 +76,12 @@
           </select>
         </div>
       </label>
-      <div :class="label">
+      <div class="flex flex-col gap-y-2">
         {{ $t("gender") }}
         <div class="flex gap-x-[7%]">
           <label class="flex items-center gap-x-3 cursor-pointer">
             <input
-              :class="radio"
+              class="transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0"
               type="radio"
               v-model="form.gender"
               name="gender"
@@ -77,7 +92,7 @@
           </label>
           <label class="flex items-center gap-x-3 cursor-pointer">
             <input
-              :class="radio"
+              class="transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0"
               type="radio"
               v-model="form.gender"
               name="gender"
@@ -100,40 +115,40 @@
       v-else
       class="flex flex-col sm:grid sm:grid-cols-2 sm:gap-x-[7%] gap-y-4 sm:gap-y-8 sm:items-center sm:p-6 sm:min-w-[40rem] h-auto bg-white rounded-xl shadow-md animate-pulse"
     >
-      <div :class="label">
-        <div :class="skeleton_title"></div>
-        <div :class="skeleton_input"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full"></div>
+        <div class="w-full h-9 bg-gray-200 rounded-full"></div>
       </div>
-      <div :class="label">
-        <div :class="skeleton_title"></div>
-        <div :class="skeleton_input"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full"></div>
+        <div class="w-full h-9 bg-gray-200 rounded-full"></div>
       </div>
-      <div :class="label">
-        <div :class="skeleton_title"></div>
-        <div :class="skeleton_input"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full"></div>
+        <div class="w-full h-9 bg-gray-200 rounded-full"></div>
       </div>
-      <div :class="label">
-        <div :class="skeleton_title"></div>
-        <div :class="skeleton_input"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full"></div>
+        <div class="w-full h-9 bg-gray-200 rounded-full"></div>
       </div>
-      <div :class="label">
-        <div :class="skeleton_title"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full"></div>
         <div class="flex gap-x-8">
-          <div :class="skeleton_input"></div>
-          <div :class="skeleton_input"></div>
-          <div :class="skeleton_input"></div>
+          <div class="w-full h-9 bg-gray-200 rounded-full"></div>
+          <div class="w-full h-9 bg-gray-200 rounded-full"></div>
+          <div class="w-full h-9 bg-gray-200 rounded-full"></div>
         </div>
       </div>
-      <div :class="label">
-        <div :class="skeleton_title + ' !w-16'"></div>
+      <div class="flex flex-col gap-y-2">
+        <div class="w-32 h-5 bg-gray-200 rounded-full + ' !w-16'"></div>
         <div class="flex gap-x-8">
           <div class="flex gap-x-4">
-            <div :class="skeleton_title + ' !w-5'"></div>
-            <div :class="skeleton_title + ' !w-12'"></div>
+            <div class="w-32 h-5 bg-gray-200 rounded-full + ' !w-5'"></div>
+            <div class="w-32 h-5 bg-gray-200 rounded-full + ' !w-12'"></div>
           </div>
           <div class="flex gap-x-4">
-            <div :class="skeleton_title + ' !w-5'"></div>
-            <div :class="skeleton_title + ' !w-12'"></div>
+            <div class="w-32 h-5 bg-gray-200 rounded-full + ' !w-5'"></div>
+            <div class="w-32 h-5 bg-gray-200 rounded-full + ' !w-12'"></div>
           </div>
         </div>
       </div>
@@ -249,12 +264,4 @@ const phone_format = () => {
     ? x[1]
     : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
 };
-const input =
-  "transition duration-300 ease-in-out rounded-md border-0 bg-black/5 text-sm focus:ring-2 focus:ring-slate-300";
-const input_select = " w-full cursor-pointer";
-const label = "flex flex-col gap-y-2";
-const radio =
-  "transition duration-200 ease-in-out text-black cursor-pointer focus:ring-0 focus:ring-offset-0";
-const skeleton_title = "w-32 h-5 bg-gray-200 rounded-full";
-const skeleton_input = "w-full h-9 bg-gray-200 rounded-full";
 </script>
