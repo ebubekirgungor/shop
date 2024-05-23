@@ -139,7 +139,7 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("addresses") }}
     </div>
@@ -200,25 +200,30 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 interface Address {
   ID: number | null;
   title: string;
   customer_name: string;
   address: string;
 }
+
 interface NewAddress {
   title: string;
   customer_name: string;
   address: string;
 }
+
 const fetch_complete = ref(false);
 const add_dialog = ref(false);
 const edit_dialog = ref(false);
 const delete_dialog = ref(false);
+
 const open_edit_dialog = (
   id: number | null,
   title: string,
@@ -233,10 +238,12 @@ const open_edit_dialog = (
   };
   edit_dialog.value = true;
 };
+
 const open_delete_dialog = (id: number | null) => {
   delete_address_id.value = id;
   delete_dialog.value = true;
 };
+
 const addresses = ref<Address[]>([]);
 const new_address = ref<NewAddress>({
   title: "",
@@ -250,6 +257,7 @@ const edit_address = ref<Address>({
   address: "",
 });
 const delete_address_id = ref<number | null>(null);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/addresses", {
@@ -265,6 +273,7 @@ onMounted(() => {
     });
   });
 });
+
 const create = async () => {
   await useFetch(config.apiBase + "/addresses", {
     headers: {
@@ -296,6 +305,7 @@ const create = async () => {
     },
   });
 };
+
 const update = async () => {
   await useFetch(config.apiBase + "/addresses/" + edit_address.value.ID, {
     headers: {
@@ -332,6 +342,7 @@ const update = async () => {
     },
   });
 };
+
 const remove = async () => {
   await useFetch(config.apiBase + "/addresses/" + delete_address_id.value, {
     headers: {

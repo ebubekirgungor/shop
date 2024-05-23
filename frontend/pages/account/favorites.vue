@@ -38,7 +38,7 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("favorites") }}
     </div>
@@ -100,15 +100,18 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 interface Image {
   order: number;
   name: string;
   url: string;
 }
+
 interface Product {
   ID: number | null;
   title: string;
@@ -118,9 +121,11 @@ interface Product {
   stock_quantity: string;
   images: Image[];
 }
+
 const delete_dialog = ref(false);
 const delete_product_id = ref<number | null>(null);
 const favorites = ref<Product[]>([]);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/favorites", {
@@ -135,6 +140,7 @@ onMounted(() => {
     });
   });
 });
+
 const remove = async () => {
   await useFetch(config.apiBase + "/favorites/" + delete_product_id.value, {
     headers: {

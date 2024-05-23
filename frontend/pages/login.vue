@@ -76,21 +76,24 @@
   </main>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
 import { useToast, POSITION } from "vue-toastification";
 const { t } = useI18n();
 const localePath = useLocalePath();
 const toast = useToast();
 const config = useRuntimeConfig().public;
+definePageMeta({
+  middleware: "auth",
+});
+
 const showpassword = "size-6 absolute ml-[265px] ";
 const eye = ref(false);
+
 const form = ref({
   email: "",
   password: "",
   remember_me: false,
 });
+
 const login = async () => {
   await useFetch(config.apiBase + "/auth/login", {
     method: "post",

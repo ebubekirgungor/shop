@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("change_password") }}
     </div>
@@ -46,15 +46,18 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 const form = ref({
   old_password: "",
   new_password: "",
   new_password2: "",
 });
+
 const update = async () => {
   await useFetch(config.apiBase + "/users/password", {
     headers: {

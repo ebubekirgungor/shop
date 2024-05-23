@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex flex-col sm:flex-row justify-center sm:justify-start items-center mt-12 sm:mt-0 gap-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="flex flex-col sm:flex-row justify-center sm:justify-start items-center mt-12 sm:mt-0 gap-4 sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("orders") }}
       <div
@@ -118,16 +118,19 @@
 import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
 const localePath = useLocalePath();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 interface Product {
   url: string;
   title: string;
   image: string;
   quantity: number;
 }
+
 interface Order {
   id: number;
   date: Date;
@@ -136,12 +139,14 @@ interface Order {
   products: Product[];
   delivery_status: DeliveryStatus;
 }
+
 enum DeliveryStatus {
   Delivered,
   InProgress,
   Returned,
   Canceled,
 }
+
 const status_names = [
   {
     name: "all",
@@ -169,6 +174,7 @@ const status_names = [
     status: DeliveryStatus.Canceled,
   },
 ];
+
 const options = <Object>{
   day: "numeric",
   month: "long",
@@ -176,9 +182,11 @@ const options = <Object>{
   hour: "numeric",
   minute: "numeric",
 };
+
 const orders = ref<Order[]>([]);
 const status_filter = ref<DeliveryStatus | null>(null);
 const search_filter = ref("");
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/orders", {
@@ -193,6 +201,7 @@ onMounted(() => {
     });
   });
 });
+
 const filtered_orders = computed(() => {
   const filtered_orders = orders.value.filter((order: Order) => {
     const filtered_products = order.products.filter((product) => {

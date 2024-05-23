@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="flex items-center mt-12 sm:mt-0 gap-x-4 sm:p-6 text-lg sm:text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="flex items-center mt-12 sm:mt-0 gap-x-4 sm:p-6 sm:h-20 text-lg sm:text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       <button
         @click="navigateTo(localePath('account-orders'))"
@@ -115,10 +115,12 @@ import { nextTick } from "vue";
 const route = useRoute();
 const config = useRuntimeConfig().public;
 const localePath = useLocalePath();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 interface Product {
   title: string;
   url: string;
@@ -126,6 +128,7 @@ interface Product {
   list_price: number;
   quantity: number;
 }
+
 interface Order {
   id: number;
   date: Date;
@@ -135,12 +138,14 @@ interface Order {
   products: Product[];
   delivery_status: DeliveryStatus;
 }
+
 enum DeliveryStatus {
   Delivered,
   InProgress,
   Returned,
   Canceled,
 }
+
 const status_names = [
   {
     name: "delivered",
@@ -159,6 +164,7 @@ const status_names = [
     icon: "bg-center bg-no-repeat size-6 size-6 bg-[url(/icons/close.svg)]",
   },
 ];
+
 const options = <Object>{
   day: "numeric",
   month: "long",
@@ -166,9 +172,11 @@ const options = <Object>{
   hour: "numeric",
   minute: "numeric",
 };
+
 const order = ref<Order>();
 const shipping = ref(50);
 const fetch_complete = ref(false);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/orders/" + route.params.order, {

@@ -184,16 +184,19 @@
   </main>
 </template>
 <script setup lang="ts">
-definePageMeta({
-  middleware: "auth",
-});
 import { useToast, POSITION } from "vue-toastification";
 const { t } = useI18n();
 const localePath = useLocalePath();
 const toast = useToast();
 const config = useRuntimeConfig().public;
+
+definePageMeta({
+  middleware: "auth",
+});
+
 const step = ref(1);
 const eye = ref(false);
+
 const form = ref({
   email: "",
   first_name: "",
@@ -207,6 +210,7 @@ const form = ref({
   gender: "",
   password: "",
 });
+
 const check_email = async () => {
   await useFetch(config.apiBase + "/auth/check_user", {
     method: "post",
@@ -225,6 +229,7 @@ const check_email = async () => {
     },
   });
 };
+
 const register = async () => {
   await useFetch(config.apiBase + "/users", {
     method: "post",
@@ -250,6 +255,7 @@ const register = async () => {
     },
   });
 };
+
 const phone_format = () => {
   let x: RegExpMatchArray | null = form.value.phone
     .replace(/\D/g, "")

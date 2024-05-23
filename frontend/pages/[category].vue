@@ -188,11 +188,13 @@ const route = useRoute();
 const role = useCookie<number>("role");
 const cart_unregistered = useCookie<Cart[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
+
 interface Cart {
   id: number;
   quantity: number;
   selected: boolean;
 }
+
 interface Product {
   id: number;
   create_date: Date;
@@ -204,10 +206,12 @@ interface Product {
   is_favorite: boolean;
   filters: ProductFilter[];
 }
+
 interface ProductFilter {
   name: string;
   value: string;
 }
+
 const sorts = [
   {
     name: t("newests"),
@@ -222,6 +226,7 @@ const sorts = [
     value: "highest",
   },
 ];
+
 const filters_menu = ref(false);
 const sorts_menu = ref(false);
 const filters = ref(new Map<string, { filter: string; selected: boolean }[]>());
@@ -229,6 +234,7 @@ const category_title = ref("");
 const products = ref<Product[]>([]);
 const cart = ref<Cart[]>([]);
 const favorites_ids = ref<number[]>([]);
+
 onMounted(() => {
   nextTick(async () => {
     if (role.value != undefined) {
@@ -275,6 +281,7 @@ onMounted(() => {
     }
   });
 });
+
 const filter_products = async () => {
   const selected_filters: { [index: string]: string } = {};
   let selected_count = 0;
@@ -295,6 +302,7 @@ const filter_products = async () => {
     },
   });
 };
+
 const sort_products = async (sort_value: string) => {
   if (sort_value == "newest") {
     products.value = products.value.sort(
@@ -308,6 +316,7 @@ const sort_products = async (sort_value: string) => {
   }
   sorts_menu.value = false;
 };
+
 const add_to_cart = async (id: number) => {
   if (role.value != undefined) {
     let item: Cart = cart.value.find((item: Cart) => item.id == id)!;
@@ -334,6 +343,7 @@ const add_to_cart = async (id: number) => {
     });
   }
 };
+
 const toggle_favorite = async (product: Product) => {
   await useFetch(config.apiBase + "/favorites/" + product.id, {
     headers: {

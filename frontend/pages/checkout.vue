@@ -4,7 +4,7 @@
       class="flex flex-col gap-y-4 w-[clamp(48rem,65rem,65rem)] sm:min-w-[48rem]"
     >
       <div
-        class="flex justify-center sm:justify-start items-center gap-x-4 p-6 text-xl h-[78px] bg-white sm:rounded-xl sm:shadow-md"
+        class="flex justify-center sm:justify-start items-center gap-x-4 p-6 text-xl h-20 bg-white sm:rounded-xl sm:shadow-md"
       >
         <button
           @click="step == 1 ? navigateTo(localePath('cart')) : (step = 1)"
@@ -214,11 +214,13 @@ const config = useRuntimeConfig().public;
 const localePath = useLocalePath();
 const { t } = useI18n();
 const role = useCookie("role");
+
 interface Image {
   order: number;
   name: string;
   url: string;
 }
+
 interface Cart {
   id: number;
   title: string;
@@ -232,12 +234,14 @@ interface Cart {
     selected: boolean;
   };
 }
+
 interface Address {
   ID: number | null;
   title: string;
   customer_name: string;
   address: string;
 }
+
 interface Card {
   number: string;
   name: string;
@@ -245,12 +249,14 @@ interface Card {
   year: string;
   cvv: string;
 }
+
 const cart = ref<Cart[]>([]);
 const shipping = ref(50);
 const addresses = ref<Address[]>([]);
 const selected_address = ref<Address>();
 const fetch_complete = ref(false);
 const step = ref(1);
+
 const card = ref<Card>({
   number: "",
   name: "",
@@ -258,6 +264,7 @@ const card = ref<Card>({
   year: "",
   cvv: "",
 });
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(
@@ -286,6 +293,7 @@ onMounted(() => {
     });
   });
 });
+
 const order = async () => {
   await useFetch(config.apiBase + "/orders", {
     headers: {
@@ -305,16 +313,19 @@ const order = async () => {
     },
   });
 };
+
 const card_number_format = () => {
   card.value.number = card.value.number
     .replace(/[^0-9]/gi, "")
     .replace(/(\d{4})(?=\d)/g, "$1 ");
 };
+
 const card_name_format = () => {
   card.value.name = card.value.name
     .toLocaleUpperCase("tr-TR")
     .replace(/[^\p{L}\s-]/u, "");
 };
+
 const exp_cvv_format = (value: string) => {
   return value.replace(/[^0-9]/gi, "");
 };

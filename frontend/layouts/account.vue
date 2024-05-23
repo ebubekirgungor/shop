@@ -104,7 +104,9 @@ const { locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 const localePath = useLocalePath();
 const role = useCookie<number | null>("role");
+
 const nav_menu = ref(false);
+
 const logout = async () => {
   role.value = null;
   await useFetch(config.apiBase + "/auth/logout", {
@@ -115,6 +117,7 @@ const logout = async () => {
     },
   });
 };
+
 const link =
   "transition duration-300 ease-in-out flex items-center gap-x-4 p-4 h-12 hover:bg-black/5 rounded-full ";
 const active = "bg-black/10 pointer-events-none font-medium";

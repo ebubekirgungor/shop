@@ -139,7 +139,7 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("categories") }}
       <button
@@ -204,10 +204,12 @@ const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
 const role = useCookie<number>("role");
+
 definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+
 interface Category {
   ID: number | null;
   title: string;
@@ -215,6 +217,7 @@ interface Category {
   filters: string[];
   image: string;
 }
+
 const is_add = ref(true);
 const create_update_dialog = ref(false);
 const delete_dialog = ref(false);
@@ -227,6 +230,7 @@ const category_filters_copy = ref<string[]>([]);
 const category_image_url = ref("");
 const update_category_id = ref<number>();
 const categories = ref<Category[]>([]);
+
 onMounted(() => {
   nextTick(async () => {
     if (role.value === 1) {
@@ -243,6 +247,7 @@ onMounted(() => {
     }
   });
 });
+
 const open_edit_dialog = (category: Category) => {
   is_add.value = false;
   update_category_id.value = category.ID!;
@@ -252,6 +257,7 @@ const open_edit_dialog = (category: Category) => {
   category_image_url.value = "/images/categories/" + category.image;
   create_update_dialog.value = true;
 };
+
 const close_create_update_dialog = () => {
   create_update_dialog.value = false;
   category_title.value = "";
@@ -260,12 +266,14 @@ const close_create_update_dialog = () => {
   category_image = null;
   category_image_url.value = "";
 };
+
 const category_image_upload = (event: Event) => {
   category_image = (event.target as any).files[0];
   category_image_url.value = URL.createObjectURL(
     (event.target as any).files[0]
   );
 };
+
 const create_update = async () => {
   const form_data = new FormData();
   form_data.append("title", category_title.value);
@@ -325,6 +333,7 @@ const create_update = async () => {
     }
   );
 };
+
 const remove = async () => {
   await useFetch(config.apiBase + "/categories/" + delete_category_id.value, {
     headers: {

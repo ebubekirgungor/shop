@@ -5,7 +5,7 @@
     >
       <div
         v-if="images.length > 0"
-        class="flex flex-col gap-y-4 pb-4 min-w-screen sm:min-w-[35rem] relative overflow-hidden touch-pan-y"
+        class="flex flex-col gap-y-4 pb-4 min-w-screen sm:min-w-[35rem] rounded-tl-xl relative overflow-hidden touch-pan-y"
       >
         <div
           class="transition-transform duration-500 ease-in-out flex w-screen h-[100vw] sm:size-[35rem]"
@@ -180,11 +180,13 @@ const config = useRuntimeConfig().public;
 const { t } = useI18n();
 const route = useRoute();
 const role = useCookie<number>("role");
+
 interface Image {
   order: number;
   name: string;
   url: string;
 }
+
 interface Product {
   ID: number | null;
   title: string;
@@ -193,11 +195,13 @@ interface Product {
   stock_quantity: string;
   is_favorite: boolean;
 }
+
 interface Cart {
   id: number | null;
   quantity: number;
   selected: boolean;
 }
+
 const product = ref<Product>({
   ID: null,
   title: "",
@@ -206,6 +210,7 @@ const product = ref<Product>({
   stock_quantity: "",
   is_favorite: false,
 });
+
 const images = ref<Image[]>([]);
 const startX = ref(0);
 const dragging = ref(false);
@@ -217,6 +222,7 @@ if (!cart_unregistered.value) cart_unregistered.value = [];
 const cart = ref<Cart[]>([]);
 const product_cart_quantity = ref();
 const animate = ref(false);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(
@@ -268,6 +274,7 @@ onMounted(() => {
     }
   });
 });
+
 const goto_slide = async (index: number) => {
   if (index < 0) {
     slide_index.value = images.value.length - 1;
@@ -277,10 +284,12 @@ const goto_slide = async (index: number) => {
     slide_index.value = index;
   }
 };
+
 const touch_start = async (event: any) => {
   dragging.value = true;
   startX.value = event.touches[0].clientX;
 };
+
 const touch_move = async (event: any) => {
   if (!dragging.value) return;
   const currentX = event.touches[0].clientX;
@@ -290,10 +299,12 @@ const touch_move = async (event: any) => {
     dragging.value = false;
   }
 };
+
 watch(slide_index, () => {
   const transformValue = `translateX(-${slide_index.value * 100}%)`;
   slider.value.style.transform = transformValue;
 });
+
 const add_to_cart = async () => {
   const existing_index = cart.value.findIndex(
     (item: Cart) => item.id == product.value.ID
@@ -343,6 +354,7 @@ const add_to_cart = async () => {
       : (quantity.value = 1);
   }
 };
+
 const toggle_favorite = async () => {
   await useFetch(config.apiBase + "/favorites/" + product.value.ID, {
     headers: {

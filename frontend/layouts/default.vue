@@ -147,11 +147,13 @@ const role = useCookie<number | null>("role");
 const { locales } = useI18n();
 const switchLocalePath = useSwitchLocalePath();
 const localePath = useLocalePath();
+
 interface Product {
   category: string;
   title: string;
   url: string;
 }
+
 const logout = async () => {
   role.value = null;
   await useFetch(config.apiBase + "/auth/logout", {
@@ -162,9 +164,11 @@ const logout = async () => {
     },
   });
 };
+
 const search = ref("");
 const mobile_search = ref(false);
 const products = ref<Product[]>([]);
+
 watch(search, async () => {
   if (search.value.length > 1) {
     await useFetch(config.apiBase + "/search", {
@@ -175,6 +179,7 @@ watch(search, async () => {
     });
   }
 });
+
 watch(products, () => {
   const regex = new RegExp(search.value.split(" ").join("|"), "gi");
   products.value.map((product: Product) => {

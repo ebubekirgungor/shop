@@ -2,34 +2,9 @@
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <transition name="background" mode="out-in">
       <div
-        v-if="image_gallery || delete_dialog"
+        v-if="delete_dialog"
         class="bg-black/40 inset-x-0 inset-y-0 size-full fixed z-[2]"
       ></div>
-    </transition>
-    <transition name="modal" mode="out-in">
-      <div
-        v-if="image_gallery"
-        class="flex flex-col justify-center items-center gap-y-4 inset-x-0 inset-y-0 size-full fixed z-[3]"
-      >
-        <div class="flex flex-col p-3 sm:-mt-[15vh] sm:w-[48rem] sm:h-[28rem]">
-          <img class="object-cover rounded-md h-full" :src="image_current" />
-          <button
-            @click="image_gallery = false"
-            class="absolute mt-2 right-5 sm:right-auto sm:ml-[44rem] transition duration-300 ease-in-out size-8 bg-white bg-[url(/icons/close.svg)] bg-no-repeat bg-center rounded-full hover:bg-white/60"
-          ></button>
-        </div>
-        <div class="flex gap-x-1">
-          <button
-            v-for="image in images"
-            @click="image_current = image.url"
-            :class="
-              image_current == image.url
-                ? 'transition duration-300 ease-in-out size-3 rounded-full bg-white'
-                : 'transition duration-300 ease-in-out size-3 rounded-full bg-gray-300'
-            "
-          ></button>
-        </div>
-      </div>
     </transition>
     <transition name="modal" mode="out-in">
       <div
@@ -61,8 +36,12 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 sm:h-20 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
+      <button
+        @click="navigateTo(localePath('admin-products'))"
+        class="transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/previous.svg)] ml-4 sm:ml-0 size-10 bg-black/5 rounded-full hover:bg-black/10"
+      ></button>
       {{ is_add ? $t("add_product") : $t("edit_product") }}
     </div>
     <form
@@ -130,13 +109,12 @@
         <div class="flex flex-wrap gap-2 sm:gap-4 mt-2">
           <div
             v-for="image in images"
-            @click="open_gallery(image.url)"
             class="flex flex-col w-[calc(50vw-12px)] h-[calc(50vw-12px)] sm:size-44 border rounded-xl cursor-pointer"
           >
             <button
               type="button"
               @click="open_delete_dialog($event, image.order)"
-              class="absolute m-2 self-end transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-gray-200 sm:bg-black/10 rounded-full sm:hover:bg-black/25"
+              class="absolute m-2 self-end transition duration-200 ease-in-out bg-no-repeat bg-center bg-[url(/icons/delete.svg)] size-10 bg-gray-200 rounded-full sm:hover:bg-gray-300"
             ></button>
             <img
               class="w-[calc(50vw-14px)] h-[calc(50vw-14px)] sm:size-full object-center object-contain rounded-xl"
@@ -196,24 +174,29 @@ const { t } = useI18n();
 const route = useRoute();
 const router = useRouter();
 const role = useCookie<number>("role");
+
 definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+
 interface Category {
   ID: number;
   title: string;
   filters: string[];
 }
+
 interface Image {
   order: number | null;
   name: string;
   url: string;
 }
+
 interface Filter {
   name: string;
   value: string;
 }
+
 interface Product {
   ID?: number | null;
   title: string;
@@ -223,16 +206,19 @@ interface Product {
   filters: Filter[];
   images?: Image[];
 }
+
 const is_add = route.params.product == t("add_url");
+
 const open_delete_dialog = (event: Event, order: Image["order"]) => {
   event.stopPropagation();
   delete_image_order.value = order;
   delete_dialog.value = true;
 };
+
 const delete_image_order = ref<Product["ID"]>(null);
 const delete_dialog = ref(false);
 const categories = ref<Category[]>([]);
-const image_gallery = ref(false);
+
 const form = ref<Product>({
   ID: null,
   title: "",
@@ -249,13 +235,16 @@ let form_old = <Product>{
   stock_quantity: "",
   filters: [],
 };
+
 let images_to_upload: File[] = [];
 const images = ref<Image[]>([]);
 let images_old: Image[] = [];
 const image_current = ref("");
+
 interface EventTarget {
   files: unknown;
 }
+
 const upload = (event: Event) => {
   Array.prototype.slice
     .call((event.target as unknown as EventTarget).files)
@@ -268,10 +257,7 @@ const upload = (event: Event) => {
       images_to_upload.push(file);
     });
 };
-const open_gallery = (image: Image["url"]) => {
-  image_gallery.value = true;
-  image_current.value = image;
-};
+
 const data_to_form = (response: Product) => {
   form.value = response;
   const images_array: Image[] = [];
@@ -287,6 +273,7 @@ const data_to_form = (response: Product) => {
   form_old.filters = JSON.parse(JSON.stringify(response.filters));
   images_old = [...images.value];
 };
+
 onMounted(() => {
   nextTick(async () => {
     if (role.value === 1) {
@@ -311,6 +298,7 @@ onMounted(() => {
     }
   });
 });
+
 const category_change = async () => {
   const filters_temp: Filter[] = [];
   categories.value
@@ -323,6 +311,7 @@ const category_change = async () => {
     );
   form.value.filters = filters_temp;
 };
+
 const create_update = async () => {
   const form_values = {
     title: form.value.title,
@@ -386,6 +375,7 @@ const create_update = async () => {
     }
   );
 };
+
 const remove = async () => {
   images_to_upload.splice(delete_image_order.value as number);
   images.value.splice(

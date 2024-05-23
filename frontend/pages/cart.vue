@@ -5,7 +5,7 @@
     ></div>
     <div class="text-3xl text-gray-600">{{ $t("your_cart_is_empty") }}</div>
     <NuxtLink
-      to="/"
+      :to="localePath('/')"
       class="transition duration-200 ease-in-out flex justify-center items-center w-52 h-10 rounded-full text-lg border-2 border-black sm:hover:bg-black/10"
       >{{ $t("return_to_shopping") }}</NuxtLink
     >
@@ -15,7 +15,7 @@
       class="flex flex-col sm:gap-y-4 w-screen sm:w-[clamp(40rem,65rem,65rem)] sm:min-w-[40rem]"
     >
       <div
-        class="flex justify-center sm:justify-start gap-x-2 p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+        class="flex justify-center sm:justify-start items-center gap-x-2 p-6 text-xl h-20 bg-white sm:rounded-xl sm:shadow-md"
       >
         {{ $t("cart") }}
         <div class="text-[16px] text-gray-500 mt-0.5">
@@ -201,11 +201,13 @@ import { nextTick } from "vue";
 const config = useRuntimeConfig().public;
 const localePath = useLocalePath();
 const role = useCookie("role");
+
 interface Image {
   order: number;
   name: string;
   url: string;
 }
+
 interface Cart {
   id: number;
   title: string;
@@ -219,16 +221,20 @@ interface Cart {
     selected: boolean;
   };
 }
+
 const cart_unregistered = useCookie<Object[]>("cart");
 if (!cart_unregistered.value) cart_unregistered.value = [];
 const cart = ref<Cart[]>([]);
 let cart_copy = "";
+
 const items_count = computed(() => {
   return cart.value.reduce((total: number, product: Cart) => {
     return total + product.cart.quantity;
   }, 0);
 });
+
 const shipping = ref(50);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(
@@ -254,6 +260,7 @@ onMounted(() => {
     }, 10000);
   }
 });
+
 const update_cart = async () => {
   const { data } = await useFetch(config.apiBase + "/users/cart", {
     headers: {
@@ -268,6 +275,7 @@ const update_cart = async () => {
   });
   return data.value == "ok";
 };
+
 const update_cart_unregistered = async () => {
   if (role.value == undefined) {
     setTimeout(() => {
@@ -277,6 +285,7 @@ const update_cart_unregistered = async () => {
     }, 500);
   }
 };
+
 const remove_from_cart = async (product_id: number) => {
   cart.value.splice(
     cart.value.map((item: Cart) => item.id).indexOf(product_id),
@@ -284,6 +293,7 @@ const remove_from_cart = async (product_id: number) => {
   );
   update_cart_unregistered();
 };
+
 const checkout = async () => {
   if (await update_cart()) navigateTo(localePath("checkout"));
 };

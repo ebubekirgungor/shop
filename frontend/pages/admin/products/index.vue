@@ -36,7 +36,7 @@
       </div>
     </transition>
     <div
-      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 text-xl bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-12 sm:mt-0 flex justify-center sm:justify-start items-center gap-x-4 sm:p-6 sm:min-h-20 text-xl bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("products") }}
       <NuxtLink
@@ -222,10 +222,12 @@ const config = useRuntimeConfig().public;
 const { t } = useI18n();
 const localePath = useLocalePath();
 const role = useCookie<number>("role");
+
 definePageMeta({
   middleware: "auth",
   layout: "admin",
 });
+
 interface Product {
   id: number | null;
   title: string;
@@ -234,11 +236,14 @@ interface Product {
   list_price: number | null;
   stock_quantity: string;
 }
+
 const fetch_complete = ref(false);
+
 const open_delete_dialog = (id: Product["id"]) => {
   delete_product_id.value = id;
   delete_dialog.value = true;
 };
+
 const delete_product_id = ref<Product["id"]>(null);
 const delete_dialog = ref(false);
 const products = ref<Product[]>([]);
@@ -249,6 +254,7 @@ const items_per_page_options = [5, 10, 25, 50, 100];
 const sort_by_field = ref("");
 const sort_direction = ref(0);
 const arrow_active = ref("");
+
 onMounted(() => {
   nextTick(async () => {
     if (role.value === 1) {
@@ -263,14 +269,17 @@ onMounted(() => {
     }
   });
 });
+
 const filtered_products = computed(() => {
   return products.value.filter((product: Product) =>
     product.title.toLowerCase().includes(filter.value.toLowerCase())
   );
 });
+
 const total_pages = computed(() =>
   Math.ceil(filtered_products.value.length / items_per_page.value)
 );
+
 const displayed_products = computed(() => {
   const start_index = (current_page.value - 1) * items_per_page.value;
   let sorted_products = [...filtered_products.value];
@@ -289,6 +298,7 @@ const displayed_products = computed(() => {
   }
   return sorted_products.slice(start_index, start_index + items_per_page.value);
 });
+
 const sort = async (field: string) => {
   arrow_active.value = field;
   if (current_page.value != 1) current_page.value = 1;
@@ -299,6 +309,7 @@ const sort = async (field: string) => {
     sort_direction.value = 1;
   }
 };
+
 const remove = async () => {
   await useFetch(config.apiBase + "/products/" + delete_product_id.value, {
     headers: {

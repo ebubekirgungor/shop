@@ -23,7 +23,9 @@ interface Category {
   url: string;
   image: string;
 }
+
 const categories = ref<Category[]>([]);
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/categories", {

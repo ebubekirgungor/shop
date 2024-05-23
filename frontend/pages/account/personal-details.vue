@@ -1,7 +1,7 @@
 <template>
   <main class="flex flex-col gap-y-4 w-[clamp(30rem,65rem,65rem)]">
     <div
-      class="mt-10 sm:mt-0 flex justify-center sm:justify-start items-center py-4 sm:p-6 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
+      class="mt-10 sm:mt-0 flex justify-center sm:justify-start items-center py-4 sm:p-6 sm:h-20 text-xl h-auto bg-white sm:rounded-xl sm:shadow-md"
     >
       {{ $t("personal_details") }}
     </div>
@@ -162,10 +162,12 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const config = useRuntimeConfig().public;
 const { t } = useI18n();
+
 definePageMeta({
   middleware: "auth",
   layout: "account",
 });
+
 interface Form {
   email: string;
   first_name: string;
@@ -178,6 +180,7 @@ interface Form {
   };
   gender: string;
 }
+
 const fetch_complete = ref(false);
 const form = ref<Form>({
   email: "",
@@ -203,6 +206,7 @@ const form_old = ref<Form>({
   },
   gender: "",
 });
+
 const data_to_form = async (data: Form) => {
   form.value = { ...data };
   const birthdate = (data.birthdate as unknown as string).slice(0, 10);
@@ -216,6 +220,7 @@ const data_to_form = async (data: Form) => {
   form_old.value = { ...form.value };
   form_old.value.birthdate = { ...form.value.birthdate };
 };
+
 onMounted(() => {
   nextTick(async () => {
     await useFetch(config.apiBase + "/users", {
@@ -229,6 +234,7 @@ onMounted(() => {
     });
   });
 });
+
 const update = async () => {
   await useFetch(config.apiBase + "/users", {
     headers: {
@@ -256,6 +262,7 @@ const update = async () => {
     },
   });
 };
+
 const phone_format = () => {
   let x: RegExpMatchArray | null = form.value.phone
     .replace(/\D/g, "")
